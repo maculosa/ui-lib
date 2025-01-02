@@ -1,0 +1,128 @@
+:root {
+  --btn-mini: 12px;
+  --btn-small: 14px;
+  --btn-medium: 16px;
+  --btn-large: 18px;
+  --btn-primary-color: #007bff;
+  --btn-danger-color: #dc3545;
+  --btn-success-color: #28a745;
+  --btn-warning-color: #ffc107;
+  --btn-padding-x-mini: 10px;
+  --btn-padding-x-small: 12px;
+  --btn-padding-x-medium: 16px;
+  --btn-padding-x-large: 20px;
+  --btn-text-dark-color: #fff;
+  --btn-text-light-color: #333;
+  --btn-radius-mini: 2px;
+  --btn-radius: 3px;
+}
+
+.btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.btn-info {
+  background-color: #fff;
+  color: var(--btn-text-light-color);
+  &:hover {
+    background-color: #f8f9fa;
+  }
+  &:active {
+    background-color: #e9ecef;
+  }
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #bdbdbd;
+  }
+}
+
+.btn-primary {
+  background-color: var(--btn-primary-color);
+  color: var(--btn-text-dark-color);
+  &:hover {
+    background-color: #0062cc;
+  }
+  &:active {
+    background-color: #005cbf;
+  }
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+  }
+}
+.btn-danger {
+  background-color: var(--btn-danger-color);
+  color: var(--btn-text-dark-color);
+  &:hover {
+    background-color: #c82333;
+  }
+  &:active {
+    background-color: #bd2130;
+  }
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.5);
+  }
+}
+.btn-success {
+  background-color: var(--btn-success-color);
+  color: var(--btn-text-dark-color);
+  &:hover {
+    background-color: #1e7e34;
+  }
+  &:active {
+    background-color: #1c7430;
+  }
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.5);
+  }
+}
+.btn-warning {
+  background-color: var(--btn-warning-color);
+  color: var(--btn-text-dark-color);
+  &:hover {
+    background-color: #e0a800;
+  }
+  &:active {
+    background-color: #d39e00;
+  }
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.5);
+  }
+}
+
+.btn[disabled] {
+  opacity: 0.5;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+.btn-mini {
+  font-size: var(--btn-mini);
+  padding: 2px 5px;
+}
+
+.btn-small {
+  font-size: var(--btn-small);
+  padding: 5px 10px;
+}
+
+.btn-medium {
+  font-size: var(--btn-medium);
+  padding: 8px 12px;
+}
+
+.btn-large {
+  font-size: var(--btn-large);
+  padding: 15px 20px;
+}

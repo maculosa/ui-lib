@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "module": "ESNext",
+        "target": "es2016",
+        "paths": {
+            "@/*": ["src/*"],
+            "vite-lib/*": ["packages/vite-lib/*"]
+        }
+    },
+    "include": [
+        "packages/**/*.ts",
+        "packages/**/*.tsx",
+        "packages/**/*.d.ts",
+        "packages/**/*.vue"
+    ]
+}
