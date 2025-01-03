@@ -1,3 +1,4 @@
 packages:
+  - packages/datav
   - packages/vite-lib
   - site
