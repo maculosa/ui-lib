@@ -2,6 +2,12 @@
 name: Docs
 ---
 
+<style>
+
+</style>
+
+${toc}
+
 # Docs
 
 Front matter: {{ frontmatter }}
@@ -53,5 +59,3 @@ fn main() {
 ```
 
 `haha`
-
-[[toc]]

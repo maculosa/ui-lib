@@ -74,7 +74,7 @@ import Nav from './nav/index.vue'
     max-width: 1280px;
     min-width: 460px;
     margin: var(--layout-margin-top) auto;
-    overflow: auto;
+    /* overflow-y: auto; */
 }
 
 </style>

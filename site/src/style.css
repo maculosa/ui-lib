@@ -15,6 +15,42 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+ol, li {
+  list-style: none;
+}
+ol { counter-reset: list-item; }
+li { display: block; counter-increment: list-item; }
+li:before { content: counters(list-item,'.') ' '; }
+
+.markdown-body {
+  position: relative;
+}
+
+.table-of-contents {
+  position: fixed;
+  top: 100px;
+  right: 300px;
+  width: 300px;
+  z-index: 99;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding-left: 1em;
+}
+
+.table-of-contents ol {
+  padding-left: 0;
+}
+.table-of-contents li {
+  display: block;
+  padding-left: 10px;
+}
+
+.table-of-contents a {
+  &:hover {
+    color: #747bff;
+  }
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -30,6 +66,7 @@ body {
   /* place-items: center; */
   min-width: 320px;
   min-height: 100vh;
+  scroll-behavior: smooth;
 }
 
 h1 {
