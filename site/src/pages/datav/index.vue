@@ -135,27 +135,21 @@ const formData = ref<FormType>({
             }"
             triggerType="axis"
             :barWidth="formData.barWidth"
-            :option="{
-                dataset: {
-                    source: data,
-                },
-                xAxis: { type: formData.vertical ? 'value' : 'category' },
-                yAxis: [{
-                    type: formData.vertical ? 'category' : 'value',
-                }],
-                series: [
-                    {
-                        type: formData.type,
-                        barWidth: formData.barWidth,
-                        color: formData.colors[0],
-                    },
-                    {
-                        type: formData.type,
-                        barWidth: formData.barWidth,
-                        id: 2
-                    }
-                ]
-            }"        
+            :xAxis="{ type: formData.vertical ? 'value' : 'category' }"
+            :yAxis="{
+              type: formData.vertical ? 'category' : 'value',
+            }"
+            :seriesType="[
+              {
+                type: formData.type,
+                color: formData.isGradient ? formData.colors : formData.color
+              },
+              {
+                type: formData.type,
+                color: formData.isGradient ? ['#188260', '#E9F26C'] : formData.color,
+              }
+            ]"
+            :data="data"
         />
     </div>
   </n-spin>

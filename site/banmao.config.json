@@ -1,0 +1,16 @@
+{
+    "navItems": [
+        {
+            "name": "Home",
+            "url": "/"
+        },
+        {
+            "name": "Data V",
+            "url": "/data-v"
+        },
+        {
+            "name": "UI",
+            "url": "/ui"
+        }
+    ]
+}
