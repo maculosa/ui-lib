@@ -1,9 +1,10 @@
 import VChart, { THEME_KEY } from 'vue-echarts'
+import * as echarts from 'echarts/core'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart, LineChart, ScatterChart } from 'echarts/charts';
 import { DatasetComponent, TitleComponent, TooltipComponent, GraphicComponent, GridComponent, LegendComponent } from 'echarts/components'
-import { computed, defineComponent, provide, shallowRef } from 'vue';
+import { computed, defineComponent, provide, shallowRef, toRef } from 'vue';
 import type { PropType } from 'vue';
 import styles from './styles/index.module.css'
 import type { LegendOption, TitleOption } from 'echarts/types/dist/shared';
@@ -33,11 +34,14 @@ use([
     TooltipComponent,
 ])
 
-
 interface LegendOptions extends LegendOption {
     mapData: Record<string, string>
 }
 
+interface SeriesType {
+    type: 'bar' | 'line' | 'scatter'
+    color?: string | string[]
+}
 
 export default defineComponent({
     name: 'ChartComponent',
@@ -61,48 +65,63 @@ export default defineComponent({
             type: Number,
             default: 10
         },
-        seriesType: {
-            type: [String, Array] as PropType<'bar' | 'line' | 'scatter' | ('bar' | 'line' | 'scatter')[]>,
-            default: 'bar'
-        },
-        option: {
+        xAxis: {
             type: Object as PropType<Record<string, any>>,
             default: () => ({})
-        }
+        },
+        yAxis: {
+            type: Object as PropType<Record<string, any>>,
+            default: () => ({})
+        },
+        seriesType: {
+            type: Array as PropType<SeriesType[]>,
+            default: () => ({
+                type: 'bar',
+            })
+        },
+        data: {
+            type: Array as PropType<any[]>,
+            required: true
+        },
     },
     setup(props) {
         provide(THEME_KEY, 'light')
 
         const chartRef = shallowRef()
 
-        // const series = computed(() => {
-        //     if (Array.isArray(props.seriesType)) {
-        //         const seriesArr: any[] = []
-        //         for (const type of props.seriesType) {
-        //             if (type === 'bar') {
-        //                 seriesArr.push({
-        //                     type: type,
-        //                     barWidth: props.barWidth
-        //                 })
-        //             } else {
-        //                 seriesArr.push({
-        //                     type: type,
-        //                 })
-        //             }
-        //         }
-        //         console.log({ seriesArr });
+        const series = computed(() => {
+            if (Array.isArray(props.seriesType)) {
+                const seriesArr: any[] = []
+                for (const item of props.seriesType) {
+                    const colors = toRef(item, 'color')
+                    const linearColor = Array.isArray(colors.value) ? new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: colors.value[0] },
+                        { offset: 1, color: colors.value[1] }
+                    ]) : colors.value
+                    
+                    if (item.type === 'bar') {
+                        seriesArr.push({
+                            type: item.type,
+                            barWidth: props.barWidth,
+                            color: linearColor
+                        })
+                    } else {
+                        seriesArr.push({
+                            type: item.type,
+                            color: linearColor
+                        })
+                    }
+                }
 
-        //         return seriesArr
-        //     } else {
-        //         return [{
-        //             type: props.seriesType
-        //         }]
-        //     }
-        // })
+                return seriesArr
+            } else {
+                return [{
+                    type: props.seriesType
+                }]
+            }
+        })
 
         const option = computed(() => {
-
-
 
             return {
                 title: props.title,
@@ -115,18 +134,16 @@ export default defineComponent({
                         return props.legend.mapData[name]
                     }
                 },
-                // series: series.value,
-                // series: [
-                //     {
-                //         type: props.seriesType[0],
-                //         barWidth: props.barWidth
-                //     },
-                //     {
-                //         type: props.seriesType[1],
-                //         barWidth: props.barWidth
-                //     }
-                // ],
-                ...props.option
+                xAxis: {
+                    ...props.xAxis
+                },
+                yAxis: {
+                    ...props.yAxis
+                },
+                series: series.value,
+                dataset: {
+                    source: props.data
+                },
             }
         })
 
