@@ -30,8 +30,9 @@ import Nav from './nav/index.vue'
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    
+
 }
+
 .logo-pic {
     width: 40px;
     height: 40px;
@@ -77,4 +78,15 @@ import Nav from './nav/index.vue'
     /* overflow-y: auto; */
 }
 
+@media screen and (min-width: 1000px) {
+    .layout-main {
+        max-width: 860px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .table-of-contents {
+        display: none;
+    }
+}
 </style>
