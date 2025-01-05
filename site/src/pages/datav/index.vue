@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { Chart } from 'datav';
-import { NColorPicker, NForm, NFormItem, NInput, NSpin, NSlider, NSwitch, NRadioGroup, NRadioButton } from 'naive-ui';
+import { NColorPicker, NForm, NFormItemGi, NInput, NSpin, NSlider, NSwitch, NRadioGroup, NRadioButton } from 'naive-ui';
 
 const data = ref<any[]>([])
 const loading = ref<boolean>(false)
@@ -91,66 +91,61 @@ const formData = ref<FormType>({
 
 <template>
   <n-form>
-    <n-form-item label="Title">
-      <n-input v-model:value="formData.title" />
-    </n-form-item>
+    <n-grid :cols="2" :x-gap="16">
 
-    <n-form-item label="图标类型">
-      <n-radio-group v-model:value="formData.type">
-        <n-radio-button value="bar">柱状图</n-radio-button>
-        <n-radio-button value="line">折线图</n-radio-button>
-        <n-radio-button value="scatter">散点图</n-radio-button>
-      </n-radio-group>
-    </n-form-item>
-    <n-form-item v-if="formData.type === 'bar'" label="垂直布局">
-      <n-switch v-model:value="formData.vertical" />
-    </n-form-item>
-    <n-form-item v-if="formData.type === 'bar'" label="柱状图宽度">
-      <n-slider v-model:value="formData.barWidth" :min="10" :max="50" />
-    </n-form-item>
-    <n-form-item label="是否为渐变颜色">
-      <n-switch v-model:value="formData.isGradient" />
-    </n-form-item>
-    <n-form-item v-if="!formData.isGradient" label="柱状图颜色">
-      <n-color-picker v-model:value="formData.color" />
-    </n-form-item>
-    <n-form-item v-else label="柱状图渐变颜色">
-      <div style="display: flex; gap: 10px; width: 100%;">
-        <n-color-picker v-model:value="formData.colors[0]" />
-        <n-color-picker v-model:value="formData.colors[1]" />
-      </div>
-    </n-form-item>
+      <n-form-item-gi label="Title">
+        <n-input v-model:value="formData.title" />
+      </n-form-item-gi>
+
+      <n-form-item-gi label="图标类型">
+        <n-radio-group v-model:value="formData.type">
+          <n-radio-button value="bar">柱状图</n-radio-button>
+          <n-radio-button value="line">折线图</n-radio-button>
+          <n-radio-button value="scatter">散点图</n-radio-button>
+        </n-radio-group>
+      </n-form-item-gi>
+      <n-form-item-gi v-if="formData.type === 'bar'" label="垂直布局">
+        <n-switch v-model:value="formData.vertical" />
+      </n-form-item-gi>
+      <n-form-item-gi v-if="formData.type === 'bar'" label="柱状图宽度">
+        <n-slider v-model:value="formData.barWidth" :min="10" :max="50" />
+      </n-form-item-gi>
+      <n-form-item-gi label="是否为渐变颜色">
+        <n-switch v-model:value="formData.isGradient" />
+      </n-form-item-gi>
+      <n-form-item-gi v-if="!formData.isGradient" label="柱状图颜色">
+        <n-color-picker v-model:value="formData.color" />
+      </n-form-item-gi>
+      <n-form-item-gi v-else label="柱状图渐变颜色">
+        <div style="display: flex; gap: 10px; width: 100%;">
+          <n-color-picker v-model:value="formData.colors[0]" />
+          <n-color-picker v-model:value="formData.colors[1]" />
+        </div>
+      </n-form-item-gi>
+    </n-grid>
   </n-form>
   <n-spin :show="loading">
     <div class="box">
-        <Chart
-            :title="{
-                text: formData.title,
-            }"
-            :legend="{
-                mapData: {
-                    value: '销售额',
-                    phone: '电话',
-                }
-            }"
-            triggerType="axis"
-            :barWidth="formData.barWidth"
-            :xAxis="{ type: formData.vertical ? 'value' : 'category' }"
-            :yAxis="{
-              type: formData.vertical ? 'category' : 'value',
-            }"
-            :seriesType="[
-              {
-                type: formData.type,
-                color: formData.isGradient ? formData.colors : formData.color
-              },
-              {
-                type: formData.type,
-                color: formData.isGradient ? ['#188260', '#E9F26C'] : formData.color,
-              }
-            ]"
-            :data="data"
-        />
+      <Chart :title="{
+        text: formData.title,
+      }" :legend="{
+        mapData: {
+          value: '销售额',
+          phone: '电话',
+        }
+      }" triggerType="axis" :barWidth="formData.barWidth" :xAxis="{ type: formData.vertical ? 'value' : 'category' }"
+        :yAxis="{
+          type: formData.vertical ? 'category' : 'value',
+        }" :seriesType="[
+          {
+            type: formData.type,
+            color: formData.isGradient ? formData.colors : formData.color
+          },
+          {
+            type: formData.type,
+            color: formData.isGradient ? ['#188260', '#E9F26C'] : formData.color,
+          }
+        ]" :data="data" />
     </div>
   </n-spin>
 </template>
