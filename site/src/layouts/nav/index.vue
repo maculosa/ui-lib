@@ -1,12 +1,10 @@
 <template>
     <nav class="nav">
-                <router-link
-                    v-for="item in navItems"
-                    :key="item.url"
-                :to="item.url" :class="{ active: route.path === item.url }">
-                    {{ item.name }}
-            </router-link>
-            </nav>
+        <router-link v-for="item in navItems" :key="item.url" :to="item.url"
+            :class="{ active: route.path === item.url }">
+            {{ item.name }}
+        </router-link>
+    </nav>
 </template>
 
 <script setup lang="ts">
@@ -26,15 +24,18 @@ const navItems = config.navItems
     justify-content: flex-end;
     align-items: center;
     gap: 32px;
+
     a {
         color: #333;
         text-decoration: none;
         cursor: pointer;
         transition: all 0.3s;
+
         &:hover {
             color: #ff8821;
             text-shadow: 0px 0px 2px #33333333;
         }
+
         &.active {
             color: #ff8821;
         }
