@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "noImplicitAny": false,
+        "skipLibCheck": true,
+        "lib": ["WebWorker"],
+        "paths": {
+            "datav": ["../packages/datav"],
+            // "~/*": ["./.vitepress/vitepress/*"]
+        },
+        "jsx": "preserve"
+    },
+    "include": ["naive-ui/volar.d.ts"],
+    "exclude": ["node_modules"]
+}
