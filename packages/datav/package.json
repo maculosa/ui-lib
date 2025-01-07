@@ -1,7 +1,7 @@
 {
-  "name": "datav",
+  "name": "@banmao/datav",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.5",
   "type": "module",
   "exports": {
     ".": {

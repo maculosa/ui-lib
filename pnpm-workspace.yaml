@@ -1,4 +1,6 @@
 packages:
   - packages/datav
-  - packages/vite-lib
+  - packages/procomponent
+  - packages/hooks
+  - packages/draw
   - site

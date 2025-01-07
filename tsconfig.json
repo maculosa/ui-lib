@@ -5,8 +5,10 @@
         "target": "es2016",
         "paths": {
             "@/*": ["src/*"],
-            "datav/*": ["packages/datav/*"],
-            "vite-lib/*": ["packages/vite-lib/*"]
+            "@banmao/datav": ["packages/datav/*"],
+            "@banmao/draw": ["packages/draw/*"],
+            "@banmao/hooks": ["packages/hooks/*"],
+            "@banmao/procomponent": ["packages/procomponent/*"],
         }
     },
     "include": [
