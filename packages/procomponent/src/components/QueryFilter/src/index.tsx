@@ -288,11 +288,11 @@ export default defineComponent({
                       {{
                         icon: () => (
                           <Icon
-                            icon={`mdi:chevron-${gridCollapsed ? 'down' : 'up'
+                            icon={`mdi:chevron-${gridCollapsed.value ? 'down' : 'up'
                             }`}
                           />
                         ),
-                        default: () => gridCollapsed ? '展开' : '折叠',
+                        default: () => gridCollapsed.value ? '展开' : '折叠',
                       }}
                     </NButton>
                   )

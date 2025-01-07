@@ -5,11 +5,13 @@ import {
   NDataTable,
   NFlex,
 } from 'naive-ui'
-import { computed, defineComponent, Fragment, provide, ref, watchEffect, type PropType } from 'vue'
+import { computed, defineComponent, provide, ref, watchEffect, type PropType } from 'vue'
 import { ProForm } from '../../../index'
 import Toolbar from './components/Toolbar'
 import { renderCopyableCell, renderEmptyCell, renderIndexCell, renderTitle } from './helpers'
 import { useColumns } from './hooks/useColumns'
+import './styles/index.scss'
+
 
 export default defineComponent({
   name: 'ProTable',
@@ -83,7 +85,7 @@ export default defineComponent({
     }),
   },
   emits: ['loadData', 'create', 'exportData', 'submit', 'reset'],
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const tableProps = computed(() => {
       const p = {
         ...props,
@@ -217,7 +219,7 @@ export default defineComponent({
 
     return () => (
       <NFlex vertical>
-        { props.search !== false && (
+        {props.search !== false && (
           <NCard>
             <ProForm
               ref={searchFormRef}
@@ -228,7 +230,7 @@ export default defineComponent({
               showFeedback={false}
               defaultValue={props.params}
               loading={searchLoading.value}
-              v-bind={props.search}
+              {...props.search}
               onSubmit={handleSearch}
               onReset={handleReset}
             />
@@ -236,11 +238,14 @@ export default defineComponent({
         )}
 
         {/* slot summary 统计汇总 */}
-        <slot name="summary" />
+        {slots['summary']?.()}
 
-        <NCard title={props.title}>
-          {{
-            headerExtra: () => (
+        <div class="bm-card">
+          <div class="bm-card_header">
+            <div class="bm-card_header-title">
+              { props.title }
+            </div>
+            <div class="bm-card_header-extra">
               <Toolbar
                 v-model:size={size.value}
                 title={props.title}
@@ -250,23 +255,22 @@ export default defineComponent({
                 onExport={handleExportData}
                 onRefresh={handleRefresh}
               />
-            ),
-            default: () => (
-              <Fragment>
-                <slot name="selection-action" />
+            </div>
+          </div>
 
-                <NDataTable
-                  v-bind={tableProps.value}
-                  columns={tableColumns.value}
-                  size={size.value}
-                  loading={props.loading}
-                  pagination={props.pagination}
-                  renderCell={renderEmptyCell}
-                />
-              </Fragment>
-            ),
-          }}
-        </NCard>
+          <div class="bm-card_body">
+            {slots['selection-action']?.()}
+
+            <NDataTable
+              {...tableProps.value}
+              columns={tableColumns.value}
+              size={size.value}
+              loading={props.loading}
+              pagination={props.pagination}
+              renderCell={renderEmptyCell}
+            />
+          </div>
+        </div>
       </NFlex>
     )
   },

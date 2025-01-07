@@ -51,8 +51,8 @@ export default defineComponent({
                 }}
               </NButton>
             ),
+            default: () => '密度',
           }}
-          密度
         </NTooltip>
       </NDropdown>
     )

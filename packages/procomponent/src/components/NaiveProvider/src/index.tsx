@@ -9,9 +9,9 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'NaiveProvider',
   setup(_, { slots }) {
-    const chilren = slots.default?.()
+    const chilren = slots.default?.() || []
 
-    return (
+    return () => (
       <NLoadingBarProvider>
         <NMessageProvider>
           <NNotificationProvider>

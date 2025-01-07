@@ -2,8 +2,6 @@ import { Icon } from '@iconify/vue'
 import { NButton } from 'naive-ui'
 import { defineComponent } from 'vue'
 
-defineOptions({ name: 'CreateButton' })
-
 export default defineComponent({
   name: 'CreateButton',
   props: {

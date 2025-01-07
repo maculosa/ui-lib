@@ -74,12 +74,12 @@ export default defineComponent({
           { slots.trigger
             ? slots.trigger()
             : (
-                <NButton v-else size="small" type="primary">
+                <NButton size="small" type="primary">
                   { props.title ? props.title : '打开' }
                 </NButton>
               ) }
         </div>
-        <NDrawer v-model:show={visible} v-bind={attrs}>
+        <NDrawer v-model:show={visible.value} {...attrs}>
           <NDrawerContent closable={props.closable} title={props.title}>
             <NLayout>
               {
@@ -88,7 +88,9 @@ export default defineComponent({
                   : (
                       <ProForm
                         ref={formRef}
-                        v-bind={{ ...attrs, defaultValue }}
+                        { ...Object.assign(attrs, {
+                          defaultValue: defaultValue.value,
+                        }) }
                         columns={columns.value}
                         mode="drawer"
                         onSubmit={handleSubmit}

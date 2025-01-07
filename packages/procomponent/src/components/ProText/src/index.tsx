@@ -2,7 +2,7 @@
 import { Icon } from '@iconify/vue'
 import { useClipboard } from '@vueuse/core'
 import { NText, NTooltip } from 'naive-ui'
-import { computed, defineComponent, Fragment, ref } from 'vue'
+import { computed, defineComponent, Fragment, ref, toRef } from 'vue'
 import TextClamp from 'vue3-text-clamp'
 
 import './index.scss'
@@ -26,7 +26,7 @@ export default defineComponent({
     },
     ellipsis: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     lineClamp: {
       type: [Number, String],
@@ -38,7 +38,7 @@ export default defineComponent({
     const copiedColor = ref('#22c55e')
 
     const ellipsis = computed(() => props.ellipsis !== false)
-    const copyable = computed(() => props.copyable)
+    const copyable = computed(() => props.copyable !== false)
     const maxLines = computed(() => props.lineClamp)
 
     const bmIconStyle = computed(() => ({
@@ -47,15 +47,17 @@ export default defineComponent({
       cursor: 'pointer',
     }))
 
+    const text = toRef(props, 'text')
     const { text: _clipboardText, copy, copied } = useClipboard({ legacy: true })
 
     const isCopied = ref(false)
 
     function handleCopy() {
-      if (!props.text.toString()) {
+      if (!text.value.toString()) {
         return
       }
-      copy(props.text.toString())
+      
+      copy(text.value.toString())
 
       isCopied.value = true
       setTimeout(() => {
@@ -63,60 +65,63 @@ export default defineComponent({
       }, 2500)
     }
 
-    if (ellipsis) {
-      return (
-        <NTooltip trigger="hover">
-          {{
-            trigger: () => (
-              <TextClamp max-lines={maxLines} text={props.text}>
-                {{
-                  after: () => (
-                    <div
-                      onClick={handleCopy}
-                    >
-                      <Icon
-                        style={{
-                          ...bmIconStyle,
-                          color: copied ? copiedColor : defaultColor,
-                        }}
-                        icon={`ant-design:${isCopied ? 'check' : 'copy'}-outlined`}
-                      />
-                    </div>
-                  ),
-                }}
-              </TextClamp>
-            ),
-            default: () => (
-              <div style="max-width: 300px">
-                <span>{ props.text }</span>
+    return () => {
+      console.log({ ellipsis: ellipsis.value, copyable: copyable.value })
+      if (ellipsis.value) {
+        return (
+          <NTooltip trigger="hover">
+            {{
+              trigger: () => (
+                <TextClamp max-lines={maxLines.value} text={props.text}>
+                  {{
+                    after: () => {
+                      return copyable.value && (
+                      <div
+                        onClick={handleCopy}
+                      >
+                        <Icon
+                          style={{
+                            ...bmIconStyle.value,
+                            color: copied.value ? copiedColor.value : defaultColor.value,
+                          }}
+                          icon={`ant-design:${isCopied.value ? 'check' : 'copy'}-outlined`}
+                        />
+                      </div>
+                    )},
+                  }}
+                </TextClamp>
+              ),
+              default: () => (
+                <div style="max-width: 300px">
+                  <span>{ props.text }</span>
+                </div>
+              ),
+            }}
+          </NTooltip>
+        )
+      }
+      else {
+        return (
+          <Fragment>
+            <NText {...attrs}>
+              { props.text }
+            </NText>
+            { copyable.value && (
+              <div
+                onClick={handleCopy}
+              >
+                <Icon
+                  style={{
+                    ...bmIconStyle.value,
+                    color: copied.value ? copiedColor.value : defaultColor.value,
+                  }}
+                  icon={`ant-design:${isCopied.value ? 'check' : 'copy'}-outlined`}
+                />
               </div>
-            ),
-          }}
-
-        </NTooltip>
-      )
-    }
-    else {
-      return (
-        <Fragment>
-          <NText v-bind={attrs}>
-            { props.text }
-          </NText>
-          { copyable && (
-            <div
-              onClick={handleCopy}
-            >
-              <Icon
-                style={{
-                  ...bmIconStyle,
-                  color: copied ? copiedColor : defaultColor,
-                }}
-                icon={`ant-design:${isCopied ? 'check' : 'copy'}-outlined`}
-              />
-            </div>
-          )}
-        </Fragment>
-      )
+            )}
+          </Fragment>
+        )
+      }
     }
   },
 })

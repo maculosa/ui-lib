@@ -78,7 +78,7 @@ export default defineComponent({
         </div>
 
         <NModal
-          v-model:show={visible}
+          v-model:show={visible.value}
           preset="card"
           title={props.title}
           style={{ width }}
@@ -90,7 +90,7 @@ export default defineComponent({
                 columns={columns.value}
                 mode="modal"
                 model={props.model}
-                v-bind={attrs}
+                {...attrs}
                 onSubmit={handleSubmit}
                 onReset={handleReset}
               />

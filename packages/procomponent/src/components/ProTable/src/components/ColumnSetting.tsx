@@ -68,22 +68,25 @@ export default defineComponent({
       default: () => [],
     },
     label: {
-      type: [String, Boolean],
+      type: [String, Boolean] as PropType<string | false>,
       default: '表格列设置',
     },
   },
   emits: ['update:columns'],
   setup(props, { emit }) {
-    const list = ref(initList())
 
     function initList(): List[] {
+      if (!props.columns) return []
+      if (!Array.isArray(props.columns)) return []
       return props.columns.map(item => ({
         ...item,
         hideInTable: !item.hideInTable,
       }))
     }
 
-    watch(list, (newValue: List[]) => {
+    const list = ref(initList())
+
+    watch(() => list.value, (newValue: List[]) => {
       const newColumns = newValue.filter(item => item.hideInTable)
 
       const columns: Column[] = newColumns.map((item) => {
@@ -103,14 +106,16 @@ export default defineComponent({
           trigger: () => (
             <NButton size="small" quaternary>
               <Icon icon="ant-design:setting-outlined" class="mr-4px text-16px" />
-              <span v-if="label">
-                { props.label }
-              </span>
+              {
+                props.label && <span>
+                  { props.label }
+                </span>
+              }
             </NButton>
           ),
           default: () => (
-            <div>
-              <VueDraggable v-model={list} item-key="key">
+            <Fragment>
+              <VueDraggable v-model={list.value} item-key="key">
                 {
                   list.value.map((element: List) => (
                     <VueDraggableItem key={element.value.key} element={element} />
@@ -137,7 +142,7 @@ export default defineComponent({
                   ))
                 }
               </VueDraggable>
-            </div>
+            </Fragment>
           ),
         }}
       </NPopover>

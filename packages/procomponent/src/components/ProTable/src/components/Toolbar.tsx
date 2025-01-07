@@ -160,7 +160,7 @@ export default defineComponent({
 
         {
           // 导出按钮
-          hasExportButton && (
+          hasExportButton.value && (
             <NButton type="info" ghost size="small" onClick={handleExportData}>
               {{
                 icon: () => <Icon icon="ant-design:download-outlined" class="mr-4px text-16px" />,
@@ -171,7 +171,7 @@ export default defineComponent({
         }
         {
           // 新增按钮 modal 模式
-          hasCreateButton && isModal && (
+          hasCreateButton.value && isModal.value && (
             <ModalForm
               title={formTitle.value}
               columns={formColumns.value}
@@ -187,7 +187,7 @@ export default defineComponent({
         }
         {
           // 新增按钮 drawer 模式
-          hasCreateButton && isDrawer && (
+          hasCreateButton.value && isDrawer.value && (
             <DrawerForm
               title={formTitle.value}
               columns={formColumns.value}
@@ -203,7 +203,7 @@ export default defineComponent({
         }
         {
           // 新增按钮 button 模式
-          (hasCreateButton && isButton) && (
+          (hasCreateButton.value && isButton.value) && (
             <NButton type="primary" ghost size="small" onClick={handleCreate}>
               {{
                 icon: () => <Icon icon="ant-design:plus-outlined" class="mr-4px text-16px" />,
@@ -237,7 +237,7 @@ export default defineComponent({
             (columnSetting !== false) && (
               <ColumnSetting
                 label={columnSettingLabel || false}
-                v-model:columns={settingColumns}
+                v-model:columns={settingColumns.value}
               />
             )
           }
