@@ -118,7 +118,7 @@ export default defineComponent({
               <VueDraggable v-model={list.value} item-key="key">
                 {
                   list.value.map((element: List) => (
-                    <VueDraggableItem key={element.value.key} element={element} />
+                    <VueDraggableItem key={element.key} element={element} />
                     // <Fragment key={element.key}>
                     //   <div
                     //     v-if="element.type === 'selection'"
