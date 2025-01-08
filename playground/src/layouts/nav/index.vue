@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import config from '../../../banmao.config.json'
+import config from '@/banmao.config.json'
 
 const route = useRoute()
 

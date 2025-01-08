@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Logo from './logo/index.vue'
 import Nav from './nav/index.vue'
-
+import Sidebar from './sidebar/index.vue'
 
 </script>
 
@@ -13,7 +13,9 @@ import Nav from './nav/index.vue'
             <Nav />
         </header>
 
+        <Sidebar />
         <main class="layout-main">
+            
             <router-view />
         </main>
     </div>
