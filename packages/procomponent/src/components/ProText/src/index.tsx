@@ -56,7 +56,7 @@ export default defineComponent({
       if (!text.value.toString()) {
         return
       }
-      
+
       copy(text.value.toString())
 
       isCopied.value = true
@@ -66,7 +66,6 @@ export default defineComponent({
     }
 
     return () => {
-      console.log({ ellipsis: ellipsis.value, copyable: copyable.value })
       if (ellipsis.value) {
         return (
           <NTooltip trigger="hover">
@@ -76,24 +75,27 @@ export default defineComponent({
                   {{
                     after: () => {
                       return copyable.value && (
-                      <div
-                        onClick={handleCopy}
-                      >
-                        <Icon
+                        <div
                           style={{
                             ...bmIconStyle.value,
-                            color: copied.value ? copiedColor.value : defaultColor.value,
                           }}
-                          icon={`ant-design:${isCopied.value ? 'check' : 'copy'}-outlined`}
-                        />
-                      </div>
-                    )},
+                          onClick={handleCopy}
+                        >
+                          <Icon
+                            style={{
+                              color: copied.value ? copiedColor.value : defaultColor.value,
+                            }}
+                            icon={`ant-design:${isCopied.value ? 'check' : 'copy'}-outlined`}
+                          />
+                        </div>
+                      )
+                    },
                   }}
                 </TextClamp>
               ),
               default: () => (
                 <div style="max-width: 300px">
-                  <span>{ props.text }</span>
+                  <span>{props.text}</span>
                 </div>
               ),
             }}
@@ -104,15 +106,17 @@ export default defineComponent({
         return (
           <Fragment>
             <NText {...attrs}>
-              { props.text }
+              {props.text}
             </NText>
-            { copyable.value && (
+            {copyable.value && (
               <div
+                style={{
+                  ...bmIconStyle.value,
+                }}
                 onClick={handleCopy}
               >
                 <Icon
                   style={{
-                    ...bmIconStyle.value,
                     color: copied.value ? copiedColor.value : defaultColor.value,
                   }}
                   icon={`ant-design:${isCopied.value ? 'check' : 'copy'}-outlined`}
