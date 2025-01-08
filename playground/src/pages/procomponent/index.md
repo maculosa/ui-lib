@@ -5,7 +5,7 @@ desc: The Components Lib for Naive UI advance.
 ---
 
 <script setup>
-    import BaseProtable from './examples/protable/base.vue'
+    import BaseProTable from './examples/ProTable/base.vue'
 </script>
 
 
@@ -13,6 +13,6 @@ desc: The Components Lib for Naive UI advance.
 
 # ProComponent
 
-## Protable
+## ProTable
 
-<BaseProtable />
+<BaseProTable />
