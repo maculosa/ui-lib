@@ -9,12 +9,13 @@
             "@banmao/draw": ["packages/draw/*"],
             "@banmao/hooks": ["packages/hooks/*"],
             "@banmao/procomponent": ["packages/procomponent/*"],
-        }
+        },
+        "types": ["naive-ui/volar"]
     },
     "include": [
         "packages/**/*.ts",
         "packages/**/*.tsx",
         "packages/**/*.d.ts",
-        "packages/**/*.vue"
+        "packages/**/*.vue",
     ]
 }
