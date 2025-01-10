@@ -1,6 +1,7 @@
 import path from "path"
 import vueJSX from '@vitejs/plugin-vue-jsx'
 import type { UserConfig } from "vitepress"
+import { MarkdownTransform } from "../plugins/markdown-transform"
 
 type ViteConfig = Required<UserConfig>['vite']
 type ResolveOptions = Required<ViteConfig>['resolve']
@@ -22,7 +23,8 @@ function getVite() {
             noExternal: ['naive-ui', 'date-fns', 'vueuc']
         },
         plugins: [
-            vueJSX()
+            vueJSX(),
+            MarkdownTransform()
         ]
     }
 }

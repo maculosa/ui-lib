@@ -1,6 +1,7 @@
 import type { MarkdownRenderer } from "vitepress";
 import fs from 'node:fs'
 import path from 'node:path'
+import camelCase from 'camelcase'
 
 const docRoot = path.resolve(__dirname, '../../../docs')
 
@@ -10,10 +11,12 @@ interface ContainerOpts {
     render?: MarkdownRenderer['renderer']['rules']['container']
 }
 
-function firstLetterUpperCase(str: string) {
-    return str.charAt(0).toUpperCase() + str.slice(1)
+function transformToDecamelize(str: string) {
+   return str.replaceAll('/', '-')
 }
-
+function transformToCamelCase(str: string) {
+    return camelCase(transformToDecamelize(str), { pascalCase: true })
+}
 
 function createDemoContainer(md: MarkdownRenderer): ContainerOpts {
     return {
@@ -43,7 +46,7 @@ function createDemoContainer(md: MarkdownRenderer): ContainerOpts {
               )}" path="${sourceFile}" raw-source="${encodeURIComponent(
                 source
               )}" description="${encodeURIComponent(md.render(description))}">
-        <template #source><ep-${sourceFile.replaceAll('/', '-')}/></template>`
+        <template #source><Ep${transformToCamelCase(sourceFile)}/></template>`
             } else {
               return '</Demo>\n'
             }

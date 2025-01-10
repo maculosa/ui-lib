@@ -3,6 +3,7 @@ packages:
   - packages/procomponent
   - packages/hooks
   - packages/draw
-  - site
+  - playground
   - docs
+  - docs-demo
 

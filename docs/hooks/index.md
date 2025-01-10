@@ -3,10 +3,9 @@ name: Hooks
 
 ---
 
-# Hooks
+# Hooks with Vue
 
-::: demo Set hooks `effect` 
+Vue hooks are a way to extend the functionality of Vue.js.
 
-hooks/base
-
-:::
+## Hooks
+- [Hooks Base](./base)

@@ -1,9 +1,14 @@
 <script lang="ts" setup>
-import { computed, getCurrentInstance, toRef } from 'vue';
-import { useClipboard, useToggle } from '@vueuse/core';
+import { computed, getCurrentInstance, ref, toRef } from 'vue';
+import { isClient, useClipboard, useToggle } from '@vueuse/core';
 import { useSourceCode } from '../composables/source-code';
+import { usePlayground } from '../composables/use-playground';
 import SourceCode from './demo/vp-code-source.vue'
 import { NButton } from 'naive-ui';
+import IconCopy from '../icons/copy.vue'
+import IconCode from '../icons/code.vue'
+import IconPlayground from '../icons/playground.vue'
+import { useMessage } from 'naive-ui'
 
 interface Props {
     source: string
@@ -25,11 +30,37 @@ const [sourceVisible, toggleSourceVisible] = useToggle(false)
 
 const demoSourceUrl = useSourceCode(toRef(props, 'path'))
 
-// const sourceCodeRef = ref()
+const sourceCodeRef = ref<HTMLButtonElement>()
 
 const decodedDescription = computed(() => decodeURIComponent(props.description))
 
+const onPlaygroundClick = () => {
+    const { link } = usePlayground(props.rawSource)
+    if (!isClient ) return
+    window.open(link)
+}
 
+// const onSourceVisibleKeydown = (e: KeyboardEvent) => {
+//     if (e.key === 'Enter' || e.key === 'NumpadEnter' || e.key === 'Space') {
+//         e.preventDefault()
+//         toggleSourceVisible(false)
+//         sourceCodeRef.value?.focus()
+//     }
+// }
+
+const message = useMessage()
+const copyCode = async () => {
+    if (!isSupported) {
+        message.error('您的浏览器不支持复制')
+    }
+
+    try {
+        await copy()
+        message.success('复制成功')
+    } catch (error) {
+        message.error('复制失败')
+    }
+}
 
 </script>
 
@@ -41,21 +72,22 @@ const decodedDescription = computed(() => decodeURIComponent(props.description))
             <slot name="source" />
         </div>
         <div class="toolbar">
-            <NButton size="small" text @click="() => copy()">
+            <NButton v-show="false" size="small" text @click="onPlaygroundClick"
+                @keydown.prevent.enter="onPlaygroundClick"
+                @keydown.prevent.space="onPlaygroundClick"   
+            >
                 <template #icon>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-	<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="currentColor">
-		<path d="M9 15c0-2.828 0-4.243.879-5.121C10.757 9 12.172 9 15 9h1c2.828 0 4.243 0 5.121.879C22 10.757 22 12.172 22 15v1c0 2.828 0 4.243-.879 5.121C20.243 22 18.828 22 16 22h-1c-2.828 0-4.243 0-5.121-.879C9 20.243 9 18.828 9 16z" />
-		<path d="M17 9c-.003-2.957-.047-4.489-.908-5.538a4 4 0 0 0-.554-.554C14.43 2 12.788 2 9.5 2c-3.287 0-4.931 0-6.038.908a4 4 0 0 0-.554.554C2 4.57 2 6.212 2 9.5c0 3.287 0 4.931.908 6.038a4 4 0 0 0 .554.554c1.05.86 2.58.906 5.538.908" />
-	</g>
-</svg>
+                    <IconPlayground />
                 </template>
             </NButton>
-            <NButton size="small" text @click="() => toggleSourceVisible()">
+            <NButton size="small" text @click="copyCode">
                 <template #icon>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-	<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m17 8l1.84 1.85c.773.778 1.16 1.167 1.16 1.65s-.387.872-1.16 1.65L17 15M7 8L5.16 9.85C4.387 10.628 4 11.017 4 11.5s.387.872 1.16 1.65L7 15m7.5-11l-5 16" color="currentColor" />
-</svg>
+                    <IconCopy />
+                </template>
+            </NButton>
+            <NButton size="small" text @click="toggleSourceVisible()">
+                <template #icon>
+                    <IconCode />
                 </template>
             </NButton>
         </div>
