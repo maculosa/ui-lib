@@ -49,7 +49,7 @@ export default defineConfig({
         compilerOptions: {
           hoistStatic: false,
           isCustomElement: (tag) => {
-            return tag.startsWith('ep-')
+            return tag.startsWith('Ep')
           },
           directiveTransforms: buildTransformers(),
         },

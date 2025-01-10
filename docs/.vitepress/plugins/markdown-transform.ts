@@ -8,8 +8,16 @@ const docRoot = path.resolve(__dirname, '../../../docs')
 
 type Append = Record<'headers' | 'footers' | 'scriptSetups', string[]>
 
+interface MarkdownTransformOption {
+    docDir?: string
+}
+
 let compPaths: string[]
-export function MarkdownTransform(): Plugin {
+export function MarkdownTransform({
+    docDir
+}: MarkdownTransformOption = {
+    docDir: './'
+}): Plugin {
     return {
         name: 'vite-plugin-vue-md-transform',
         enforce: 'pre',
@@ -26,12 +34,12 @@ export function MarkdownTransform(): Plugin {
             if (!id.endsWith('.md')) return
 
             // 获取组件模块 id
-            const packageId = path.relative(docRoot, id).split('.')[0]
+            const packageId = path.relative(docRoot, id).split('/')[0]
             const componentId = path.basename(id, '.md')
             const append: Append = {
                 headers: [],
                 footers: [],
-                scriptSetups: getExampleImports(packageId.split('/')[0])
+                scriptSetups: getExampleImports(packageId, componentId)
             }
 
             code = transformVpScriptSetup(code, append)
@@ -102,21 +110,19 @@ const transformComponentMarkdown = (
 }
 
 
-const getExampleImports = (componentId: string) => {
-    console.log({ componentId })
-    const examplePath = path.resolve(docRoot, 'examples', componentId)
+const getExampleImports = (packageId: string, componentId: string) => {
+    const examplePath = path.resolve(docRoot, 'examples', packageId, componentId)
     if (!fs.existsSync(examplePath)) return []
     const files = fs.readdirSync(examplePath)
     const imports: string[] = []
 
-
     for (const item of files) {
         if (!/\.vue$/.test(item)) continue
         const file = item.replace(/\.vue$/, '')
-        const name = camelize(`Ep-${componentId}-${file}`)
+        const name = camelize(`Ep-${packageId}-${componentId}-${file}`)
 
         imports.push(
-            `import ${name} from '../examples/${componentId}/${file}.vue'`
+            `import ${name} from '../examples/${packageId}/${componentId}/${file}.vue'`
         )
     }
 

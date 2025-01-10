@@ -1,7 +1,7 @@
 import type { MarkdownRenderer } from "vitepress";
 import fs from 'node:fs'
 import path from 'node:path'
-import camelCase from 'camelcase'
+// import camelCase from 'camelcase'
 
 const docRoot = path.resolve(__dirname, '../../../docs')
 
@@ -14,9 +14,9 @@ interface ContainerOpts {
 function transformToDecamelize(str: string) {
    return str.replaceAll('/', '-')
 }
-function transformToCamelCase(str: string) {
-    return camelCase(transformToDecamelize(str), { pascalCase: true })
-}
+// function transformToCamelCase(str: string) {
+//   return camelCase(transformToDecamelize(str), { pascalCase: true })
+// }
 
 function createDemoContainer(md: MarkdownRenderer): ContainerOpts {
     return {
@@ -40,13 +40,14 @@ function createDemoContainer(md: MarkdownRenderer): ContainerOpts {
               }
               if (!source) throw new Error(`Incorrect source file: ${sourceFile}`)
       
+                // TODO 解决组件名称拼接匹配的问题
               return `
               <Demo source="${encodeURIComponent(
                 md.render(`\`\`\` vue\n${source}\`\`\``)
               )}" path="${sourceFile}" raw-source="${encodeURIComponent(
                 source
               )}" description="${encodeURIComponent(md.render(description))}">
-        <template #source><Ep${transformToCamelCase(sourceFile)}/></template>`
+        <template #source><ep-${transformToDecamelize(sourceFile)}/></template>`
             } else {
               return '</Demo>\n'
             }
