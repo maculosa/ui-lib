@@ -103,10 +103,12 @@ const transformComponentMarkdown = (
 
 
 const getExampleImports = (componentId: string) => {
+    console.log({ componentId })
     const examplePath = path.resolve(docRoot, 'examples', componentId)
     if (!fs.existsSync(examplePath)) return []
     const files = fs.readdirSync(examplePath)
     const imports: string[] = []
+
 
     for (const item of files) {
         if (!/\.vue$/.test(item)) continue

@@ -10,22 +10,11 @@ next:
 
 ---
 
-<script setup>
-import ListIndex from './list-index.vue'
-</script>
-
 # ProList
 
-<ClientOnly>
-  <ListIndex />
-</ClientOnly>
-
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-list/list-index.vue
-
-</details>
+::: demo
+procomponent/pro-list/list-index
+:::
 
 ## Props
 

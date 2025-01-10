@@ -6,16 +6,15 @@ prev:
   link: /procomponent/pro-form/
 next:
   text: ProTable
-  link: /procomponent/pro-table/
+  link: /procomponent/pro-descriptions/
 ---
 
-<script setup>
-import demo from './demo.vue'
-</script>
 
 # QueryFilter
 
-该组件将被废弃，请更换为 [ProForm](/procomponent/pro-form/#%E6%9F%A5%E8%AF%A2%E8%A1%A8%E5%8D%95)
+::: demo 
+procomponent/query-filter/demo
+:::
 
 ## Props
 
@@ -26,15 +25,3 @@ import demo from './demo.vue'
 | formItemLayout   | 表单项布局     | `Object` | -      |
 | formItemColProps | 表单项栅格布局 | `Object` | -      |
 
-## Demo
-
-<ClientOnly>
-    <demo />
-</ClientOnly>
-
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/query-filter/demo.vue
-
-</details>

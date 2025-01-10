@@ -4,13 +4,10 @@ title: ProText
 prev:
   text: ProLayout
   link: /procomponent/pro-layout/
-next: false
+next:
+  text: ProDescriptions
+  link: /procomponent/pro-descriptions/
 ---
-
-<script setup>
-import demo from './demo.vue'
-import { NCard } from 'naive-ui'
-</script>
 
 # ProText
 
@@ -18,19 +15,9 @@ import { NCard } from 'naive-ui'
 
 ## 示例
 
-<ClientOnly>
-    <NCard title="复制示例">
-        <demo />
-
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-text/demo.vue
-
-</details>
-    </NCard>
-
-</ClientOnly>
+:::demo 
+procomponent/pro-text/demo
+:::
 
 ## 属性
 

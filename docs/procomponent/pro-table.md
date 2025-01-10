@@ -10,15 +10,6 @@ next:
 
 ---
 
-<script setup>
-import QueryTable from './query-table.vue'
-import TableIndex from './table-index.vue'
-import CreateDemo from './create-demo.vue'
-import CreateModalDemo from './create-modal-demo.vue'
-import FlexHeight from './flex-height.vue'
-// import SimpleTable from './simple-table.vue'
-</script>
-
 # ProTable
 
 当前版本：`v0.8.0`
@@ -35,28 +26,13 @@ import FlexHeight from './flex-height.vue'
 
 :::
 
-<!--
-## Simple Table
-简单表格，一般用于展示少量数据。
-<ClientOnly>
-    <SimpleTable />
-</ClientOnly>
-<details>
-<summary>查看代码</summary>
-<<< @/procomponent/pro-table/simple-table.vue
-</details> -->
 
 ## Flex Height
 
-表格高度自适应，当表格内容过多时，表格高度会自适应。
+::: demo 表格高度自适应，当表格内容过多时，表格高度会自适应。
+procomponent/pro-table/flex-height
+:::
 
-<ClientOnly>
-    <FlexHeight />
-</ClientOnly>
-<details>
-<summary>查看代码</summary>
-<<< @/procomponent/pro-table/flex-height.vue
-</details>
 
 ## 序号显示
 
@@ -65,28 +41,18 @@ import FlexHeight from './flex-height.vue'
 例如： `const columns = [{ type: 'index' }]`。
 :::
 
-<ClientOnly>
-  <TableIndex />
-</ClientOnly>
-<details>
-<summary>查看代码</summary>
+::: demo
 
-<<< @/procomponent/pro-table/table-index.vue
+procomponent/pro-table/table-index
 
-</details>
+:::
 
 ## 查询表格
 
-<ClientOnly>
-    <QueryTable />
-</ClientOnly>
+::: demo 
+procomponent/pro-table/query-table
+:::
 
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-table/query-table.vue
-
-</details>
 
 ## 新增、导出
 
@@ -100,16 +66,9 @@ import FlexHeight from './flex-height.vue'
 
 `toolbarConfig.exportButton = true`
 
-<ClientOnly>
-    <CreateDemo />
-</ClientOnly>
-
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-table/create-demo.vue
-
-</details>
+::: demo
+procomponent/pro-table/create-demo
+:::
 
 #### 内置ModalForm
 
@@ -117,16 +76,9 @@ import FlexHeight from './flex-height.vue'
 
 `toolbarConfig.createMode = 'modal'`
 
-<ClientOnly>
-    <CreateModalDemo />
-</ClientOnly>
-
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-table/create-modal-demo.vue
-
-</details>
+::: demo
+procomponent/pro-table/create-modal-demo
+:::
 
 ## Props
 

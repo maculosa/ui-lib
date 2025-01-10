@@ -8,71 +8,34 @@ next:
   link: /procomponent/query-filter/
 ---
 
-<script setup>
-import demo from './demo.vue'
-import CascaderRemote from './cascader-remote.vue'
-import SelectRemote from './select-remote.vue'
-import Validate from './validate.vue'
-import GridForm from './grid.vue'
-import CustomFormItem from './custom-form-item.vue'
-import QueryForm from './query-form.vue'
-</script>
-
 # ProForm
 
 ## 基础表单
 
-<ClientOnly>
-    <demo />
-</ClientOnly>
-
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-form/demo.vue
-
-</details>
+::: demo
+procomponent/pro-form/demo
+:::
 
 ## 查询表单
 
 推荐使用该组件替代 `QueryFilter`, `QueryFilter` 将被废弃，不再进行维护更新。
 
-<ClientOnly>
-  <QueryForm />
-</ClientOnly>
-
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-form/query-form.vue
-
-</details>
+::: demo
+procomponent/pro-form/query-form
+:::
 
 ## Select 异步请求
 
-<ClientOnly>
-  <SelectRemote />
-</ClientOnly>
-
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-form/select-remote.vue
-
-</details>
+::: demo
+procomponent/pro-form/select-remote
+:::
 
 ## 表单验证
 
-<ClientOnly>
-  <Validate />
-</ClientOnly>
+::: demo
+procomponent/pro-form/validate
+:::
 
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-form/validate.vue
-
-</details>
 
 > Tips:
 > 示例中的活动时间，需要自定义表单验证规则，才可生效。示例如下：
@@ -102,46 +65,28 @@ rule: [
 
 通过 gridCols 属性设置栅格布局，默认为 1 列。
 
-<ClientOnly>
-  <GridForm />
-</ClientOnly>
 
-<details>
-<summary>查看代码</summary>
+::: demo
+procomponent/pro-form/grid
+:::
 
-<<< @/procomponent/pro-form/grid.vue
-
-</details>
 
 ## 异步级联选择器
 
 异步级联选择器，通过 request 属性设置异步请求函数，并在 formItemProps 设置 `remote`，`onload`
 
-<ClientOnly>
-  <CascaderRemote />
-</ClientOnly>
+::: demo
+procomponent/pro-form/cascader-remote
+:::
 
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-form/cascader-remote.vue
-
-</details>
 
 ## 自定义表单项
 
 通过 valueType 属性设置为 `custom`，并实现 `formRender` 方法。
 
-<ClientOnly>
-  <CustomFormItem />
-</ClientOnly>
-
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/pro-form/custom-form-item.vue
-
-</details>
+::: demo
+procomponent/pro-form/custom-form-item
+:::
 
 ## Props
 
