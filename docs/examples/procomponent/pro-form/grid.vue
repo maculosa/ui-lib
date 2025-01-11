@@ -109,7 +109,7 @@ const gridCols = ref(1)
 
 <template>
   <div>
-    <div class="mb-40px">
+    <div style="margin-bottom: 16px;">
       <strong>gridCols: </strong>
       <NRadioGroup v-model:value="gridCols">
         <NRadioButton :value="1">
