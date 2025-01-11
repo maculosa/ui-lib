@@ -44,6 +44,7 @@ export function MarkdownTransform({
 
             code = transformVpScriptSetup(code, append)
 
+            console.log({ compPaths })
             if (compPaths.some((compPath) => id.startsWith(compPath))) {
                 console.log('startsWith--------')
             //     // code = transformComponentMarkdown(id, componentId, code, append)
@@ -60,11 +61,14 @@ export function MarkdownTransform({
     }
 }
 
-const combineScriptSetup = (codes: string[]) =>
-    `\n<script setup>
-  ${codes.join('\n')}
-  </script>
-  `
+const combineScriptSetup = (codes: string[]) => {
+    if (codes.length === 0) return ''
+    return `\n<script setup>
+    ${codes.join('\n')}
+    </script>
+    `
+}
+
 
 const combineMarkdown = (
     code: string,
