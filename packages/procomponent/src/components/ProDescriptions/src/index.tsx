@@ -5,10 +5,6 @@ export default defineComponent({
   name: 'ProDescriptions',
   props: {
     ...descriptionsProps,
-    title: {
-      type: String,
-      default: 'Description List',
-    },
     data: {
       type: Object,
       default: () => ({}),
@@ -19,10 +15,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { title, data, columns, ...descriptionsProps } = props
+    const { data, columns, ...descriptionsProps } = props
 
     return () => (
-      <NDescriptions title={title} {...descriptionsProps}>
+      <NDescriptions {...descriptionsProps}>
         {columns.map((item) => {
           if (item && item.render) {
             return (

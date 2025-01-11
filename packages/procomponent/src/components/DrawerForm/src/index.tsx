@@ -30,10 +30,12 @@ export default defineComponent({
   setup(props, { attrs, emit, slots, expose }) {
     const { closable, hideFooter, title, defaultValue, ...restDrawerProps } = toRefs(props)
 
-    const drawerProps = computed(() => {
+    const drawerProp = computed(() => {
       const values = Object.entries(restDrawerProps).map(item => ({
         [item[0]]: item[1].value
       }))
+
+      console.log({ values })
 
       return values
     })
@@ -90,7 +92,7 @@ export default defineComponent({
               ) }
         </div>
         <NDrawer v-model:show={visible.value}
-          { ...drawerProps}
+          { ...drawerProp}
         >
           <NDrawerContent closable={props.closable} title={props.title}>
             <NLayout>

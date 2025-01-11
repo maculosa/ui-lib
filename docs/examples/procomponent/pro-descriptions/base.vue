@@ -1,5 +1,6 @@
 <script setup lang="tsx">
 import { ProDescriptions } from '@banmao/procomponent'
+import { NDescriptions, NDescriptionsItem, NCard } from 'naive-ui'
 import { ref } from 'vue'
 
 const dataSource = ref({
@@ -26,11 +27,10 @@ const columns = ref([
 const loading = ref(false)
 </script>
 
-<script setup lang="tsx"></script>
 
 <template>
   <ProDescriptions
-    title="详情"
+    title="基础用法"
     label-placement="left"
     size="large"
     :column="2"

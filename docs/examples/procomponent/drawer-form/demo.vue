@@ -21,5 +21,5 @@ const columns = ref([
 </script>
 
 <template>
-  <DrawerForm :columns="columns" title="DrawerForm" />
+  <DrawerForm :columns="columns" title="DrawerForm" :width="502" />
 </template>

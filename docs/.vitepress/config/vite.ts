@@ -26,7 +26,7 @@ function getVite() {
             vueJSX(),
             MarkdownTransform()
         ]
-    }
+    } as ViteConfig
 }
 
 export const vite = getVite()

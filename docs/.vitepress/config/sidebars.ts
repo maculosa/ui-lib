@@ -42,7 +42,7 @@ function getProComponentSideBar() {
             items: [
                 {
                     text: '表单',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
                         { text: 'DrawerForm', link: 'drawer-form/' },
                         { text: 'ModalForm', link: 'modal-form/' },
@@ -52,7 +52,7 @@ function getProComponentSideBar() {
                 },
                 {
                     text: '数据',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
                         { text: 'ProTable', link: 'pro-table/' },
                         { text: 'ProList', link: 'pro-list/' },
@@ -62,14 +62,14 @@ function getProComponentSideBar() {
                 },
                 {
                     text: '布局',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
                         { text: 'ProLayout', link: 'pro-layout/' },
                     ],
                 },
                 {
                     text: '通用',
-                    collapsed: true,
+                    collapsed: false,
                     items: [
                         { text: 'ProText', link: 'pro-text/' },
                         { text: 'Watermark', link: 'watermark/' },
@@ -79,11 +79,10 @@ function getProComponentSideBar() {
         },
         {
             text: 'Others',
-            collapsed: true,
+            collapsed: false,
             items: [
                 { text: '更新日志', link: 'https://github.com/banmaoStudio/procomponent/blob/main/packages/procomponent/CHANGELOG.md', target: '_blank' },
                 { text: 'FAQ', link: 'faq/' },
-                { text: 'Contributing', link: 'contributing/' },
             ],
         },
     ]

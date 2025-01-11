@@ -12,6 +12,18 @@ next:
 
 # ProDescriptions
 
+## 基础用法
+
 ::: demo
-procomponent/pro-descriptions/list-index
+procomponent/pro-descriptions/base
 :::
+
+## API
+
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| title | 标题 | `string` | `''` |
+| col | 列数 | `number` | `1` |
+| columns | 列配置 | `{}` | `1` |
+| bordered | 是否有边框 | `boolean` | `false` |
+| size | 大小 | `'small' \| 'middle' \| 'large'` | `'middle'` |
