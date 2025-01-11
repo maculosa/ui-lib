@@ -4,4 +4,5 @@ export interface WatermarkProps {
   fontSize?: number
   gap?: number
   rotate?: number
+  fullscreen?: boolean
 }

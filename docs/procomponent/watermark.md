@@ -6,11 +6,20 @@ prev:
   link: /procomponent/pro-text/
 ---
 
-<script setup>
-import demo from './demo.vue'
-</script>
-
 # Watermark
+
+## 基础用法
+
+::: demo
+procomponent/watermark/base
+:::
+
+## 全屏幕
+
+::: demo
+procomponent/watermark/fullscreen
+:::
+
 
 ## Props
 
@@ -20,16 +29,4 @@ import demo from './demo.vue'
 | color    | 文本颜色           | `string` | -      |
 | fontSize | 文字颜色           | `number` | -      |
 | gap      | 水印图片之间的间距 | `number` | -      |
-
-## Demo
-
-<ClientOnly>
-    <demo />
-</ClientOnly>
-
-<details>
-<summary>查看代码</summary>
-
-<<< @/procomponent/watermark/demo.vue
-
-</details>
+| fullscreen | 是否全屏           | `boolean` | `false` |

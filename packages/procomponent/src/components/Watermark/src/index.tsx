@@ -1,6 +1,6 @@
 import type { WatermarkProps } from './types'
 
-import { defineComponent, onMounted, onUnmounted, ref, type PropType } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref, toRef, watchEffect, type PropType } from 'vue'
 // import { useMutationObserver } from '@vueuse/core'
 import { useWatermarkBg } from './hooks/useWatermarkBg'
 import './index.scss'
@@ -35,14 +35,19 @@ export default defineComponent({
       type: Number as PropType<WatermarkProps['rotate']>,
       default: -30,
     },
+    fullscreen: {
+      type: Boolean as PropType<WatermarkProps['fullscreen']>,
+      default: false,
+    },
   },
-  setup(props) {
+  setup(props, { slots }) {
+    const fullscreen = toRef(props, 'fullscreen')
     const bg = useWatermarkBg(props)
     const containerRef = ref<HTMLDivElement | null>(null)
 
     let div: any
 
-    function resetWatermark() {
+    function resetWatermark(fullscreen: boolean = false) {
       if (!containerRef.value)
         return
 
@@ -51,13 +56,19 @@ export default defineComponent({
 
       const { base64, size } = bg.value
       div = document.createElement('div')
-      div.style.position = 'absolute'
+      div.style.position = fullscreen ? 'fixed' : 'absolute'
       div.style.backgroundImage = `url(${base64})`
       div.style.backgroundSize = `${size}px ${size}px`
       div.style.backgroundRepeat = 'repeat'
       div.style.zIndex = '9999'
       div.style.pointerEvents = 'none'
       div.style.inset = '0'
+      if (fullscreen) {
+        div.style.top = '0'
+        div.style.left = '0'
+        div.style.right = '0'
+        div.style.bottom = '0'
+      }
 
       containerRef.value.appendChild(div)
     }
@@ -67,16 +78,16 @@ export default defineComponent({
         // 处理删除
         for (const node of entry.removedNodes) {
           if (node === div)
-            resetWatermark()
+            resetWatermark(fullscreen.value)
         }
         // 处理修改
         if (entry.target === div)
-          resetWatermark()
+          resetWatermark(fullscreen.value)
       }
     })
 
     onMounted(() => {
-      resetWatermark()
+      resetWatermark(fullscreen.value)
       if (!containerRef.value)
         return
       ob.observe(containerRef.value, {
@@ -86,13 +97,17 @@ export default defineComponent({
       })
     })
 
+    watchEffect(() => {
+      resetWatermark(fullscreen.value)
+    })
+
     onUnmounted(() => {
       ob.disconnect()
     })
 
     return () => (
-      <div ref="containerRef" class="watermark-container">
-        <slot />
+      <div ref={containerRef} class="watermark-container">
+        { slots.default?.()}
       </div>
     )
   },
