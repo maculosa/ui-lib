@@ -44,7 +44,6 @@ export function MarkdownTransform({
 
             code = transformVpScriptSetup(code, append)
 
-            console.log({ compPaths })
             if (compPaths.some((compPath) => id.startsWith(compPath))) {
                 console.log('startsWith--------')
             //     // code = transformComponentMarkdown(id, componentId, code, append)
@@ -55,7 +54,7 @@ export function MarkdownTransform({
                 [combineScriptSetup(append.scriptSetups), ...append.headers],
                 append.footers
             )
-            console.log({ resMd })
+            // console.log({ resMd })
             return resMd
         }
     }
