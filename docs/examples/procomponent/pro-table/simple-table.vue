@@ -230,5 +230,6 @@ async function handleQuery(params) {
       gridCols: 2,
     }" @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"
+    simple
   />
 </template>

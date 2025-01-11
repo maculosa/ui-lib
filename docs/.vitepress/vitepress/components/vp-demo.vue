@@ -95,7 +95,7 @@ const copyCode = async () => {
     </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .demo {
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -120,5 +120,10 @@ const copyCode = async () => {
             border-top: 1px solid #ccc;
         }
     }
+}
+
+.example-showcase table {
+    display: block !important;
+    margin: 0!important;
 }
 </style>

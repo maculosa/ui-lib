@@ -26,15 +26,13 @@ next:
 
 :::
 
+## 简单表格
 
-## Flex Height
-
-::: demo 表格高度自适应，当表格内容过多时，表格高度会自适应。
-procomponent/pro-table/flex-height
+::: demo 配置 `simple` 属性，显示简单表格。 
+procomponent/pro-table/simple-table
 :::
 
-
-## 序号显示
+## 显示序号
 
 ::: info
 `column.type` 为 `index` 时，序号显示。
@@ -42,9 +40,14 @@ procomponent/pro-table/flex-height
 :::
 
 ::: demo
-
 procomponent/pro-table/table-index
+:::
 
+
+## 弹性高度
+
+::: demo 表格高度自适应，当表格内容过多时，表格高度会自适应。
+procomponent/pro-table/flex-height
 :::
 
 ## 查询表格

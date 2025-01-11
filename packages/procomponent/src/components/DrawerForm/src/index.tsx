@@ -1,5 +1,5 @@
 import { drawerProps, NButton, NDrawer, NDrawerContent, NLayout, NSpace } from 'naive-ui'
-import { computed, defineComponent, Fragment, ref, type PropType } from 'vue'
+import { computed, defineComponent, Fragment, ref, toRefs, type PropType } from 'vue'
 import { ProForm } from '../../ProForm'
 
 export default defineComponent({
@@ -27,13 +27,23 @@ export default defineComponent({
     },
   }),
   emits: ['submit', 'reset'],
-  setup(props, { emit, slots, attrs, expose }) {
+  setup(props, { attrs, emit, slots, expose }) {
+    const { closable, hideFooter, title, defaultValue, ...restDrawerProps } = toRefs(props)
+
+    const drawerProps = computed(() => {
+      const values = Object.entries(restDrawerProps).map(item => ({
+        [item[0]]: item[1].value
+      }))
+
+      return values
+    })
+
     const columns = computed(() => {
       const cols = props.columns
       return cols.filter(col => col?.type !== 'index' && col?.type !== 'selection' && col?.key !== 'actions')
     })
 
-    const defaultValue = computed(() => props.defaultValue)
+    // const defaultValue = computed(() => props.defaultValue)
 
     const visible = ref(false)
 
@@ -79,7 +89,9 @@ export default defineComponent({
                 </NButton>
               ) }
         </div>
-        <NDrawer v-model:show={visible.value} {...attrs}>
+        <NDrawer v-model:show={visible.value}
+          { ...drawerProps}
+        >
           <NDrawerContent closable={props.closable} title={props.title}>
             <NLayout>
               {
@@ -88,9 +100,8 @@ export default defineComponent({
                   : (
                       <ProForm
                         ref={formRef}
-                        { ...Object.assign(attrs, {
-                          defaultValue: defaultValue.value,
-                        }) }
+                        { ...attrs }
+                        defaultValue={defaultValue.value}
                         columns={columns.value}
                         mode="drawer"
                         onSubmit={handleSubmit}

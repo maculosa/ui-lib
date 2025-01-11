@@ -12,10 +12,7 @@ next:
 
 # DrawerForm
 
-## 示例
-
-
-### 基础示例
+## 基础示例
 
 ::: demo DrawerForm demo
 
@@ -24,7 +21,7 @@ procomponent/drawer-form/demo
 :::
 
 
-### trigger Button 插槽示例
+## trigger Button 插槽示例
 
 ::: demo DrawerForm demo
 
@@ -32,7 +29,7 @@ procomponent/drawer-form/button-slot
 
 :::
 
-### 数据回显
+## 数据回显
 
 ::: demo Data display
 

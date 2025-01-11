@@ -217,61 +217,68 @@ export default defineComponent({
       emit('exportData')
     }
 
-    return () => (
-      <NFlex vertical>
-        {props.search !== false && (
-          <NCard>
-            <ProForm
-              ref={searchFormRef}
-              columns={searchColumns.value}
-              mode="search"
-              gridCols={3}
-              labelPlacement="left"
-              showFeedback={false}
-              defaultValue={props.params}
-              loading={searchLoading.value}
-              {...props.search}
-              onSubmit={handleSearch}
-              onReset={handleReset}
-            />
-          </NCard>
-        )}
+    return () => {
+      const OriginDataTable = (<NDataTable
+        {...tableProps.value}
+        columns={tableColumns.value}
+        size={size.value}
+        loading={props.loading}
+        pagination={props.pagination}
+        renderCell={renderEmptyCell}
+      />)
+      if (props.simple !== false) {
+        return OriginDataTable
+      }
 
-        {/* slot summary 统计汇总 */}
-        {slots['summary']?.()}
-
-        <div class="bm-card">
-          <div class="bm-card_header">
-            <div class="bm-card_header-title">
-              { props.title }
-            </div>
-            <div class="bm-card_header-extra">
-              <Toolbar
-                v-model:size={size.value}
-                title={props.title}
-                config={toolbarConfig.value}
-                loading={props.loading}
-                formColumns={formColumns.value}
-                onExport={handleExportData}
-                onRefresh={handleRefresh}
+      return (
+        <NFlex vertical>
+          {props.search !== false && (
+            <NCard>
+              <ProForm
+                ref={searchFormRef}
+                columns={searchColumns.value}
+                mode="search"
+                gridCols={3}
+                labelPlacement="left"
+                showFeedback={false}
+                defaultValue={props.params}
+                loading={searchLoading.value}
+                {...props.search}
+                onSubmit={handleSearch}
+                onReset={handleReset}
               />
+            </NCard>
+          )}
+  
+          {/* slot summary 统计汇总 */}
+          {slots['summary']?.()}
+  
+          <div class="bm-card">
+            <div class="bm-card_header">
+              <div class="bm-card_header-title">
+                { props.title }
+              </div>
+              <div class="bm-card_header-extra">
+                <Toolbar
+                  v-model:size={size.value}
+                  title={props.title}
+                  config={toolbarConfig.value}
+                  loading={props.loading}
+                  formColumns={formColumns.value}
+                  onExport={handleExportData}
+                  onRefresh={handleRefresh}
+                />
+              </div>
+            </div>
+  
+            <div class="bm-card_body">
+              {slots['selection-action']?.()}
+  
+              {OriginDataTable}
             </div>
           </div>
-
-          <div class="bm-card_body">
-            {slots['selection-action']?.()}
-
-            <NDataTable
-              {...tableProps.value}
-              columns={tableColumns.value}
-              size={size.value}
-              loading={props.loading}
-              pagination={props.pagination}
-              renderCell={renderEmptyCell}
-            />
-          </div>
-        </div>
-      </NFlex>
-    )
+        </NFlex>
+      )
+    }
   },
 })

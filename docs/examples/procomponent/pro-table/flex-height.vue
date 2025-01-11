@@ -237,14 +237,16 @@ const height = ref(300)
 </script>
 
 <template>
-  <NSlider v-model:value="height" :min="100" :max="1000" :step="50" class="mb-4" />
+  <NSlider v-model:value="height" :min="300" :max="1000" :step="50" class="mb-4" />
   <NDivider title-placement="left">Preview</NDivider>
   <ProTable
     title="数据表格" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading"
     :params="queryParams" :on-query="handleQuery" :search="{
       searchText: '查询',
       gridCols: 2,
-    }" :height="height"
+    }"
+    :scroll-x="600"
+    :max-height="250"
     @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"
   />
