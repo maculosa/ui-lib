@@ -1,7 +1,4 @@
 ---
-prev:
-  text: '介绍'
-  link: '/data-v/'
 next:
   text: '快速上手'
   link: '/data-v/getting-started'
