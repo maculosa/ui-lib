@@ -6,7 +6,7 @@ prev:
   link: /procomponent/pro-form/
 next:
   text: ProTable
-  link: /procomponent/pro-descriptions/
+  link: /procomponent/pro-table/
 ---
 
 

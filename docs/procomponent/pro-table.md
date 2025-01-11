@@ -6,7 +6,7 @@ prev:
   link: /procomponent/query-filter/
 next:
   text: ProList
-  link: /procomponent/pro-List/
+  link: /procomponent/pro-list/
 
 ---
 

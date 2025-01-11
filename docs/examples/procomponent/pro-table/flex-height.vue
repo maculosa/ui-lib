@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { ProTable } from '@banmao/procomponent'
-import { NButton, NSlider, NSpace } from 'naive-ui'
+import { NButton, NDivider, NSlider, NSpace } from 'naive-ui'
 import { computed, ref } from 'vue'
 
 async function fetchCityList() {
@@ -238,6 +238,7 @@ const height = ref(300)
 
 <template>
   <NSlider v-model:value="height" :min="100" :max="1000" :step="50" class="mb-4" />
+  <NDivider title-placement="left">Preview</NDivider>
   <ProTable
     title="数据表格" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading"
     :params="queryParams" :on-query="handleQuery" :search="{
