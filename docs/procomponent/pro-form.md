@@ -92,9 +92,9 @@ procomponent/pro-form/custom-form-item
 
 ### ProFormProps
 
-ProForm 属性继承 NaiveUI 的 [NForm]() 组件。下述展示额外扩展的属性：
+ProForm 属性继承 NaiveUI 的 [NForm](https://www.naiveui.com/zh-CN/os-theme/components/form) 组件。下述展示额外扩展的属性：
 
-| 参数       | 说明                                            | 类型                    | 默认值   |
+| 参数       | 说明                                            | 类型                    | 默认值   | 版本  |
 | ---------- | ----------------------------------------------- | ----------------------- | -------- | ----- |
 | columns    | 表单配置项 [Columns]()                          | `Array`                 | -        |
 | gridCols   | grid 布局列，参考[NGrid]()                      | `String\|Number`        | 1        |
