@@ -39,7 +39,6 @@ function getProComponentSideBar() {
         {
             text: '组件',
             collapsed: false,
-            link: 'components/',
             items: [
                 {
                     text: '表单',
