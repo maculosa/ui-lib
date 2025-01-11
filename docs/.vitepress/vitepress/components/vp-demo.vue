@@ -98,12 +98,13 @@ const copyCode = async () => {
 <style lang="scss" scoped>
 .demo {
     border: 1px solid #ccc;
-    border-radius: 3px;
+    border-radius: 4px;
+    overflow: hidden;
 
     .example-showcase {
         padding: 1.5rem;
         margin: 0.5px;
-        background-color: #fff;
+        background-color: transparent;
     }
     .toolbar {
         padding: 0.5rem;
@@ -112,9 +113,11 @@ const copyCode = async () => {
         justify-content: flex-end;
         height: 2.5rem;
         gap: 10px;
+        border-top: 1px solid #ccc;
+        background: #f7f7f7;
         
         & + * {
-            margin-top: 10px;
+            border-top: 1px solid #ccc;
         }
     }
 }
