@@ -4,11 +4,16 @@ import type {
 } from 'naive-ui'
 import { ProForm } from '@banmao/procomponent'
 import {
+  NDivider,
   NRadioButton,
   NRadioGroup,
 } from 'naive-ui'
 import { ref } from 'vue'
 
+const formModel = ref({})
+const formRef = ref()
+
+const gridCols = ref(1)
 function getChildren(option: CascaderOption) {
   const children: CascaderOption[] = []
 
@@ -93,7 +98,7 @@ const columns = ref([
     title: '备注',
     key: 'remark',
     valueType: 'textarea',
-    grid: 2,
+    grid: 3,
   },
 ])
 
@@ -101,10 +106,7 @@ function handleSubmit(e) {
   console.error(e)
 }
 
-const formModel = ref({})
-const formRef = ref()
 
-const gridCols = ref(1)
 </script>
 
 <template>
@@ -123,13 +125,14 @@ const gridCols = ref(1)
         </NRadioButton>
       </NRadioGroup>
     </div>
+    <NDivider title-placement="left">Preview</NDivider>
     <ProForm
       ref="formRef"
       :columns="columns"
       :model="formModel"
       :grid-cols="gridCols"
       label-placement="left"
-      :label-width="120"
+      :label-width="72"
       @submit="handleSubmit"
     />
   </div>
