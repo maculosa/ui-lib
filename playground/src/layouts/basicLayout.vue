@@ -78,11 +78,12 @@ import Sidebar from './sidebar/index.vue'
     min-width: 460px;
     margin: var(--layout-margin-top) auto;
     /* overflow-y: auto; */
+    padding-left: 320px;
 }
 
-@media screen and (min-width: 1000px) {
+@media screen and (max-width: 1000px) {
     .layout-main {
-        max-width: 860px;
+        max-width: 680px;
     }
 }
 

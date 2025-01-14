@@ -2,7 +2,7 @@ import VChart, { THEME_KEY } from 'vue-echarts'
 import * as echarts from 'echarts/core'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
-import { BarChart, LineChart, ScatterChart } from 'echarts/charts';
+import { BarChart, LineChart, RadarChart, ScatterChart } from 'echarts/charts';
 import { DatasetComponent, TitleComponent, TooltipComponent, GraphicComponent, GridComponent, LegendComponent } from 'echarts/components'
 import { computed, defineComponent, provide, shallowRef, toRef } from 'vue';
 import type { PropType } from 'vue';
@@ -24,6 +24,7 @@ export interface Emits {
 use([
     BarChart,
     LineChart,
+    RadarChart,
     ScatterChart,
     CanvasRenderer,
     DatasetComponent,
@@ -35,12 +36,19 @@ use([
 ])
 
 interface LegendOptions extends LegendOption {
-    mapData: Record<string, string>
+    mapData?: Record<string, string>
 }
 
 interface SeriesType {
     type: 'bar' | 'line' | 'scatter'
     color?: string | string[]
+}
+
+function isPure2DArray(arr: Array<any>) {
+    if (!Array.isArray(arr)) {
+        return false
+    }
+    return arr.every(item => Array.isArray(item))
 }
 
 export default defineComponent({
@@ -103,12 +111,26 @@ export default defineComponent({
                         seriesArr.push({
                             type: item.type,
                             barWidth: props.barWidth,
-                            color: linearColor
+                            color: linearColor,
+                            universalTransition: {
+                                enabled: true,
+                                seriesKey: ['female', 'male'],
+                                delay: function(idx: number, _count: number) {
+                                    return idx * 100 + Math.random() * 1000;
+                                }
+                            },
                         })
                     } else {
                         seriesArr.push({
                             type: item.type,
-                            color: linearColor
+                            color: linearColor,
+                            universalTransition: {
+                                enabled: true,
+                                seriesKey: ['female', 'male'],
+                                delay: function(idx: number, _count: number) {
+                                    return idx * 100 + Math.random() * 1000;
+                                }
+                            },
                         })
                     }
                 }
@@ -122,7 +144,6 @@ export default defineComponent({
         })
 
         const option = computed(() => {
-
             return {
                 title: props.title,
                 tooltip: {
@@ -131,7 +152,7 @@ export default defineComponent({
                 legend: {
                     ...props.legend,
                     formatter: (name: string) => {
-                        return props.legend.mapData[name]
+                        return props.legend.mapData && props.legend.mapData[name]
                     }
                 },
                 xAxis: {

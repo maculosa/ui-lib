@@ -101,4 +101,7 @@ export default defineConfig({
       dts: 'types/components.d.ts',
     }),
   ],
+  server: {
+    port: 5300
+  }
 })

@@ -24,5 +24,5 @@ How to set types to vue slot props Typescript - Stack Overflow
 2022年7月8日
 Best way to change vue slots pattern into React?
 2022年8月19日
-stackoverflow.com站内的其它相关信息" copyable ellipsis :line-clamp="6" />
+stackoverflow.com站内的其它相关信息" ellipsis :line-clamp="2" />
 </template>

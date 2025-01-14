@@ -80,7 +80,7 @@ const copyCode = async () => {
                     <IconPlayground />
                 </template>
             </NButton>
-            <NButton size="small" text @click="copyCode">
+            <NButton v-show="false" size="small" text @click="copyCode">
                 <template #icon>
                     <IconCopy />
                 </template>

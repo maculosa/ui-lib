@@ -3,6 +3,7 @@ import routes from 'pages-generated'
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
+import Demo from './components/Demo/index.vue'
 
 import './style.css'
 
@@ -34,6 +35,10 @@ const router = createRouter({
         }
     ]
 })
+
+
+app.component('Demo', Demo)
+
 // setupRouter(app)
 app.use(head)
 app.use(router)

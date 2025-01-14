@@ -38,11 +38,14 @@ const { title, desc } = toRefs(props)
   }
 
   &-content {
+    width: 100%;
     display: flex;
     justify-content: flex-start;
-    gap: 10px;
+    flex-direction: column;
     padding: 12px 10px;
     box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 6px;
   }
 }
 
@@ -51,7 +54,7 @@ const { title, desc } = toRefs(props)
   text-align: left;
   font-size: 16px;
   font-weight: bold;
-  color: #ccc;
+  color: #333;
 }
 
 .demo-desc {

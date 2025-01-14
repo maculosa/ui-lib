@@ -1,10 +1,50 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute()
+
+const activePath = computed(() => {
+    return route.path
+})
+
+</script>
+
 <template>
     <aside class="sidebar">
         <div class="sidebar-groups">
             <section class="sidebar-group">
                 <p class="sidebar-group__title">Overview</p>
-                <a class="link active" href="/procomponent/overview">
+                <a class="link" :class="{ active: activePath === '/procomponent/overview' }" href="/procomponent/overview">
                     <p class="link-text">Overview</p>
+                </a>
+            </section>
+            <section class="sidebar-group">
+                <p class="sidebar-group__title">ProComponent</p>
+                <a class="link" :class="{ active: activePath === '/procomponent' }" href="/procomponent">
+                    <p class="link-text">ProTable</p>
+                </a>
+                <a class="link" :class="{ active: activePath === '/procomponent/pro-text' }" href="/procomponent/pro-text">
+                    <p class="link-text">ProText</p>
+                </a>
+                <a class="link" :class="{ active: activePath === '/procomponent/watermark' }" href="/procomponent/watermark">
+                    <p class="link-text">Watermark</p>
+                </a>
+            </section>
+
+            <section class="sidebar-group">
+                <p class="sidebar-group__title">Data V</p>
+                <a class="link" :class="{ active: activePath === '/datav/bar_line' }" href="/datav/bar_line">
+                    <p class="link-text">Bar/Line</p>
+                </a>
+                <a class="link" :class="{ active: activePath === '/datav/cube_bar' }" href="/datav/cube_bar">
+                    <p class="link-text">Cube Bar</p>
+                </a>
+                <a class="link" :class="{ active: activePath === '/datav/circle_bar' }" href="/datav/circle_bar">
+                    <p class="link-text">Circle Bar</p>
+                </a>
+                <a class="link" :class="{ active: activePath === '/datav/pie' }" href="/datav/pie">
+                    <p class="link-text">Pie</p>
                 </a>
             </section>
         </div>
@@ -23,6 +63,8 @@
     overflow-y: auto;
     transform: translate(-100%);
     transition: background-color 0.2s, opacity 0.25s, transform 0.5s cubic-bezier(.19, 1, .22, 1);
+    background-color: #fff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
 }
 
 @media screen and (min-width: 1440px) {
@@ -44,6 +86,7 @@
     padding: 0;
 }
 
+
 .sidebar .sidebar-groups .sidebar-group__title {
     font-size: 1rem;
     font-weight: 700;
@@ -59,6 +102,7 @@
 }
 .link.active {
     background-color: hsla(210, 100%, 63%, 0.1);
+    color: #409eff;
 }
 
 .link:not(.flex) {
@@ -72,7 +116,7 @@
 a {
     font-weight: 500;
     text-decoration: inherit;
-    color: #409eff;
+    color: #333333;
 }
 
 </style>
