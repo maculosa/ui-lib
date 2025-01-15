@@ -50,24 +50,59 @@ export default defineComponent({
             default: () => ({})
         },
         triggerType: {
-            type: String as PropType<'items'>,
-            default: 'items'
+            type: String as PropType<'item'>,
+            default: 'item'
         },
         data: {
             type: Array as PropType<any[]>,
             required: true
         },
         type: {
-            type: String as PropType<'pie'| 'doughnut'>,
+            type: String as PropType<'pie'| 'doughnut' | 'rose'>,
             default: 'pie'
+        },
+        /**
+         * 仅当 type 为 doughnut 时有效
+         */
+        minRadius: {
+            type: String,
+            default: ''
+        },
+        /**
+         * 仅当 type 为 doughnut 时有效
+         */
+        maxRadius: {
+            type: String,
+            default: ''
+        },
+        padAngle: {
+            type: Number,
+            default: 1
         },
         corner: {
             type: Boolean,
             default: false
         },
         cornerColor: {
-            
-        }
+            type: String,
+            default: '#fff'
+        },
+        half: {
+            type: Boolean,
+            default: false
+        },
+        label: {
+            type: Boolean,
+            default: false
+        },
+        labelPosition: {
+            type: String as PropType<'inside' | 'outside' | 'center'>,
+            default: 'outside'
+        },
+        rose: {
+            type: Boolean,
+            default: false
+        },
     },
     setup(props) {
         provide(THEME_KEY, 'light')
@@ -82,24 +117,36 @@ export default defineComponent({
                 },
                 legend: {
                     ...props.legend,
-                    formatter: (name: string) => {
-                        return props.legend.mapData && props.legend.mapData[name]
-                    }
+                    // ...{
+                    //     formatter: (name: string) => {
+                    //         return props.legend.mapData && props.legend.mapData[name]
+                    //     }
+                    // }
                 },
                 series: [
                     {
+                        name: props.title.text,
                         type: 'pie',
-                        radius: props.type === 'pie' ? '50%' : ['40%', '70%'],
+                        radius: props.type === 'pie' ? '50%' : [ props.minRadius || '40%', props.maxRadius || '70%'],
+                        center: ['50%', props.half !== false ? '75%' : '50%'],
+                        startAngle: props.half !== false ? 180 : 90,
+                        endAngle: props.half !== false ? 360 : null,
+                        roseType: props.rose !== false ? 'radius' : null,
+                        // padAngle: props.type === 'doughnut' && props.padAngle,
                         itemStyle: props.corner && {
-                            borderRadius: 10,
-                            borderColor: props.cornerColor || '#fff',
-                            borderWidth: 2
+                            borderRadius: 8,
+                            borderColor: props.cornerColor,
+                            borderWidth: props.type === 'doughnut' && props.padAngle
+                        },
+                        label: {
+                            show: props.label,
+                            position: props.labelPosition
                         },
                         emphasis: {
-                            itemStyle: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            label: props.labelPosition === 'center' && {
+                                show: true,
+                                fontSize: 40,
+                                fontWeight: 'bold'
                             }
                         }
                     }
