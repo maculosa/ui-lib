@@ -104,8 +104,8 @@ export default defineComponent({
             default: () => ({})
         },
         triggerType: {
-            type: String as PropType<'axis' | 'items'>,
-            default: 'axis'
+            type: String as PropType<'axis' | 'item'>,
+            default: 'item'
         },
         barWidth: {
             type: Number,
