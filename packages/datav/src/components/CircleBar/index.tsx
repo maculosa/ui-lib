@@ -51,8 +51,8 @@ export default defineComponent({
             default: () => ({})
         },
         triggerType: {
-            type: String as PropType<'axis' | 'items'>,
-            default: 'axis'
+            type: String as PropType<'axis' | 'item'>,
+            default: 'item'
         },
         barWidth: {
             type: Number,
@@ -70,6 +70,13 @@ export default defineComponent({
             type: Array as PropType<any[]>,
             required: true
         },
+        attr: {
+            type: Object as PropType<Record<string, any>>,
+            default: () => ({
+                name: '数值',
+                unit: '个'
+            })
+        }
     },
     setup(props) {
         provide(THEME_KEY, 'light')
@@ -90,7 +97,19 @@ export default defineComponent({
             return {
                 title: props.title,
                 tooltip: {
-                    trigger: props.triggerType
+                    trigger: props.triggerType,
+                    padding: 1,
+                    formatter: (param: any) => {
+                        const resultTooltip =
+                            "<div style='background:#ffffff;color: #333;border:1px solid rgba(255,255,255,.2);padding:5px;border-radius:3px;'>" +
+                            "<div style='text-align:center;'>" + param.name + "</div>" +
+                            "<div style='padding-top:5px;'>" +
+                            "<span style=''> " + props.attr.name + ": </span>" +
+                            "<span style=''>" + param.value + "</span><span>" + props.attr.unit + "</span>" +
+                            "</div>" +
+                            "</div>";
+                        return resultTooltip
+                    }
                 },
                 legend: {
                     ...props.legend,
@@ -102,23 +121,25 @@ export default defineComponent({
                     ...props.xAxis,
                     data: xData.value,
                     axisTick: {
+                        show: false, // 不显示刻度
                         alignWithLabel: true,
                     },
                     nameTextStyle: {
                         color: '#82b0ec',
                     },
                     axisLine: {
-                        show: false,
-                        lineStyle: {
-                            color: '#82b0ec',
-                        },
+                        show: false, // 不显示 x 轴线
                     },
                     axisLabel: {
                         textStyle: {
                             color: '#333',
                         },
-                        margin: 30,
+                        margin: 30, // 刻度标签与轴线之间的距离
                     },
+                    boundaryGap: true,
+                    splitLine: {
+                        show: false
+                    }
                 },
                 yAxis: {
                     ...props.yAxis,

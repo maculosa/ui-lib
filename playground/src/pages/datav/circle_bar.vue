@@ -29,7 +29,6 @@ import { CircleBar } from 'datav'
             value: 500,
         },
     ]"
-    trigger-type="axis"
     :legend="{
         show: false
     }"
