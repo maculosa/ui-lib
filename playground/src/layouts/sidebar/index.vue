@@ -64,7 +64,11 @@ const activePath = computed(() => {
     transform: translate(-100%);
     transition: background-color 0.2s, opacity 0.25s, transform 0.5s cubic-bezier(.19, 1, .22, 1);
     background-color: #fff;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: -2px 6px 4px 0 rgba(0, 0, 0, 0.3);
+    transition: all 0.5s cubic-bezier(.19, 1, .22, 1);
+    &:hover {
+        box-shadow: 0px 6px 4px 0 rgba(0, 0, 0, 0.3);
+    }
 }
 
 @media screen and (min-width: 1440px) {
