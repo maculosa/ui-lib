@@ -44,12 +44,12 @@ interface SeriesType {
     color?: string | string[]
 }
 
-function isPure2DArray(arr: Array<any>) {
-    if (!Array.isArray(arr)) {
-        return false
-    }
-    return arr.every(item => Array.isArray(item))
-}
+// function isPure2DArray(arr: Array<any>) {
+//     if (!Array.isArray(arr)) {
+//         return false
+//     }
+//     return arr.every(item => Array.isArray(item))
+// }
 
 export default defineComponent({
     name: 'ChartComponent',
