@@ -188,11 +188,11 @@ procomponent/pro-table/create-modal-demo
 | selectMultiple | 多选         |      |
 | cascader       | 级联选择     |      |
 | date           | 日期         |      |
-| dateRange      | 日期范围     |      |
+| daterange      | 日期范围     |      |
 | time           | 时间         |      |
-| timeRange      | 时间范围     |      |
-| dateTime       | 日期时间     |      |
-| dateTimeRange  | 日期时间范围 |      |
+| timerange      | 时间范围     |      |
+| datetime       | 日期时间     |      |
+| datetimerange  | 日期时间范围 |      |
 | radio          | 单选         |      |
 | checkbox       | 多选         |      |
 | switch         | 开关         |      |
