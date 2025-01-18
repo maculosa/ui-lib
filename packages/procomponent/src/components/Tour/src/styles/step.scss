@@ -1,0 +1,50 @@
+.tour-step {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2003;
+    min-width: 200px;
+    padding: 0.5rem 1rem;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    /* box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.1); */
+
+    .tour-content {
+        &_header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            &-title {
+                font-size: 1rem;
+                font-weight: 700;
+            }
+
+            &-close {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                button {
+                    background-color: transparent;
+                    border: none;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        &_body {
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        &_footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f1f2f8;
+            padding-top: 0.5rem;
+        }
+    }
+}
