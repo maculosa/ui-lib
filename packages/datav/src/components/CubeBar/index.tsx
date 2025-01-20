@@ -1,5 +1,5 @@
 import VChart, { THEME_KEY } from 'vue-echarts'
-import * as echarts from 'echarts/core'
+import { graphic } from 'echarts/core'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { CustomChart } from 'echarts/charts';
@@ -44,7 +44,7 @@ interface LegendOptions extends LegendOption {
 //     color?: string | string[]
 // }
 
-const CubeLeft = echarts.graphic.extendShape({
+const CubeLeft = graphic.extendShape({
     shape: {
         x: 0,
         y: 0
@@ -58,7 +58,7 @@ const CubeLeft = echarts.graphic.extendShape({
         ctx.moveTo(c0[0], c0[1])?.lineTo(c1[0], c1[1]).lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).closePath()
     }
 })
-const CubeRight = echarts.graphic.extendShape({
+const CubeRight = graphic.extendShape({
     shape: {
         x: 0,
         y: 0
@@ -72,7 +72,7 @@ const CubeRight = echarts.graphic.extendShape({
         ctx.moveTo(c1[0], c1[1])?.lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).lineTo(c4[0], c4[1]).closePath()
     }
 })
-const CubeTop = echarts.graphic.extendShape({
+const CubeTop = graphic.extendShape({
     shape: {
         x: 0,
         y: 0
@@ -85,9 +85,9 @@ const CubeTop = echarts.graphic.extendShape({
         ctx.moveTo(c1[0], c1[1])?.lineTo(c2[0], c2[1]).lineTo(c3[0], c3[1]).lineTo(c4[0], c4[1]).closePath()
     }
 })
-echarts.graphic.registerShape('CubeLeft', CubeLeft)
-echarts.graphic.registerShape('CubeRight', CubeRight)
-echarts.graphic.registerShape('CubeTop', CubeTop)
+graphic.registerShape('CubeLeft', CubeLeft)
+graphic.registerShape('CubeRight', CubeRight)
+graphic.registerShape('CubeTop', CubeTop)
 
 export default defineComponent({
     name: 'CubeBarChartComponent',
@@ -262,7 +262,7 @@ export default defineComponent({
                                         xAxisPoint: api.coord([api.value(0), 0])
                                     },
                                     style: {
-                                        fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                        fill: new graphic.LinearGradient(0, 0, 0, 1, [{
                                             offset: 0,
                                             color: '#3B80E2'
                                         },
@@ -283,7 +283,7 @@ export default defineComponent({
                                         xAxisPoint: api.coord([api.value(0), 0])
                                     },
                                     style: {
-                                        fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                        fill: new graphic.LinearGradient(0, 0, 0, 1, [{
                                             offset: 0,
                                             color: '#3B80E2'
                                         },
@@ -304,7 +304,7 @@ export default defineComponent({
                                         xAxisPoint: api.coord([api.value(0), 0])
                                     },
                                     style: {
-                                        fill: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                        fill: new graphic.LinearGradient(0, 0, 0, 1, [{
                                             offset: 0,
                                             color: '#3B80E2'
                                         },

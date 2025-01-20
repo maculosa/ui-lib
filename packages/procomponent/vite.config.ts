@@ -27,13 +27,13 @@ export default defineConfig({
       fileName: (format) => format === 'es' ? `index.js` : `index.cjs`
     },
     rollupOptions: {
-      external: ['vue', 'echarts'],
-      output: {
-        globals: {
-          vue: 'Vue',
-          echarts: 'echarts',
-        }
-      }
+      external: ['vue', 'naive-ui'],
+      // output: {
+      //   globals: {
+      //     vue: 'Vue',
+      //     'naive-ui': 'NaiveUI'
+      //   }
+      // }
     }
   }
 })

@@ -1,5 +1,5 @@
 import VChart, { THEME_KEY } from 'vue-echarts'
-import * as echarts from 'echarts/core'
+import { graphic } from 'echarts/core'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart, LineChart, RadarChart, ScatterChart } from 'echarts/charts';
@@ -102,7 +102,7 @@ export default defineComponent({
                 const seriesArr: any[] = []
                 for (const item of props.seriesType) {
                     const colors = toRef(item, 'color')
-                    const linearColor = Array.isArray(colors.value) ? new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    const linearColor = Array.isArray(colors.value) ? new graphic.LinearGradient(0, 0, 0, 1, [
                         { offset: 0, color: colors.value[0] },
                         { offset: 1, color: colors.value[1] }
                     ]) : colors.value

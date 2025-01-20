@@ -10,14 +10,13 @@ export default defineConfig({
   plugins: [vue(), vueJSX(), dts({
     tsconfigPath: "./tsconfig.lib.json"
   }),
-    libInjectCss(),
+  libInjectCss(),
     // viteExternalsPlugin({
     //   echarts: 'echarts',
     //   vue: 'Vue',
     //   'vue-echarts': 'VueEcharts'
     // })
   ],
-
   build: {
     copyPublicDir: false,
     lib: {
@@ -27,12 +26,13 @@ export default defineConfig({
       fileName: (format) => format === 'es' ? `index.js` : `index.cjs`
     },
     rollupOptions: {
-      external: ['vue', 'echarts'],
+      external: ['vue', 'echarts', 'vue-echarts'],
       output: {
-        globals: {
-          vue: 'Vue',
-          echarts: 'echarts',
-        }
+        //   globals: {
+        //     vue: 'Vue',
+        //     echarts: 'Echarts',
+        //     'vue-echarts': 'VueEcharts'
+        //   }
       }
     }
   }

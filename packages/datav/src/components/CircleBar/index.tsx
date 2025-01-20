@@ -1,5 +1,5 @@
 import VChart, { THEME_KEY } from 'vue-echarts'
-import * as echarts from 'echarts/core'
+import { graphic } from 'echarts/core'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart, PictorialBarChart } from 'echarts/charts';
@@ -222,7 +222,7 @@ export default defineComponent({
                         barGap: '10%', // Make series be overlap
                         barCateGoryGap: '10%',
                         itemStyle: {
-                            color: new echarts.graphic.LinearGradient(0, 0, 0, 0.7, [
+                            color: new graphic.LinearGradient(0, 0, 0, 0.7, [
                                 {
                                     offset: 0,
                                     color: '#38B2E6',
