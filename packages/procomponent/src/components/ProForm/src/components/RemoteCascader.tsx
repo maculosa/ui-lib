@@ -2,7 +2,7 @@ import type { CascaderOption } from 'naive-ui'
 import type { PropType } from 'vue'
 import { cascaderProps, NCascader } from 'naive-ui'
 import { computed, defineComponent, onMounted, ref, watchEffect } from 'vue'
-import initTreeData from '../utils/buildTree'
+import initTreeData from '@/utils/buildTree'
 
 defineComponent({
   name: 'RemoteCascader',

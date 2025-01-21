@@ -1,19 +1,10 @@
-import { descriptionsProps, NDescriptions, NDescriptionsItem } from 'naive-ui'
-import { defineComponent, type PropType } from 'vue'
+import { NDescriptions, NDescriptionsItem } from 'naive-ui'
+import { defineComponent } from 'vue'
+import { descriptionsProps } from './types'
 
 export default defineComponent({
   name: 'ProDescriptions',
-  props: {
-    ...descriptionsProps,
-    data: {
-      type: Object,
-      default: () => ({}),
-    },
-    columns: {
-      type: Array as PropType<{ [key: string]: any }[]>,
-      default: () => [],
-    },
-  },
+  props: descriptionsProps,
   setup(props) {
     const { data, columns, ...descriptionsProps } = props
 

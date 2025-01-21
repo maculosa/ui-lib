@@ -1,5 +1,4 @@
 import type { SelectOption } from 'naive-ui'
-import { Icon } from '@iconify/vue'
 import {
   NAutoComplete,
   NButton,
@@ -31,9 +30,9 @@ import {
   shallowRef,
   toRefs,
   watch,
-  type PropType,
 } from 'vue'
-import { useShowSuffix } from './hooks/useShowSuffix'
+import type { PropType } from 'vue'
+import { useShowSuffix } from '@hooks/useShowSuffix'
 
 const formFieldMaps: Record<string, any> = {
   text: NInput,
@@ -217,9 +216,7 @@ export default defineComponent({
                           <NTooltip trigger="hover">
                             {{
                               trigger: () => (
-                                <Icon
-                                  icon="ant-design:question-circle-outlined"
-                                />
+                                <bm-info-circle />
                               ),
                               default: () => item.tooltip,
                             }}
@@ -269,13 +266,13 @@ export default defineComponent({
               <NSpace justify="end" wrap={false}>
                 <NButton onClick={handleReset}>
                   {{
-                    icon: () => <Icon icon="ant-design:reload-outlined" />,
+                    icon: () => <bm-refresh />,
                     default: () => '重置',
                   }}
                 </NButton>
                 <NButton type="primary" onClick={handleSearch}>
                   {{
-                    icon: () => <Icon icon="ant-design:search-outlined" />,
+                    icon: () => <bm-search />,
                     default: () => '查询',
                   }}
                 </NButton>
@@ -286,13 +283,12 @@ export default defineComponent({
                     onClick={handleToggleCollapsed}
                   >
                     {{
-                      icon: () => (
-                        <Icon
-                          icon={`mdi:chevron-${
-                            gridCollapsed ? 'down' : 'up'
-                          }`}
-                        />
-                      ),
+                      icon: () => {
+                        if (gridCollapsed) {
+                          return <bm-arrow-down />
+                        }
+                        return <bm-arrow-up />
+                      },
                       default: () => gridCollapsed ? '展开' : '折叠',
                     }}
                   </NButton>

@@ -13,7 +13,7 @@ export interface Props {
     data: Array<any>
     barWidth?: number
     type?: 'bar' | 'line' | 'scatter'
-    title?: any
+    title?: TitleOption
 }
 
 export interface Emits {

@@ -28,11 +28,11 @@ export default defineConfig({
     rollupOptions: {
       external: ['vue', 'echarts', 'vue-echarts'],
       output: {
-        //   globals: {
-        //     vue: 'Vue',
-        //     echarts: 'Echarts',
-        //     'vue-echarts': 'VueEcharts'
-        //   }
+          globals: {
+            vue: 'Vue',
+            echarts: 'Echarts',
+            'vue-echarts': 'VueEcharts'
+          }
       }
     }
   }

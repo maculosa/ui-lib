@@ -4,7 +4,9 @@ title: Watermark 水印
 prev:
   text: ProText
   link: /procomponent/pro-text/
-next: false
+next:
+  text: Tour
+  link: /procomponent/tour/
 ---
 
 # Watermark

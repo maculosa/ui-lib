@@ -47,7 +47,6 @@ function getProComponentSideBar() {
                         { text: 'DrawerForm', link: 'drawer-form/' },
                         { text: 'ModalForm', link: 'modal-form/' },
                         { text: 'ProForm', link: 'pro-form/' },
-                        { text: 'QueryFilter', link: 'query-filter/' },
                     ],
                 },
                 {
@@ -73,6 +72,7 @@ function getProComponentSideBar() {
                     items: [
                         { text: 'ProText', link: 'pro-text/' },
                         { text: 'Watermark', link: 'watermark/' },
+                        { text: 'Tour', link: 'tour/' },
                     ],
                 },
             ],

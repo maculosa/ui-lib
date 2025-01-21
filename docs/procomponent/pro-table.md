@@ -2,8 +2,8 @@
 title: ProTable 表格
 
 prev:
-  text: QueryFilter
-  link: /procomponent/query-filter/
+  text: ProForm
+  link: /procomponent/pro-form/
 next:
   text: ProList
   link: /procomponent/pro-list/

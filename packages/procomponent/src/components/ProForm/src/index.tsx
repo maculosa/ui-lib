@@ -27,7 +27,7 @@ import {
 import { defineComponent, onMounted, reactive, ref, watch, type PropType } from 'vue'
 import { useShowSuffix } from '../../../hooks/useShowSuffix'
 // import RemoteCascader from './components/RemoteCascader'
-import initTreeData from './utils/buildTree'
+import initTreeData from '../../../utils/buildTree'
 
 export default defineComponent({
   name: 'ProForm',

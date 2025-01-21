@@ -1,21 +1,14 @@
 import { defineComponent, inject, toRefs } from "vue"
 import { NSpace, NButton } from 'naive-ui'
-import { tourKey, type TourContext } from "./helper"
+import type { TourContext } from "./types/tour"
+import { tourKey } from "./helpers"
+import { tourStepProps } from "./types/step"
 
 import './styles/step.scss'
 
 export default defineComponent({
     name: 'TourStep',
-    props: {
-        title: {
-            type: String,
-            default: ''
-        },
-        description: {
-            type: String,
-            default: ''
-        }
-    },
+    props: tourStepProps,
     emits: ['close'],
     setup(props, { emit }) {
 

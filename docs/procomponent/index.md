@@ -20,7 +20,6 @@ pnpm install @banmao/procomponent
 - [ProForm](./pro-form/)
 - [DrawerForm](./drawer-form/)
 - [ModalForm](./modal-form/)
-- [QueryFilter](./query-filter/)
 - [ProTable](./pro-table/)
 - [ProList](./pro-list/)
 - [ProDescriptions](./pro-descriptions/)

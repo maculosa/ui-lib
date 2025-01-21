@@ -1,39 +1,26 @@
-import { computed, defineComponent, onMounted, onUnmounted, ref, type CSSProperties } from "vue";
+import type { CSSProperties } from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, ref } from "vue";
+import { tourMaskProps } from "./types/mask";
 
 export default defineComponent({
     name: 'TourMask',
-    props: {
-        pos: {
-            type: Object,
-            default: () => ({
-                top: 0,
-                left: 0,
-                width: 0,
-                height: 0
-            })
-        },
-        show: {
-            type: Boolean,
-            default: true
-        }
-    },
+    props: tourMaskProps,
     setup(props) {
-
         const width = ref(0)
         const height = ref(0)
 
-        onMounted(() => {
-            width.value = document.body.offsetWidth;
-            height.value = document.body.offsetHeight;
+        const updateDimensions = () => {
+            width.value = document.body.offsetWidth
+            height.value = document.body.offsetHeight
+        }
 
-            window.addEventListener('resize', () => {
-                width.value = document.body.offsetWidth;
-                height.value = document.body.offsetHeight;
-            })
+        onMounted(() => {
+            updateDimensions()
+            window.addEventListener('resize', updateDimensions)
         })
 
         onUnmounted(() => {
-            window.removeEventListener('resize', () => { })
+            window.removeEventListener('resize', updateDimensions)
         })
 
         const path = computed(() => {

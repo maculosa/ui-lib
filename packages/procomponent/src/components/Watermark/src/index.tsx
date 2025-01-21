@@ -1,6 +1,6 @@
 import type { WatermarkProps } from './types'
-
-import { defineComponent, onMounted, onUnmounted, ref, toRef, watchEffect, type PropType } from 'vue'
+import type { PropType } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref, toRef, watchEffect } from 'vue'
 // import { useMutationObserver } from '@vueuse/core'
 import { useWatermarkBg } from './hooks/useWatermarkBg'
 import './index.scss'
@@ -45,7 +45,7 @@ export default defineComponent({
     const bg = useWatermarkBg(props)
     const containerRef = ref<HTMLDivElement | null>(null)
 
-    let div: any
+    let div: HTMLElement | null = null
 
     function resetWatermark(fullscreen: boolean = false) {
       if (!containerRef.value)

@@ -1,34 +1,13 @@
 import { NButton, NModal, NSpace } from 'naive-ui'
-import { computed, defineComponent, Fragment, ref, type PropType } from 'vue'
-import { ProForm } from '../../ProForm'
+import { computed, defineComponent, Fragment, ref } from 'vue'
+import { ProForm } from '@components/ProForm'
+import { modalFormProps, modalFormEmits, type ModalFormExpose } from './types'
 
 export default defineComponent({
   name: 'ModalForm',
-  props: {
-    title: {
-      type: String,
-      default: '标题',
-    },
-    width: {
-      type: Number,
-      default: 500,
-    },
-    columns: {
-      type: Array as PropType<any[]>,
-      default: () => [],
-    },
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-    model: {
-      type: Object,
-      default: () => ({}),
-    },
-  },
-  emits: ['submit', 'reset'],
-  expose: ['close', 'open'],
-  setup(props, { emit, slots, attrs }) {
+  props: modalFormProps,
+  emits: modalFormEmits,
+  setup(props, { emit, slots, attrs, expose }) {
     const visible = ref(false)
 
     const columns = computed(() => {
@@ -50,8 +29,13 @@ export default defineComponent({
 
     const formRef = ref()
 
-    function handleSubmit(values: any) {
-      emit('submit', values)
+    async function handleSubmit(values: any) {
+      try {
+        await emit('submit', values)
+        close()
+      } catch (error) {
+        console.error('Form submit failed:', error)
+      }
     }
 
     function handleReset() {
@@ -65,6 +49,11 @@ export default defineComponent({
     function _reset() {
       formRef.value?.reset()
     }
+
+    expose<ModalFormExpose>({
+      submit: _submit,
+      reset: _reset,
+    })
 
     const children = slots.default?.()
     return () => (

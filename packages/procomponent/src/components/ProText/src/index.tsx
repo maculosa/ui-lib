@@ -1,41 +1,23 @@
-// import type { ProTextProps } from './types'
-import { Icon } from '@iconify/vue'
 import { useClipboard } from '@vueuse/core'
 import { NText, NTooltip } from 'naive-ui'
 import { computed, defineComponent, Fragment, ref, toRef } from 'vue'
 import TextClamp from 'vue3-text-clamp'
+
+import { textProps } from './types'
 
 import './index.scss'
 
 export default defineComponent({
   name: 'ProText',
   components: {
-    Icon,
     NText,
     NTooltip,
     TextClamp,
   },
-  props: {
-    text: {
-      type: String,
-      default: '',
-    },
-    copyable: {
-      type: Boolean,
-      default: false,
-    },
-    ellipsis: {
-      type: Boolean,
-      default: false,
-    },
-    lineClamp: {
-      type: [Number, String],
-      default: 1,
-    },
-  },
+  props: textProps,
   setup(props, { attrs }) {
-    const defaultColor = ref('#3b82f6')
-    const copiedColor = ref('#22c55e')
+    // const defaultColor = ref('#3b82f6')
+    // const copiedColor = ref('#22c55e')
 
     const ellipsis = computed(() => props.ellipsis !== false)
     const copyable = computed(() => props.copyable !== false)
@@ -48,7 +30,7 @@ export default defineComponent({
     }))
 
     const text = toRef(props, 'text')
-    const { text: _clipboardText, copy, copied } = useClipboard({ legacy: true })
+    const { text: _clipboardText, copy } = useClipboard({ legacy: true })
 
     const isCopied = ref(false)
 
@@ -81,12 +63,9 @@ export default defineComponent({
                           }}
                           onClick={handleCopy}
                         >
-                          <Icon
-                            style={{
-                              color: copied.value ? copiedColor.value : defaultColor.value,
-                            }}
-                            icon={`ant-design:${isCopied.value ? 'check' : 'copy'}-outlined`}
-                          />
+                          {
+                            isCopied.value ? <bm-check class="text-green-500" /> : <bm-copy class="text-blue-500" />
+                          }
                         </div>
                       )
                     },
@@ -115,12 +94,9 @@ export default defineComponent({
                 }}
                 onClick={handleCopy}
               >
-                <Icon
-                  style={{
-                    color: copied.value ? copiedColor.value : defaultColor.value,
-                  }}
-                  icon={`ant-design:${isCopied.value ? 'check' : 'copy'}-outlined`}
-                />
+                {
+                  isCopied.value ? <bm-check class="text-green-500" /> : <bm-copy class="text-blue-500" />
+                }
               </div>
             )}
           </Fragment>

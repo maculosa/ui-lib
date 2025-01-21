@@ -1,5 +1,5 @@
 import type { PropType } from 'vue'
-import type { LinkDiagramProps } from './interface'
+import type { LinkDiagramProps } from './types'
 import { NoxDraw } from '@banmao/draw'
 import { uniqueId } from 'lodash-es'
 import { computed, defineComponent, onMounted, ref, toRefs } from 'vue'
@@ -81,6 +81,10 @@ export default defineComponent({
       type: Number as PropType<LinkDiagramProps['height']>,
       default: 600,
     },
+    margin: {
+      type: Number as PropType<LinkDiagramProps['margin']>,
+      default: undefined,
+    },
   },
   setup(props) {
     const { height, width, data } = toRefs(props)
@@ -121,7 +125,7 @@ export default defineComponent({
       const oilTankNodes = generateOilTankNodes(oilTankBindList, graph)
 
       /** 通过数据绑定关系的 JSON 转化为生成加油机及对应油枪的绑定关系 */
-      const fuelDispenserData = graph.transformFuelDispenser(data.value.oilTankBoundGun)
+      const fuelDispenserData = graph.transformFuelDispenser(data.value.oilTankForOilGunRelation)
 
       /** 缓存加油机的节点 */
       const fuelDispensers: any[] = []
@@ -177,7 +181,7 @@ export default defineComponent({
       )
 
       const relationData = graph.transformRelationWithNode(
-        data.value.oilTankBoundGun,
+        data.value.oilTankForOilGunRelation,
         oilTankNodes,
         fuelDispensers,
       )

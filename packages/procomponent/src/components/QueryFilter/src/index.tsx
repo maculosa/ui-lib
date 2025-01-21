@@ -1,6 +1,5 @@
 import type { SelectOption } from 'naive-ui'
-import type { QueryFilterProps } from './types'
-import { Icon } from '@iconify/vue'
+import type { QueryFilterProps, QueryFilterColumn } from './types'
 import {
   NAutoComplete,
   NButton,
@@ -23,10 +22,10 @@ import {
   NTooltip,
   NTreeSelect,
 } from 'naive-ui'
-import { computed, defineComponent, onMounted, reactive, ref, shallowRef, toRefs, watch, type PropType } from 'vue'
-import { useShowSuffix } from './hooks/useShowSuffix'
+import { computed, defineComponent, onMounted, reactive, ref, shallowRef, watch } from 'vue'
+import { useShowSuffix } from '@hooks/useShowSuffix'
 
-const formFieldMaps: Record<string, any> = {
+const formFieldMaps = {
   text: NInput,
   select: NSelect,
   date: NDatePicker,
@@ -39,8 +38,9 @@ const formFieldMaps: Record<string, any> = {
   dynamicTags: NDynamicTags,
   digit: NInputNumber,
   treeSelect: NTreeSelect,
-}
-const placeholderMaps: Record<string, string> = {
+} as const
+
+const placeholderMaps = {
   text: '请输入',
   select: '请选择',
   date: '请选择日期',
@@ -53,20 +53,19 @@ const placeholderMaps: Record<string, string> = {
   dynamicTags: '请输入',
   digit: '请输入',
   treeSelect: '请选择',
-}
+} as const
 
 export default defineComponent({
   name: 'QueryFilter',
   props: {
     columns: {
-      type: Array as PropType<any[]>,
+      type: Array as PropType<QueryFilterColumn[]>,
       default: () => [],
     },
     defaultValue: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default: () => ({}),
     },
-    // 搜索栏显示列数
     gridCols: {
       type: Number,
       default: 3,
@@ -81,8 +80,12 @@ export default defineComponent({
   },
   emits: ['search', 'reset'],
   setup(props, { emit }) {
-    const { columns, defaultValue, gridCols } = toRefs(props)
-    function getDefaultPlaceholder(type: string, title?: string) {
+    /**
+     * 获取默认占位符
+     * @param type 字段类型
+     * @param title 字段标题
+     */
+    function getDefaultPlaceholder(type: keyof typeof placeholderMaps, title?: string) {
       if (type === 'date' || type === 'time')
         return placeholderMaps[type]
 
@@ -90,7 +93,7 @@ export default defineComponent({
     }
 
     const transformColumns = computed(() => {
-      return columns.value
+      return props.columns
         .filter(i => !i.hideInSearch)
         .sort((a, b) => {
           if (a?.order && b?.order)
@@ -100,75 +103,62 @@ export default defineComponent({
     })
 
     const gridRef = shallowRef()
-
-    // 默认折叠
     const gridCollapsed = ref(props.formConfig?.gridCollapsed)
-    // 默认折叠后的行数
     const gridCollapsedRows = ref(props.formConfig?.gridCollapsedRows)
-    // 显示隐藏的节点
-    const { showSuffix } = useShowSuffix(gridRef, gridCols.value)
+    const { showSuffix } = useShowSuffix(gridRef, props.gridCols)
 
-    // 切换折叠
     function handleToggleCollapsed() {
       gridCollapsed.value = !gridCollapsed.value
     }
 
-    /** 搜索栏各select options */
-    const options = reactive<{ [key: string]: SelectOption[] }>({})
+    const options = reactive<Record<string, SelectOption[]>>({})
 
-    // 获取远程服务器枚举
-    function getRemoteServerEnum(fn: any, prop: string) {
-      // 获取当前有选择表单的列的key值
-      const cOptsKey = columns.value.filter(item => item.key === prop)[0].key
+    /**
+     * 获取远程服务器枚举
+     * @param fn 请求函数
+     * @param prop 字段标识
+     */
+    async function getRemoteServerEnum(fn: () => Promise<any[]>, prop: string) {
+      if (!fn || !prop) return
 
-      if (!fn)
-        return []
+      const column = props.columns.find(item => item.key === prop)
+      if (!column) return
 
-      if (!prop)
-        return []
-
-      fn().then((res: any[]) => {
-        options[cOptsKey] = res
-      })
+      try {
+        options[column.key] = await fn()
+      } catch (error) {
+        console.error('Failed to fetch remote options:', error)
+      }
     }
 
     watch(
-      () => columns.value,
-      (newVal) => {
-        newVal.forEach((item) => {
+      () => props.columns,
+      (columns) => {
+        columns.forEach((item) => {
           if (item.request)
             getRemoteServerEnum(item.request, item.key)
         })
       },
-      {
-        deep: true,
-        immediate: true,
-      },
+      { deep: true, immediate: true }
     )
 
-    
+    const searchFormData = ref<Record<string, any>>({})
 
-    // 搜索表单数据
-    const searchFormData = ref<Record<any, any>>({})
-
-    // const defaultFormData = computed(() => Object.assign({}, defaultValue))
-
-    // 创建搜索表单数据
+    /**
+     * 创建搜索表单数据
+     */
     function createSearchFormData() {
-      // if (Object.keys(defaultFormData.value).length > 0)
-      //   return { ...defaultFormData.value }
-      let formData = {} as any
+      const formData: Record<string, any> = {}
 
-      columns.value.forEach((column) => {
-        if (column.valueType === 'select')
-          formData[column.key] = null
-        else if (column.valueType === 'date')
+      props.columns.forEach((column) => {
+        if (column.valueType === 'select' || column.valueType === 'date')
           formData[column.key] = null
         else
           formData[column.key] = ''
       })
-      if (typeof defaultValue.value === 'object' && Object.keys(defaultValue.value).length > 0)
-        formData = { ...formData, ...defaultValue.value }
+
+      if (typeof props.defaultValue === 'object' && Object.keys(props.defaultValue).length > 0)
+        return { ...formData, ...props.defaultValue }
 
       return formData
     }
@@ -177,16 +167,16 @@ export default defineComponent({
       searchFormData.value = createSearchFormData()
     })
 
-    watch(() => defaultValue.value, (val) => {
-      searchFormData.value = { ...searchFormData, ...val }
-    }, {
-      deep: true,
-      immediate: true,
-    })
+    watch(
+      () => props.defaultValue,
+      (val) => {
+        searchFormData.value = { ...searchFormData.value, ...val }
+      },
+      { deep: true, immediate: true }
+    )
 
-    // 重置搜索表单数据
     function handleReset() {
-      searchFormData.value = { ...createSearchFormData() }
+      searchFormData.value = createSearchFormData()
       emit('reset', searchFormData.value)
     }
 
@@ -205,7 +195,7 @@ export default defineComponent({
           model={searchFormData.value}
         >
           <NGrid
-            ref="gridRef"
+            ref={gridRef}
             itemResponsive
             cols={props.gridCols}
             x-gap={16}
@@ -213,90 +203,78 @@ export default defineComponent({
             collapsed={gridCollapsed.value}
             collapsedRows={gridCollapsedRows.value}
           >
-            {
-              transformColumns.value.map(item => (
-                <NFormItemGi key={item.key} label={item.title} path={item.key}>
-                  {item.tooltip && {
-                    label: () => (
-                      <div class="flex gap-2 items-center">
-                        <span>{ item.title }</span>
-                        <NTooltip trigger="hover">
-                          {{
-                            trigger: () => (
-                              <Icon icon="ant-design:question-circle-outlined" />
-                            ),
-                            default: () => item.tooltip,
-                          }}
-                        </NTooltip>
-                      </div>
-                    ),
-                    default: () => {
-                      const comp: any[] = []
-                      if (item.valueType === 'data') {
-                        comp.push((
-                          <NDatePicker
-                            v-model:formatted-value={searchFormData.value[item.key]}
-                            type={item.valueType}
-                            style="width: 100%"
-                            placeholder={getDefaultPlaceholder(item.valueType, item.title)}
-                            clearable
-                            value-format="yyyy-MM-dd"
-                            v-bind={item?.formItemProps}
-                          />
-                        ))
-                      }
-                      else {
-                        comp.push((
-                          <component
-                            is={formFieldMaps[item.valueType]}
-                            v-model:value={searchFormData.value[item.key]}
-                            options={item.options || options[item.key]}
-                            placeholder={getDefaultPlaceholder(item.valueType, item.title)}
-                            clearable
-                            style={{ width: '100%' }}
-                            v-bind={item?.formItemProps}
-                          />
-                        ))
-                      }
-                      return [
-                        ...comp,
-                        <slot />,
-                      ]
-                    },
-                  }}
-                </NFormItemGi>
-              ))
-            }
+            {transformColumns.value.map(item => (
+              <NFormItemGi key={item.key} label={item.title} path={item.key}>
+                {item.tooltip
+                  ? {
+                      label: () => (
+                        <div class="flex gap-2 items-center">
+                          <span>{item.title}</span>
+                          <NTooltip trigger="hover">
+                            {{
+                              trigger: () => <bm-info-circle />,
+                              default: () => item.tooltip,
+                            }}
+                          </NTooltip>
+                        </div>
+                      ),
+                      default: () => (
+                        item.valueType === 'date'
+                          ? <NDatePicker
+                              v-model:formatted-value={searchFormData.value[item.key]}
+                              type={item.valueType}
+                              style="width: 100%"
+                              placeholder={getDefaultPlaceholder(item.valueType, item.title)}
+                              clearable
+                              value-format="yyyy-MM-dd"
+                              v-bind={item?.formItemProps}
+                            />
+                          : <component
+                              is={formFieldMaps[item.valueType]}
+                              v-model:value={searchFormData.value[item.key]}
+                              options={item.options || options[item.key]}
+                              placeholder={getDefaultPlaceholder(item.valueType, item.title)}
+                              clearable
+                              style={{ width: '100%' }}
+                              v-bind={item?.formItemProps}
+                            />
+                      ),
+                    }
+                  : <component
+                      is={formFieldMaps[item.valueType]}
+                      v-model:value={searchFormData.value[item.key]}
+                      options={item.options || options[item.key]}
+                      placeholder={getDefaultPlaceholder(item.valueType, item.title)}
+                      clearable
+                      style={{ width: '100%' }}
+                      v-bind={item?.formItemProps}
+                    />
+                }
+              </NFormItemGi>
+            ))}
 
             <NGi suffix>
               <NSpace justify="end" wrap={false}>
                 <NButton onClick={handleReset}>
                   {{
-                    icon: () => <Icon icon="ant-design:reload-outlined" />,
+                    icon: () => <bm-refresh />,
                     default: () => '重置',
                   }}
                 </NButton>
                 <NButton type="primary" onClick={handleSearch}>
                   {{
-                    icon: () => <Icon icon="ant-design:search-outlined" />,
+                    icon: () => <bm-search />,
                     default: () => '查询',
                   }}
                 </NButton>
-                {
-                  showSuffix.value && (
-                    <NButton text type="primary" onClick={handleToggleCollapsed}>
-                      {{
-                        icon: () => (
-                          <Icon
-                            icon={`mdi:chevron-${gridCollapsed.value ? 'down' : 'up'
-                            }`}
-                          />
-                        ),
-                        default: () => gridCollapsed.value ? '展开' : '折叠',
-                      }}
-                    </NButton>
-                  )
-                }
+                {showSuffix.value && (
+                  <NButton text type="primary" onClick={handleToggleCollapsed}>
+                    {{
+                      icon: () => gridCollapsed.value ? <bm-arrow-down /> : <bm-arrow-up />,
+                      default: () => gridCollapsed.value ? '展开' : '折叠',
+                    }}
+                  </NButton>
+                )}
               </NSpace>
             </NGi>
           </NGrid>

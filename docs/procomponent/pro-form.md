@@ -4,8 +4,8 @@ prev:
   text: ModalForm
   link: /procomponent/modal-form/
 next:
-  text: QueryFilter
-  link: /procomponent/query-filter/
+  text: ProTable
+  link: /procomponent/pro-table/
 ---
 
 # ProForm

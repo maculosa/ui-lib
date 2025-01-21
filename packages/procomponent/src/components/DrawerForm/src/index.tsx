@@ -1,32 +1,12 @@
-import { drawerProps, NButton, NDrawer, NDrawerContent, NLayout, NSpace } from 'naive-ui'
-import { computed, defineComponent, Fragment, ref, toRefs, type PropType } from 'vue'
-import { ProForm } from '../../ProForm'
+import { NButton, NDrawer, NDrawerContent, NLayout, NSpace } from 'naive-ui'
+import { computed, defineComponent, Fragment, ref, toRefs } from 'vue'
+import { ProForm } from '@components/ProForm'
+import { drawerFormProps, drawerFormEmits, type DrawerFormExpose } from './types'
 
 export default defineComponent({
   name: 'DrawerForm',
-  props: Object.assign(drawerProps, {
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-    hideFooter: {
-      type: Boolean,
-      default: false,
-    },
-    title: {
-      type: String,
-      default: '',
-    },
-    columns: {
-      type: Array as PropType<any[]>,
-      default: () => [],
-    },
-    defaultValue: {
-      type: Object,
-      default: () => ({}),
-    },
-  }),
-  emits: ['submit', 'reset'],
+  props: drawerFormProps,
+  emits: drawerFormEmits,
   setup(props, { attrs, emit, slots, expose }) {
     const { closable, hideFooter, title, defaultValue, ...restDrawerProps } = toRefs(props)
 
@@ -34,8 +14,6 @@ export default defineComponent({
       const values = Object.entries(restDrawerProps).map(item => ({
         [item[0]]: item[1].value
       }))
-
-      console.log({ values })
 
       return values
     })
@@ -57,15 +35,20 @@ export default defineComponent({
       visible.value = false
     }
 
-    expose({
+    expose<DrawerFormExpose>({
       open,
       close,
     })
 
     const formRef = ref()
 
-    function handleSubmit(values: any) {
-      emit('submit', values)
+    async function handleSubmit(values: any) {
+      try {
+        await emit('submit', values)
+        close()
+      } catch (error) {
+        console.error('Form submit failed:', error)
+      }
     }
 
     function handleReset() {

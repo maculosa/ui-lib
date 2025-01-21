@@ -19,7 +19,7 @@ const columns = ref([
   },
   {
     title: '操作',
-    key: 'action',
+    key: 'actions',
   },
 ])
 

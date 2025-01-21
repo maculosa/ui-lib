@@ -1,117 +1,41 @@
-import type { ProTableColumn, SearchConfig, ToolbarConfig } from 'naive-ui'
 import {
-  dataTableProps,
   NCard,
   NDataTable,
   NFlex,
+  useMessage
 } from 'naive-ui'
-import { computed, defineComponent, provide, ref, watchEffect, type PropType } from 'vue'
-import { ProForm } from '../../../index'
-import Toolbar from './components/Toolbar'
-import { renderCopyableCell, renderEmptyCell, renderIndexCell, renderTitle } from './helpers'
-import { useColumns } from './hooks/useColumns'
+import { computed, defineComponent, provide, ref, watchEffect } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
+import { ProForm } from '@components/ProForm'
+import { Toolbar } from './components'
+import { renderCopyableCell, renderEmptyCell, renderIndexCell, renderTitle } from '@/utils/table'
+import { useTableColumns } from '@hooks/useTableColumns'
+import { proTableProps, proTableEmits } from './types'
 import './styles/index.scss'
 
 
 export default defineComponent({
   name: 'ProTable',
-  props: {
-    ...Object.assign(dataTableProps, {
-      title: {
-        type: String,
-        default: '数据列表',
-      },
-      columns: {
-        type: Array as PropType<ProTableColumn<any>[]>,
-        default: () => [],
-      },
-      loading: {
-        type: Boolean,
-        default: false,
-      },
-      /**
-       * @deprecated 请使用 `search` 代替, 即将在 v1.0.0 版本中移除。
-       */
-      searchConfig: {
-        type: Object as PropType<SearchConfig>,
-        default: () => ({}),
-      },
-      /**
-       * 是否显示搜索表单，传入对象时为搜索表单配置
-       */
-      search: {
-        type: [Boolean, Object] as PropType<false | undefined | SearchConfig>,
-        default: undefined,
-      },
-      toolbarConfig: {
-        type: Object as PropType<ToolbarConfig>,
-        default: () => ({
-          createButtonMode: 'button',
-        }),
-      },
-      /**
-       * @deprecated 请使用 `search: false` 代替。
-       */
-      hideSearchbar: {
-        type: Boolean,
-        default: false,
-      },
-      // searchModel: {
-      //   type: Object,
-      //   default: () => ({})
-      // },
-      /**
-       * params 需要自带的参数，会覆盖查询表单的参数
-       */
-      params: {
-        type: Object as PropType<Record<string, any>>,
-      },
-      /**
-       * 查询按钮
-       */
-      onQuery: {
-        type: Function as PropType<(params: any) => Promise<void>>,
-      },
-      /**
-       * 表格高度
-       */
-      height: {
-        type: Number,
-      },
-      simple: {
-        type: Boolean,
-        default: false,
-      },
-    }),
-  },
-  emits: ['loadData', 'create', 'exportData', 'submit', 'reset'],
+  props: proTableProps,
+  emits: proTableEmits,
   setup(props, { emit, slots }) {
+    const message = useMessage()
     const tableProps = computed(() => {
-      const p = {
-        ...props,
-        title: undefined,
-        columns: undefined,
-        searchConfig: undefined,
-        toolbarConfig: undefined,
-        search: undefined,
-      }
-      delete p.title
-      delete p.columns
-      delete p.searchConfig
-      delete p.toolbarConfig
-      delete p.search
+      const p = { ...props }
+      const excludeKeys = ['title', 'columns', 'searchConfig', 'toolbarConfig', 'search']
+      excludeKeys.forEach(key => {
+        if (key in p) {
+          delete (p as Record<string, unknown>)[key]
+        }
+      })
 
-      // 当 height 存在时，设置 flexHeight 为 true
       if (props.height && !Number.isNaN(props.height)) {
         return {
           ...p,
           flexHeight: true,
-          style: {
-            height: `${props.height}px`,
-          },
+          style: { height: `${props.height}px` },
         }
       }
-
       return p
     })
 
@@ -119,53 +43,33 @@ export default defineComponent({
     const searchLoading = ref(false)
 
     watchEffect(() => {
-      if (isRefreshing.value) {
-        searchLoading.value = false
-      }
-      else {
-        searchLoading.value = props.loading
-      }
+      searchLoading.value = isRefreshing.value ? false : props.loading
     })
 
-    // 获取 表格列，设置列，搜索列，表单列
     const {
       tableColumns,
       settingColumns,
       searchColumns,
       formColumns,
-    } = useColumns(props.columns)
+    } = useTableColumns(props.columns)
 
     provide('settingColumns', settingColumns)
 
-    /**
-     * 工具栏配置
-     */
     const toolbarConfig = computed(() => props.toolbarConfig)
 
     watchEffect(() => {
       tableColumns.value = settingColumns.value.map((column) => {
-        if (column && column.type === 'index') {
-          return renderIndexCell(column)
-        }
-
-        if (column && column.copyable) {
-          return renderCopyableCell(column)
-        }
-
-        if (column && column.tooltip && typeof column.title === 'string') {
+        if (column?.type === 'index') return renderIndexCell(column)
+        if (column?.copyable) return renderCopyableCell(column)
+        if (column?.tooltip && typeof column.title === 'string') {
           column.title = renderTitle(column)
         }
-
         return column
       })
     })
 
-    /**
-     * 表格大小
-     */
     type TableSize = 'small' | 'medium' | 'large'
     const size = ref<TableSize>('large')
-
     const searchFormRef = ref(null)
 
     /**
@@ -179,56 +83,82 @@ export default defineComponent({
     /**
      * 刷新数据
      */
-    function handleRefresh() {
+    async function handleRefresh() {
+      if (isRefreshing.value) return
+      
       isRefreshing.value = true
-      setTimeout(() => {
+      try {
+        await loadData(1)
+      } catch (error) {
+        console.error('Refresh failed:', error)
+        message?.error('刷新失败，请重试')
+      } finally {
         isRefreshing.value = false
-      }, 3000)
-      loadData(1)
+      }
     }
 
     /**
      * 搜索表单提交
      * @param formModel 表单数据
      */
-    async function handleSearch(formModel: any) {
-      props.onQuery && await props.onQuery({
-        ...formModel,
-      })
-    }
+    const handleSearch = useDebounceFn(async (formModel: Record<string, any>) => {
+      if (!props.onQuery) {
+        console.warn('ProTable: onQuery prop is required for search functionality')
+        return
+      }
+
+      try {
+        searchLoading.value = true
+        await props.onQuery(formModel)
+      } catch (error) {
+        console.error('Search failed:', error)
+        // 可以添加错误通知
+        message?.error('搜索失败，请重试')
+      } finally {
+        searchLoading.value = false
+      }
+    }, 300)
 
     /**
      * 重置搜索表单
      */
-    function handleReset() {
-      emit('reset')
-      loadData(1)
+    async function handleReset() {
+      try {
+        searchLoading.value = true
+        emit('reset')
+        if (searchFormRef.value) {
+          await loadData(1)
+        }
+      } catch (error) {
+        console.error('Reset failed:', error)
+        message?.error('重置失败，请重试')
+      } finally {
+        searchLoading.value = false
+      }
     }
 
-    /**
-     * 创建数据按钮点击事件
-     */
     provide('toolbar-create', () => emit('create'))
 
     /**
-     * 导出数据按钮点击事件
+     * 导出数据
      */
     function handleExportData() {
       emit('exportData')
     }
 
     return () => {
-      const OriginDataTable = (<NDataTable
-        {...tableProps.value}
-        columns={tableColumns.value}
-        size={size.value}
-        loading={props.loading}
-        pagination={props.pagination}
-        renderCell={renderEmptyCell}
-      />)
-      if (props.simple !== false) {
-        return OriginDataTable
-      }
+      const OriginDataTable = (
+        <NDataTable
+          {...tableProps.value}
+          columns={tableColumns.value}
+          size={size.value}
+          loading={props.loading}
+          pagination={props.pagination}
+          renderCell={renderEmptyCell}
+        />
+      )
+
+      if (props.simple !== false) return OriginDataTable
 
       return (
         <NFlex vertical>
@@ -249,15 +179,12 @@ export default defineComponent({
               />
             </NCard>
           )}
-  
-          {/* slot summary 统计汇总 */}
+
           {slots['summary']?.()}
-  
+
           <div class="bm-card">
             <div class="bm-card_header">
-              <div class="bm-card_header-title">
-                { props.title }
-              </div>
+              <div class="bm-card_header-title">{props.title}</div>
               <div class="bm-card_header-extra">
                 <Toolbar
                   v-model:size={size.value}
@@ -270,10 +197,9 @@ export default defineComponent({
                 />
               </div>
             </div>
-  
+
             <div class="bm-card_body">
               {slots['selection-action']?.()}
-  
               {OriginDataTable}
             </div>
           </div>
