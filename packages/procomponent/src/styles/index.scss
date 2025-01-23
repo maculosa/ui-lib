@@ -1,0 +1,18 @@
+@use './flex.scss';
+@use './margin-pading.scss';
+@use './shadow.scss';
+@use './card.scss';
+
+.bm-form-label {
+    @extend .flex;
+    @extend .items-center;
+    @extend .gap-2;
+}
+
+.bm-inline-block {
+    display: inline-block;
+}
+
+.bm-text {
+    vertical-align: middle;
+}

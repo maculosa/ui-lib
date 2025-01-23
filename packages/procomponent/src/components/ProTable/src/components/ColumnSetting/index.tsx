@@ -4,6 +4,8 @@ import { NButton, NCheckbox, NPopover } from 'naive-ui'
 import { defineComponent, Fragment, ref, toRefs, watch } from 'vue'
 import { VueDraggableNext as VueDraggable } from 'vue-draggable-next'
 import './ColumnSetting.scss'
+import BmIconDragDrop from '~icons/bm-icon/drag-drop'
+import BmIconSettings from '~icons/bm-icon/settings'
 
 type Column = ProTableColumn
 type List = Column & { checked?: boolean }
@@ -33,7 +35,7 @@ const VueDraggableItem = defineComponent({
                 <div
                   class="drag-list-item"
                 >
-                  <bm-drag-drop class="text-24px cursor-move" />
+                  <BmIconDragDrop class="text-24px cursor-move" />
                   <NCheckbox v-model:checked={element.value.hideInTable}>
                     多选框
                   </NCheckbox>
@@ -43,7 +45,7 @@ const VueDraggableItem = defineComponent({
                 <div
                   class="drag-list-item"
                 >
-                  <bm-drag-drop class="text-24px cursor-move" />
+                  <BmIconDragDrop class="text-24px cursor-move" />
                   <NCheckbox v-model:checked={element.value.hideInTable}>
                     { element.value.title }
                   </NCheckbox>
@@ -101,7 +103,7 @@ export default defineComponent({
         {{
           trigger: () => (
             <NButton size="small" quaternary>
-              <bm-settings class="mr-4px text-16px" />
+              <BmIconSettings class="mr-4px text-16px" />
               {
                 props.label && <span>
                   { props.label }

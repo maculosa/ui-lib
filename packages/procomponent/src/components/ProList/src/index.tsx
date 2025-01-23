@@ -1,6 +1,7 @@
 import { defineComponent } from 'vue'
 import { NFlex, NList, NListItem, NPagination, NSpin } from 'naive-ui'
 import { listProps } from './types'
+import './styles/css'
 
 export default defineComponent({
   name: 'ProList',

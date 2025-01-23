@@ -1,11 +1,13 @@
 import { useClipboard } from '@vueuse/core'
 import { NText, NTooltip } from 'naive-ui'
-import { computed, defineComponent, Fragment, ref, toRef } from 'vue'
+import { computed, defineComponent, ref, toRef } from 'vue'
 import TextClamp from 'vue3-text-clamp'
+import BmIconCopy from '~icons/bm-icon/copy'
+import BmIconCheck from '~icons/bm-icon/check'
 
 import { textProps } from './types'
 
-import './index.scss'
+import './styles/css'
 
 export default defineComponent({
   name: 'ProText',
@@ -64,7 +66,7 @@ export default defineComponent({
                           onClick={handleCopy}
                         >
                           {
-                            isCopied.value ? <bm-check class="text-green-500" /> : <bm-copy class="text-blue-500" />
+                            isCopied.value ? <BmIconCheck style="color: #22c55e;" /> : <BmIconCopy style="color: #3b82f6;" />
                           }
                         </div>
                       )
@@ -83,7 +85,7 @@ export default defineComponent({
       }
       else {
         return (
-          <Fragment>
+          <div>
             <NText {...attrs}>
               {props.text}
             </NText>
@@ -95,11 +97,11 @@ export default defineComponent({
                 onClick={handleCopy}
               >
                 {
-                  isCopied.value ? <bm-check class="text-green-500" /> : <bm-copy class="text-blue-500" />
+                  isCopied.value ? <BmIconCheck style="color: #22c55e;" /> : <BmIconCopy style="color: #3b82f6;" />
                 }
               </div>
             )}
-          </Fragment>
+          </div>
         )
       }
     }

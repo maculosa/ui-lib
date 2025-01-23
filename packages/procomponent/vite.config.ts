@@ -1,4 +1,5 @@
 import { resolve } from 'path'
+// import { promises as fs } from 'node:fs'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJSX from '@vitejs/plugin-vue-jsx'
@@ -8,8 +9,9 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite';
 import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
-// import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -18,6 +20,7 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
       '@hooks': resolve(__dirname, 'src/hooks'),
       '@components': resolve(__dirname, 'src/components'),
+      '@styles': resolve(__dirname, 'src/styles'),
     }
   },
   plugins: [vue(), vueJSX(), dts({
@@ -25,22 +28,35 @@ export default defineConfig({
     // include: ['src/**/*.ts', 'src/**/*.tsx']
   }),
   libInjectCss(),
-  // createSvgIconsPlugin({
-  //   iconDirs: [resolve(process.cwd(), 'src/assets/icons')],
-  //   symbolId: 'icon-[dir]-[name]',
-  // }),
+  createSvgIconsPlugin({
+    iconDirs: [resolve(process.cwd(), './assets/icons')],
+    symbolId: 'icon-local-[dir]-[name]',
+    inject: 'body-last',
+    customDomId: '__SVG_ICON_LOCAL__',
+  }),
   Icons({
     compiler: 'vue3',
     autoInstall: true,
     customCollections: {
-      'bm-icons': FileSystemIconLoader(
+      'bm-icon': FileSystemIconLoader(
         './src/assets/icons',
-        svg => svg.replace(/^<svg /, '<svg fill="currentColor" ')
+        svg => svg.replace(/^<svg\s/, '<svg fill="currentColor" width="1em" height="1em" ')
       )
-    }
+      // 'bm-icon': {
+      //   copy: () => fs.readFile('./src/assets/icons/copy.svg', 'utf-8'),
+      //   check: () => fs.readFile('./src/assets/icons/check.svg', 'utf-8'),
+      // }
+    },
+    scale: 1,
+    defaultStyle: 'display: inline-block;',
   }),
   Components({
-    resolvers: [NaiveUiResolver()],
+    resolvers: [
+      NaiveUiResolver(),
+      IconsResolver({
+        customCollections: ['bm-icon'],
+      })
+    ],
     dts: 'src/components.d.ts',
   }),
   AutoImport({
@@ -67,7 +83,7 @@ export default defineConfig({
   ],
 
   build: {
-    copyPublicDir: false,
+    // copyPublicDir: false,
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'index',

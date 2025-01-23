@@ -33,6 +33,12 @@ import {
 } from 'vue'
 import type { PropType } from 'vue'
 import { useShowSuffix } from '@hooks/useShowSuffix'
+import BmIconInfoCircle from '~icons/bm-icon/info-circle'
+import BmIconRefresh from '~icons/bm-icon/refresh'
+import BmIconSearch from '~icons/bm-icon/search'
+import BmIconArrowDown from '~icons/bm-icon/arrow-down'
+import BmIconArrowUp from '~icons/bm-icon/arrow-up'
+import './styles/css'
 
 const formFieldMaps: Record<string, any> = {
   text: NInput,
@@ -211,12 +217,12 @@ export default defineComponent({
                   {{
                     label: () => {
                       return item.tooltip && (
-                        <div class="flex gap-2 items-center">
+                        <div class="bm-form-label">
                           <span>{ item.title }</span>
                           <NTooltip trigger="hover">
                             {{
                               trigger: () => (
-                                <bm-info-circle />
+                                <BmIconInfoCircle />
                               ),
                               default: () => item.tooltip,
                             }}
@@ -266,13 +272,13 @@ export default defineComponent({
               <NSpace justify="end" wrap={false}>
                 <NButton onClick={handleReset}>
                   {{
-                    icon: () => <bm-refresh />,
+                    icon: () => <BmIconRefresh />,
                     default: () => '重置',
                   }}
                 </NButton>
                 <NButton type="primary" onClick={handleSearch}>
                   {{
-                    icon: () => <bm-search />,
+                    icon: () => <BmIconSearch />,
                     default: () => '查询',
                   }}
                 </NButton>
@@ -285,9 +291,9 @@ export default defineComponent({
                     {{
                       icon: () => {
                         if (gridCollapsed) {
-                          return <bm-arrow-down />
+                          return <BmIconArrowDown />
                         }
-                        return <bm-arrow-up />
+                        return <BmIconArrowUp />
                       },
                       default: () => gridCollapsed ? '展开' : '折叠',
                     }}

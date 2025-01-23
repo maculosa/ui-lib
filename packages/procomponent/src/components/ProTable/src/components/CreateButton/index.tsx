@@ -1,5 +1,6 @@
 import { NButton } from 'naive-ui'
 import { defineComponent } from 'vue'
+import BmIconPlus from '~icons/bm-icon/plus'
 
 export default defineComponent({
   name: 'CreateButton',
@@ -18,7 +19,7 @@ export default defineComponent({
     return () => (
       <NButton type="info" size="small" secondary onClick={handleClick}>
         {{
-          icon: () => <bm-plus />,
+          icon: () => <BmIconPlus />,
           default: () => props.label,
         }}
       </NButton>

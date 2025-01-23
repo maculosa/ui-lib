@@ -18,6 +18,9 @@ import markdownItAttrs from 'markdown-it-attrs'
 import markdownItAnchor from 'markdown-it-anchor'
 import markdownItTOC from 'markdown-it-toc-done-right'
 import uslug from 'uslug'
+import Icons from 'unplugin-icons/vite'
+import { promises as fs } from 'fs'
+import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -60,7 +63,7 @@ export default defineConfig({
       headEnabled: true,
       markdownItUses: [emoji, markdownItAttrs,
         [markdownItAnchor, {
-          permalink: true,
+          // permalink: true,
           permalinkBefore: true,
           permalinkSymbol: '§',
           permalinkSpace: false,
@@ -87,6 +90,19 @@ export default defineConfig({
       extensions: ['vue', 'md']
     }),
     Inspect(),
+    Icons({
+      compiler: 'vue3',
+      autoInstall: true,
+      customCollections: {
+        // 'bm-icon': {
+        //   logo: () => fs.readFile('./src/assets/icons/vue.svg', 'utf-8')
+        // }
+        'bm-icon': FileSystemIconLoader(
+          './src/assets/icons',
+          svg => svg.replace(/^<svg /, '<svg fill="currentColor" ')
+        )
+      }
+    }),
     AutoImport({
       imports: [
         'vue',

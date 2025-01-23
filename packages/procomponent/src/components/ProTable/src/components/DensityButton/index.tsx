@@ -1,6 +1,7 @@
 import { NButton, NDropdown, NTooltip } from 'naive-ui'
 import { computed, defineComponent, ref } from 'vue'
 import './density.scss'
+import BmIconColumnHeight from '~icons/bm-icon/column-height'
 
 export default defineComponent({
   name: 'DensityButton',
@@ -41,7 +42,7 @@ export default defineComponent({
               <NButton size="small" quaternary>
 
                 {{
-                  icon: () => <bm-column-height class="text-18px" />
+                  icon: () => <BmIconColumnHeight class="text-18px" />
                 }}
               </NButton>
             ),

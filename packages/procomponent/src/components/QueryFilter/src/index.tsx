@@ -24,6 +24,13 @@ import {
 } from 'naive-ui'
 import { computed, defineComponent, onMounted, reactive, ref, shallowRef, watch } from 'vue'
 import { useShowSuffix } from '@hooks/useShowSuffix'
+import BmIconInfoCircle from '~icons/bm-icon/info-circle'
+import BmIconRefresh from '~icons/bm-icon/refresh'
+import BmIconSearch from '~icons/bm-icon/search'
+import BmIconArrowDown from '~icons/bm-icon/arrow-down'
+import BmIconArrowUp from '~icons/bm-icon/arrow-up'
+
+import './styles/css'
 
 const formFieldMaps = {
   text: NInput,
@@ -212,7 +219,7 @@ export default defineComponent({
                           <span>{item.title}</span>
                           <NTooltip trigger="hover">
                             {{
-                              trigger: () => <bm-info-circle />,
+                              trigger: () => <BmIconInfoCircle />,
                               default: () => item.tooltip,
                             }}
                           </NTooltip>
@@ -257,20 +264,20 @@ export default defineComponent({
               <NSpace justify="end" wrap={false}>
                 <NButton onClick={handleReset}>
                   {{
-                    icon: () => <bm-refresh />,
+                    icon: () => <BmIconRefresh />,
                     default: () => '重置',
                   }}
                 </NButton>
                 <NButton type="primary" onClick={handleSearch}>
                   {{
-                    icon: () => <bm-search />,
+                    icon: () => <BmIconSearch />,
                     default: () => '查询',
                   }}
                 </NButton>
                 {showSuffix.value && (
                   <NButton text type="primary" onClick={handleToggleCollapsed}>
                     {{
-                      icon: () => gridCollapsed.value ? <bm-arrow-down /> : <bm-arrow-up />,
+                      icon: () => gridCollapsed.value ? <BmIconArrowDown /> : <BmIconArrowUp />,
                       default: () => gridCollapsed.value ? '展开' : '折叠',
                     }}
                   </NButton>

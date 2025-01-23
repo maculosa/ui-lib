@@ -1,5 +1,6 @@
 import { NButton, NTooltip } from 'naive-ui'
 import { defineComponent } from 'vue'
+import BmIconRefresh from '~icons/bm-icon/refresh'
 
 export default defineComponent({
   name: 'RefreshButton',
@@ -24,7 +25,7 @@ export default defineComponent({
         {{
           trigger: () => (
             <NButton size="small" quaternary onClick={handleClick}>
-              <bm-refresh
+              <BmIconRefresh
                 class={['mr-4px lt-sm:mr-0 text-16px', { 'animate-spin': props.loading }]}
               />
             </NButton>

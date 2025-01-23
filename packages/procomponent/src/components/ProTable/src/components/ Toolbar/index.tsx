@@ -4,6 +4,8 @@ import { DrawerForm, ModalForm } from '@components/index'
 import { ColumnSetting, DensityButton, RefreshButton } from '../index'
 import { toolbarProps, toolbarEmits } from './types'
 import type { TableSize } from './types'
+import BmIconDownload from '~icons/bm-icon/download'
+import BmIconPlus from '~icons/bm-icon/plus'
 
 export default defineComponent({
   name: 'ToolbarComponent',
@@ -114,7 +116,7 @@ export default defineComponent({
           hasExportButton.value && (
             <NButton type="info" ghost size="small" onClick={handleExportData}>
               {{
-                icon: () => <bm-download class="mr-4px text-16px" />,
+                icon: () => <BmIconDownload class="mr-4px text-16px" />,
                 default: () => exportLabel || '导出Excel',
               }}
             </NButton>
@@ -129,7 +131,7 @@ export default defineComponent({
             >
               <NButton type="primary" ghost size="small" onClick={handleCreate}>
                 {{
-                  icon: () => <bm-plus class="mr-4px text-16px" />,
+                  icon: () => <BmIconPlus class="mr-4px text-16px" />,
                   default: () => createLabel || '新增',
                 }}
               </NButton>
@@ -146,7 +148,7 @@ export default defineComponent({
               <NButton type="primary" ghost size="small" onClick={handleCreate}>
                 {{
                   default: () => createLabel || '新增',
-                  icon: () => <bm-plus class="mr-4px text-16px" />,
+                  icon: () => <BmIconPlus class="mr-4px text-16px" />,
                 }}
               </NButton>
             </DrawerForm>
@@ -157,7 +159,7 @@ export default defineComponent({
           (hasCreateButton.value && isButton.value) && (
             <NButton type="primary" ghost size="small" onClick={handleCreate}>
               {{
-                icon: () => <bm-plus class="mr-4px text-16px" />,
+                icon: () => <BmIconPlus class="mr-4px text-16px" />,
                 default: () => createLabel || '新增',
               }}
             </NButton>

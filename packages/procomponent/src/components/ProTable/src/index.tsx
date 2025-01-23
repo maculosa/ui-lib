@@ -11,8 +11,7 @@ import { Toolbar } from './components'
 import { renderCopyableCell, renderEmptyCell, renderIndexCell, renderTitle } from '@/utils/table'
 import { useTableColumns } from '@hooks/useTableColumns'
 import { proTableProps, proTableEmits } from './types'
-import './styles/index.scss'
-
+import './styles/css'
 
 export default defineComponent({
   name: 'ProTable',

@@ -1,7 +1,6 @@
 import type {
   SelectOption,
 } from 'naive-ui'
-import { Icon } from '@iconify/vue'
 import {
   formProps,
   NButton,
@@ -25,9 +24,14 @@ import {
   NUpload,
 } from 'naive-ui'
 import { defineComponent, onMounted, reactive, ref, watch, type PropType } from 'vue'
-import { useShowSuffix } from '../../../hooks/useShowSuffix'
+import { useShowSuffix } from '@/hooks/useShowSuffix'
 // import RemoteCascader from './components/RemoteCascader'
-import initTreeData from '../../../utils/buildTree'
+import initTreeData from '@/utils/buildTree'
+import BmIconInfoCircle from '~icons/bm-icon/info-circle'
+import BmIconRefresh from '~icons/bm-icon/refresh'
+import BmIconSearch from '~icons/bm-icon/search'
+import BmIconArrowDown from '~icons/bm-icon/arrow-down'
+import BmIconArrowUp from '~icons/bm-icon/arrow-up'
 
 export default defineComponent({
   name: 'ProForm',
@@ -351,7 +355,7 @@ export default defineComponent({
                   <NTooltip trigger="hover">
                     {{
                       trigger: () => (
-                        <Icon icon="ant-design:question-circle-outlined" />
+                        <BmIconInfoCircle />
                       ),
                       default: () => item.tooltip,
                     }}
@@ -443,7 +447,7 @@ export default defineComponent({
               <NSpace justify="end" wrap={false}>
                 <NButton onClick={e => handleReset(e)}>
                   {{
-                    icon: () => <Icon icon="ant-design:reload-outlined" />,
+                    icon: () => <BmIconRefresh />,
                     default: () => props.resetText,
                   }}
                 </NButton>
@@ -454,7 +458,7 @@ export default defineComponent({
                   onClick={handleSubmit}
                 >
                   {{
-                    icon: () => <Icon icon="ant-design:search-outlined" />,
+                    icon: () => <BmIconSearch />,
                     default: () => props.searchText,
                   }}
                 </NButton>
@@ -465,11 +469,8 @@ export default defineComponent({
                     onClick={() => handleToggleCollapsed()}
                   >
                     {{
-                      icon: () => (
-                        <Icon
-                          icon={`mdi:chevron-${gridCollapsed.value ? 'down' : 'up'}`}
-                        />
-                      ),
+                      icon: () => gridCollapsed.value ?
+                        <BmIconArrowDown /> : <BmIconArrowUp />,
                       default: () => (gridCollapsed.value ? '展开' : '折叠'),
                     }}
                   </NButton>
