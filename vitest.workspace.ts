@@ -5,5 +5,5 @@ export default defineWorkspace([
   "./packages/hooks/vitest.config.ts",
   "./packages/draw/vitest.config.ts",
   "./playground/vite.config.ts",
-  "./packages/procomponent/vitest.config.ts"
+  "./packages/procomponent/vite.config.ts"
 ])
