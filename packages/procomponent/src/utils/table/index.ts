@@ -1,8 +1,9 @@
-import { Icon } from '@iconify/vue'
+// import { Icon } from '@iconify/vue'
 import { NTooltip } from 'naive-ui'
 import { ProText } from '@components/ProText'
 import TableIndex from '../../components/ProTable/src/components/TableIndex'
 import { h } from 'vue'
+import BmIconInfoCircle from '~icons/bm-icon/info-circle'
 
 /**
  * 自定义渲染表格单元格内容
@@ -121,12 +122,11 @@ export function renderTitle(column: Record<string, any>) {
             {
               default: () => column.tooltip,
               trigger: () => h(
-                Icon,
+                BmIconInfoCircle,
                 {
                   style: {
                     fontSize: '14px',
                   },
-                  icon: 'ant-design:question-circle-outlined',
                 },
               ),
             },
