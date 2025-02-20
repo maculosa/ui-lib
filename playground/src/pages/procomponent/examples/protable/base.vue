@@ -2,7 +2,6 @@
     <ProTable
         title="Base Table"
         :columns
-        :search="false"
         :data="dataSource"
     />
 </template>

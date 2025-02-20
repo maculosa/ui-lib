@@ -4,14 +4,6 @@ function getDataVSideBar() {
         { text: '介绍', link: 'introduce/' },
         { text: '快速上手', link: 'getting-started/' },
         {
-            text: '组件',
-            link: 'components/',
-            collapsed: false,
-            items: [
-                { text: 'Charts', link: 'components/base-chart/' },
-            ],
-        },
-        {
             text: '其他',
             collapsed: false,
             items: [

@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJSX from '@vitejs/plugin-vue-jsx'
@@ -20,7 +21,7 @@ export default defineConfig({
   build: {
     copyPublicDir: false,
     lib: {
-      entry: 'src/index.ts',
+      entry: resolve(__dirname, 'src/index.ts'),
       name: 'index',
       formats: ['es', 'cjs'],
       fileName: (format) => format === 'es' ? `index.js` : `index.cjs`

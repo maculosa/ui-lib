@@ -8,12 +8,21 @@ importers:
 
   .:
     dependencies:
+      '@banmao/datav':
+        specifier: workspace:^
+        version: link:packages/datav
       '@banmao/procomponent':
         specifier: workspace:^
         version: link:packages/procomponent
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
       '@vueuse/core':
         specifier: ^12.3.0
         version: 12.3.0(typescript@5.6.3)
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
       naive-ui:
         specifier: ^2.41.0
         version: 2.41.0(vue@3.5.13(typescript@5.6.3))

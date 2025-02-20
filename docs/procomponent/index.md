@@ -14,15 +14,3 @@ Pro Component 是一套基于 Naive UI 封装的组件库，旨在帮助开发�
 ```bash
 pnpm install @banmao/procomponent
 ```
-
-## 组件列表
-
-- [ProForm](./pro-form/)
-- [DrawerForm](./drawer-form/)
-- [ModalForm](./modal-form/)
-- [ProTable](./pro-table/)
-- [ProList](./pro-list/)
-- [ProDescriptions](./pro-descriptions/)
-- [ProLayout](./pro-layout/)
-- [ProText](./pro-text/)
-- [Watermark](./watermark/)

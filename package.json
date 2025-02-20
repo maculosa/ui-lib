@@ -19,7 +19,8 @@
     "release:draw": "pnpm build:draw && pnpm release:only",
     "release:hooks": "pnpm build:hooks && pnpm release:only",
     "release:all": "pnpm build:all && pnpm release:only",
-    "release:only": "changeset publish --registry=https://registry.npmjs.com/"
+    "release:only": "changeset publish --registry=https://registry.npmjs.com/",
+    "play": "pnpm run --filter ./playground dev"
   },
   "publishConfig": {
     "access": "public"
@@ -28,8 +29,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@banmao/datav": "workspace:^",
     "@banmao/procomponent": "workspace:^",
+    "@types/lodash-es": "^4.17.12",
     "@vueuse/core": "^12.3.0",
+    "lodash-es": "^4.17.21",
     "naive-ui": "^2.41.0",
     "normalize.css": "^8.0.1",
     "vue": "^3.5.13"
