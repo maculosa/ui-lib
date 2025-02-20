@@ -113,36 +113,34 @@ procomponent/pro-table/search-ref-demo
 
 ## Props
 
-### ProTable Properties
-
 此处仅展示扩展的属性，ProTableProps 更多属性参考 [Naive UI DataTableProps](https://www.naiveui.com/zh-CN/os-theme/components/data-table#DataTable-Props)。
-| 名称 | 类型 | 默认值 | 说明 | 版本 |
-| --- | --- | --- | --- | --- |
-| title | `string` | - | 表格标题 | |
-| hideSearchbar | `boolean` | false | 隐藏查询表单 | <span style="color: red">废弃</span> |
-| searchConfig | [`SearchConfig`](#searchconfig) | - | 查询表单配置 | <span style="color: red">废弃</span> |
-| toolbarConfig | [`ToolbarConfig`](#toolbarconfig) | - | 工具栏配置 | |
-| search | `false` \| `SearchConfig` | - | 查询表单配置 | v0.8.0 |
-| onQuery | `(params: any) => Promise<any>` | - | 查询表单提交事件 | v0.8.0 |
-| params | `any` | - | 查询表单默认值 | v0.8.0 |
-| height | `number` | - | 表格高度 | v0.7.9 |
+| 名称          | 类型                              | 默认值 | 说明             | 版本                                 |
+| ------------- | --------------------------------- | ------ | ---------------- | ------------------------------------ |
+| title         | `string`                          | -      | 表格标题         |                                      |
+| hideSearchbar | `boolean`                         | false  | 隐藏查询表单     | <span style="color: red">废弃</span> |
+| searchConfig  | [`SearchConfig`](#searchconfig)   | -      | 查询表单配置     | <span style="color: red">废弃</span> |
+| toolbarConfig | [`ToolbarConfig`](#toolbarconfig) | -      | 工具栏配置       |                                      |
+| search        | `false` \| `SearchConfig`         | -      | 查询表单配置     | v0.7.11                               |
+| onQuery       | `(params: any) => Promise<any>`   | -      | 查询表单提交事件 | v0.7.11                               |
+| params        | `any`                             | -      | 查询表单默认值   | v0.7.11                               |
+| height        | `number`                          | -      | 表格高度         | v0.7.9                               |
 
-### Column Properties
+## Column Props
 
 此处仅展示扩展的属性，ProTableColumn 属性请参考 [Naive UI DataTableColumn](https://www.naiveui.com/zh-CN/os-theme/components/data-table#DataTable-Props)。
-| 名称 | 类型 | 默认值 | 说明 | 版本 |
-| --- | --- | --- | --- | --- |
-| copyable | `boolean` \| `{ellipsis: boolean; lineClamp: number;}` | - | 是否开启复制; | |
-| order | `number` | - | 排序 | |
-| valueType | [`ValueType`](#valuetype) | - | 高级表单类型 | |
-| hideInSearch | `boolean` | false | 在查询表单中不展示此项 | |
-| hideInForm | `boolean` | false | 在表单中不展示此项 | |
-| hideInTable | `boolean` | false | 在表格中不展示此项 | |
-| tooltip | `string` | - | 表格单元格内显示的提示信息 | |
-| formItemProps | `any` | - | 表单项属性 | |
-| request | `(params: any, prop: string) => Promise<SelectOption[]>` | `undefined` | 从服务器请求枚举，一般用于选择类组件 | |
+| 名称          | 类型                                                     | 默认值      | 说明                                 | 版本 |
+| ------------- | -------------------------------------------------------- | ----------- | ------------------------------------ | ---- |
+| copyable      | `boolean` \| `{ellipsis: boolean; lineClamp: number;}`   | -           | 是否开启复制;                        |      |
+| order         | `number`                                                 | -           | 排序                                 |      |
+| valueType     | [`ValueType`](#valuetype)                                | -           | 高级表单类型                         |      |
+| hideInSearch  | `boolean`                                                | false       | 在查询表单中不展示此项               |      |
+| hideInForm    | `boolean`                                                | false       | 在表单中不展示此项                   |      |
+| hideInTable   | `boolean`                                                | false       | 在表格中不展示此项                   |      |
+| tooltip       | `string`                                                 | -           | 表格单元格内显示的提示信息           |      |
+| formItemProps | `any`                                                    | -           | 表单项属性                           |      |
+| request       | `(params: any, prop: string) => Promise<SelectOption[]>` | `undefined` | 从服务器请求枚举，一般用于选择类组件 |      |
 
-### SearchConfig
+## Search Props
 
 | 名称               | 类型                                   | 默认值   | 说明                    | 版本       |
 | ------------------ | -------------------------------------- | -------- | ----------------------- | ---------- |
@@ -163,31 +161,29 @@ procomponent/pro-table/search-ref-demo
 | submitText         | 提交按钮文本                           | `String` | `提交`                  | 0.7.7      |
 | resetText          | 重置按钮文本                           | `String` | `重置`                  | 0.7.7      |
 
-### ToolbarConfig
+## ToolbarConfig
 
 > [!IMPORTANT]
 > 推荐采用新版 ToolbarConfig，旧版 ToolbarConfig 即将废弃。将在 1.0.0 版本中移除。
 
-#### 新版本 <Badge type="tip" text="^1.0.0" />
+### 新版本 <Badge type="tip" text="^1.0.0" />
 
-| 名称               | 类型                            | 默认值   | 说明               | 版本 |
-| ------------------ | ------------------------------- | -------- | ------------------ | ---- |
-| columnSetting      | `boolean`                       | `true`   | 是否展示列设置按钮 |      |
-| columnSettingLabel | `string`                        | 列设置   | 列设置按钮文本     |      |
-| create             | `boolean`                       | `true`   | 是否展示新建按钮   |      |
-| createLabel        | `string`                        | 新建     | 新建按钮文本       |      |
-| createMode         | `button` \| `drawer` \| `modal` | `button` | 新建按钮模式       |      |
-| delete             | `boolean`                       | `true`   | 是否展示删除按钮   |      |
-| deleteLabel        | `string`                        | 删除     | 删除按钮文本       |      |
-| density            | `boolean`                       | `true`   | 是否展示密度按钮   |      |
-| export             | `boolean`                       | `true`   | 是否展示导出按钮   |      |
-| exportLabel        | `string`                        | 导出     | 导出按钮文本       |      |
-| import             | `boolean`                       | `true`   | 是否展示导入按钮   |      |
-| importLabel        | `string`                        | 导入     | 导入按钮文本       |      |
-| refresh            | `boolean`                       | `true`   | 是否展示刷新按钮   |      |
-| refreshLabel       | `string`                        | 刷新     | 刷新按钮文本       |      |
+| 名称               | 类型                            | 默认值   | 说明               | 版本                                       |
+| ------------------ | ------------------------------- | -------- | ------------------ | ------------------------------------------ |
+| columnSetting      | `boolean`                       | `true`   | 是否展示列设置按钮 |                                            |
+| columnSettingLabel | `string`                        | 列设置   | 列设置按钮文本     |                                            |
+| create             | `boolean`                       | `true`   | 是否展示新建按钮   |                                            |
+| createLabel        | `string`                        | 新建     | 新建按钮文本       |                                            |
+| createMode         | `button` \| `drawer` \| `modal` | `button` | 新建按钮模式       |                                            |
+| density            | `boolean`                       | `true`   | 是否展示密度按钮   |                                            |
+| export             | `boolean`                       | `true`   | 是否展示导出按钮   |                                            |
+| exportLabel        | `string`                        | 导出     | 导出按钮文本       |                                            |
+| import             | `boolean`                       | `true`   | 是否展示导入按钮   | <Badge type="danger" text="废弃" />v0.7.12 |
+| importLabel        | `string`                        | 导入     | 导入按钮文本       | <Badge type="danger" text="废弃" />v0.7.12 |
+| refresh            | `boolean`                       | `true`   | 是否展示刷新按钮   |                                            |
+| refreshLabel       | `string`                        | 刷新     | 刷新按钮文本       |                                            |
 
-#### 旧版本 <Badge type="danger" text="^0.x.x" />
+### 旧版本 <Badge type="danger" text="^0.x.x" />
 
 | 名称                    | 类型                 | 默认值   | 说明               | 版本   |
 | ----------------------- | -------------------- | -------- | ------------------ | ------ |
@@ -206,7 +202,7 @@ procomponent/pro-table/search-ref-demo
 | refreshButton           | `boolean`            | `true`   | 是否展示刷新按钮   |        |
 | refreshButtonText       | `string`             | 刷新     | 刷新按钮文本       |        |
 
-### ValueType
+## ValueType
 
 | 名称           | 说明         | 版本 |
 | -------------- | ------------ | ---- |
@@ -227,10 +223,11 @@ procomponent/pro-table/search-ref-demo
 
 ## Slot
 
-| 名称             | 说明               | 版本   |      |
-| ---------------- | ------------------ | ------ | ---- |
-| toolbar          | 工具栏插槽         |        |      |
-| form             | 查询表单插槽       |        |      |
-| selection-action | 批量选择操作栏插槽 |        |      |
-| statistics-card  | 展示统计总数       |        | 废弃 |
-| summary          | 表格统计插槽       | v0.7.0 |      |
+| 名称             | 说明               | 版本   | 其他                                |
+| ---------------- | ------------------ | ------ | ----------------------------------- |
+| toolbar          | 工具栏插槽         |        |                                     |
+| form             | 查询表单插槽       |        |                                     |
+| selection-action | 批量选择操作栏插槽 |        |                                     |
+| statistics-card  | 展示统计总数       |        | <Badge type="danger" text="废弃" /> |
+| summary          | 表格统计插槽       | v0.7.0 |                                     |
+
