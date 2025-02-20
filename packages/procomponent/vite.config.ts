@@ -14,11 +14,11 @@ import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import { setup } from 'naive-ui/es/radio/src/use-radio'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
+  console.log(env)
   return {
     resolve: {
       alias: {
