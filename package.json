@@ -4,22 +4,38 @@
   "description": "",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:lib": "pnpm run --filter @banmao/procomponent build",
+    "build:datav": "pnpm run --filter @banmao/datav build",
+    "build:draw": "pnpm run --filter @banmao/draw build",
+    "build:hooks": "pnpm run --filter @banmao/hooks build",
+    "build:all": "pnpm run build:lib && pnpm run build:datav && pnpm run build:draw && pnpm run build:hooks",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release:lib": "pnpm build:lib && pnpm release:only",
+    "release:datav": "pnpm build:datav && pnpm release:only",
+    "release:draw": "pnpm build:draw && pnpm release:only",
+    "release:hooks": "pnpm build:hooks && pnpm release:only",
+    "release:all": "pnpm build:all && pnpm release:only",
+    "release:only": "changeset publish --registry=https://registry.npmjs.com/"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@banmao/procomponent": "workspace:^",
     "@vueuse/core": "^12.3.0",
     "naive-ui": "^2.41.0",
     "normalize.css": "^8.0.1",
-    "vue": "^3.5.13",
-    "@banmao/procomponent": "workspace:^"
+    "vue": "^3.5.13"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.28.0",
     "@css-render/vue3-ssr": "^0.15.14",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
