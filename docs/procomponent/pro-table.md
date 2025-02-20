@@ -81,6 +81,24 @@ procomponent/pro-table/create-demo
 
 ::: demo
 procomponent/pro-table/create-modal-demo
+## 内置引用使用场景
+
+### `searchRef` 搜索栏高度
+
+以下是如何使用 `tableRef.value.searchRef`  的属性获取搜索栏高度的用法。
+```ts
+// 获取搜索栏引用
+const searchRef = tableRef.value?.searchRef;
+// 获取搜索栏高度
+const searchHeight = searchRef?.$el.offsetHeight;
+```
+
+::: info
+通过 `tableRef` 获取 `ProTable` 实例，然后调用 `searchRef`  的相关方法。
+:::
+
+::: demo
+procomponent/pro-table/search-ref-demo
 :::
 
 ## Props

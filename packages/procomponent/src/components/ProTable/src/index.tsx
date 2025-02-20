@@ -17,7 +17,7 @@ export default defineComponent({
   name: 'ProTable',
   props: proTableProps,
   emits: proTableEmits,
-  setup(props, { emit, slots }) {
+  setup(props, { emit, expose, slots }) {
     const message = useMessage()
     const tableProps = computed(() => {
       const p = { ...props }
@@ -70,6 +70,8 @@ export default defineComponent({
     type TableSize = 'small' | 'medium' | 'large'
     const size = ref<TableSize>('large')
     const searchFormRef = ref(null)
+    const searchRef = ref(null)
+
 
     /**
      * 加载数据
@@ -145,6 +147,12 @@ export default defineComponent({
       emit('exportData')
     }
 
+    expose({
+      size,
+      searchFormRef,
+      searchRef,
+    })
+
     return () => {
       const OriginDataTable = (
         <NDataTable
@@ -162,7 +170,7 @@ export default defineComponent({
       return (
         <NFlex vertical>
           {props.search !== false && (
-            <NCard>
+            <NCard ref={searchRef}>
               <ProForm
                 ref={searchFormRef}
                 columns={searchColumns.value}
