@@ -1,5 +1,5 @@
 import { NButton, NModal, NSpace } from 'naive-ui'
-import { computed, defineComponent, Fragment, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { ProForm } from '@components/ProForm'
 import { modalFormProps, modalFormEmits, type ModalFormExpose } from './types'
 
@@ -55,11 +55,10 @@ export default defineComponent({
       reset: _reset,
     })
 
-    const children = slots.default?.()
     return () => (
-      <Fragment>
+      <div>
         <div style="display: inline-block" onClick={handleVisible}>
-          { children || (
+          { slots.default?.() || (
             <NButton size="small" type="primary" onClick={handleVisible}>
               { props.title ? props.title : '打开' }
             </NButton>
@@ -93,7 +92,7 @@ export default defineComponent({
             ),
           }}
         </NModal>
-      </Fragment>
+      </div>
     )
   },
 })
