@@ -10,7 +10,7 @@
     "build:hooks": "pnpm run --filter @banmao/hooks build",
     "build:all": "pnpm run build:lib && pnpm run build:datav && pnpm run build:draw && pnpm run build:hooks",
     "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
+    "docs:build": "pnpm build:all && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "changeset": "changeset",
     "version-packages": "changeset version",
