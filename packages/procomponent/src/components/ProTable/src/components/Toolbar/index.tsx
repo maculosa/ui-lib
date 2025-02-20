@@ -11,7 +11,7 @@ export default defineComponent({
   name: 'ToolbarComponent',
   props: toolbarProps,
   emits: Object.keys(toolbarEmits),
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const { config, title, loading, formColumns } = toRefs(props)
 
     const {
@@ -75,7 +75,7 @@ export default defineComponent({
      * 是否为新增按钮 button 模式 computed
      */
     const isButton = computed(() => {
-      return create
+      return createMode === 'button'
     })
 
     /**
@@ -109,8 +109,7 @@ export default defineComponent({
 
     return () => (
       <NSpace>
-        <slot name="toolbar" />
-
+        { slots.default?.() }
         {
           // 导出按钮
           hasExportButton.value && (

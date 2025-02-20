@@ -81,6 +81,17 @@ procomponent/pro-table/create-demo
 
 ::: demo
 procomponent/pro-table/create-modal-demo
+:::
+
+## toolbar 插槽
+
+示例中展示: 通过 `slot = toolbar` 自定义一个 导入 按钮，用于扩展工具栏功能。
+
+::: demo
+procomponent/pro-table/toolbar-slot-demo
+:::
+
+
 ## 内置引用使用场景
 
 ### `searchRef` 搜索栏高度

@@ -201,7 +201,9 @@ export default defineComponent({
                   formColumns={formColumns.value}
                   onExport={handleExportData}
                   onRefresh={handleRefresh}
-                />
+                >
+                  {slots['toolbar']?.()}
+                </Toolbar>
               </div>
             </div>
 
