@@ -148,22 +148,16 @@ const rowKey = computed(() => {
 function handleCreate() {
   console.error('新增')
 }
-
-function handleExportData() {
-  console.error('导出')
-}
 </script>
 
 <template>
-  <ProTable
-    title="创建弹窗表单" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading"
-    :search-config="{
-      defaultValue: {
-        age: 16,
-      },
-    }" :toolbar-config="{
-      createButton: true,
-      createMode: 'modal',
-    }" @update:page-size="handleChangePageSize" @load-data="fetchTableData" @create="handleCreate" @export-data="handleExportData"
-  />
+  <ProTable title="创建弹窗表单" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading" :search-config="{
+    defaultValue: {
+      age: 16,
+    },
+  }" :toolbar-config="{
+    create: true,
+    createLabel: 'Create',
+    createMode: 'modal',
+  }" @update:page-size="handleChangePageSize" @load-data="fetchTableData" @create="handleCreate" />
 </template>

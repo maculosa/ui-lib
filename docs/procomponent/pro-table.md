@@ -56,7 +56,6 @@ procomponent/pro-table/flex-height
 procomponent/pro-table/query-table
 :::
 
-
 ## 新增、导出
 
 ### 新增
@@ -65,9 +64,9 @@ procomponent/pro-table/query-table
 
 #### 基础用法
 
-`toolbarConfig.createButton = true`
+`toolbarConfig.create = true`
 
-`toolbarConfig.exportButton = true`
+`toolbarConfig.export = true`
 
 ::: demo
 procomponent/pro-table/create-demo

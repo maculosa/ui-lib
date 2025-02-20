@@ -162,9 +162,9 @@ function handleExportData() {
         age: 16,
       },
     }" :toolbar-config="{
-      exportButton: true,
+      export: true,
       createMode: 'button',
-      createButton: true,
+      create: true,
     }" @update:page-size="handleChangePageSize"
     @load-data="fetchTableData" @create="handleCreate" @export-data="handleExportData"
   />
