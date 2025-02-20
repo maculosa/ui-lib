@@ -14,6 +14,9 @@ importers:
       '@banmao/procomponent':
         specifier: workspace:^
         version: link:packages/procomponent
+      '@highlightjs/vue-plugin':
+        specifier: ^2.1.0
+        version: 2.1.0(highlight.js@11.11.1)(vue@3.5.13(typescript@5.6.3))
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
@@ -277,6 +280,9 @@ importers:
       '@banmao/procomponent':
         specifier: workspace:^
         version: link:../packages/procomponent
+      '@highlightjs/vue-plugin':
+        specifier: ^2.1.0
+        version: 2.1.0(highlight.js@11.11.1)(vue@3.5.13(typescript@5.6.3))
       '@unhead/vue':
         specifier: ^1.11.14
         version: 1.11.15(vue@3.5.13(typescript@5.6.3))
@@ -1191,6 +1197,12 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@highlightjs/vue-plugin@2.1.0':
+    resolution: {integrity: sha512-E+bmk4ncca+hBEYRV2a+1aIzIV0VSY/e5ArjpuSN9IO7wBJrzUE2u4ESCwrbQD7sAy+jWQjkV5qCCWgc+pu7CQ==}
+    peerDependencies:
+      highlight.js: ^11.0.1
+      vue: ^3
 
   '@iconify-json/simple-icons@1.2.18':
     resolution: {integrity: sha512-ae4ig7fxNXME1wl5og7Ocp82TM4jyz6IsOyI8GrteSbvHR9gaPu2Z01Amn5V/xo1Y7A7/+EH/3Ovpy2az/gYbg==}
@@ -5808,6 +5820,11 @@ snapshots:
 
   '@esbuild/win32-x64@0.24.2':
     optional: true
+
+  '@highlightjs/vue-plugin@2.1.0(highlight.js@11.11.1)(vue@3.5.13(typescript@5.6.3))':
+    dependencies:
+      highlight.js: 11.11.1
+      vue: 3.5.13(typescript@5.6.3)
 
   '@iconify-json/simple-icons@1.2.18':
     dependencies:

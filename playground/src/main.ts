@@ -7,6 +7,12 @@ import Demo from './components/Demo/index.vue'
 
 import './style.css'
 
+import 'highlight.js/styles/stackoverflow-light.css'
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+import hljsVuePlugin from "@highlightjs/vue-plugin";
+
+hljs.registerLanguage('javascript', javascript);
 
 
 // import 'highlight.js/styles/github-dark-dimmed.css'
@@ -40,6 +46,7 @@ const router = createRouter({
 app.component('Demo', Demo)
 
 // setupRouter(app)
+app.use(hljsVuePlugin)
 app.use(head)
 app.use(router)
 

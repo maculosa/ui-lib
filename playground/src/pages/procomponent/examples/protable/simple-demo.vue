@@ -2,6 +2,7 @@
     <ProTable
         title="Base Table"
         :columns
+        simple
         :data="dataSource"
     />
 </template>
@@ -27,52 +28,44 @@ const columns = ref([
     {
         title: '姓名',
         key: 'name',
-        valueType: 'text',
         width: 100
     },
     {
         title: '年龄',
         key: 'age',
-        hideInSearch: true,
         width: 80
     },
     {
         title: '性别',
         key: 'gender',
-        hideInSearch: true,
         width: 80
     },
     {
         title: '邮箱',
         key: 'email',
-        hideInSearch: true,
         width: 150
     },
     {
         title: '电话',
         key: 'phone',
-        hideInSearch: true,
         width: 110
     },
     {
         title: '城市',
         key: 'city',
-        hideInSearch: true,
         width: 100
     },
     {
         title: '国家',
         key: 'country',
-        hideInSearch: true,
         width: 64
     },
     {
         title: '公司',
         key: 'company',
-        hideInSearch: true,
         copyable: {
-            ellipsis: false, 
-            lineClamp: 2, // 最多显示两行，超出显示省略号， 仅在 ellipsis 为 true 时生效
+            ellipsis: false,
+            lineClamp: 2
         },
         width: 200
     },

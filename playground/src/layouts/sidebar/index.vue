@@ -21,14 +21,20 @@ const activePath = computed(() => {
             </section>
             <section class="sidebar-group">
                 <p class="sidebar-group__title">ProComponent</p>
-                <a class="link" :class="{ active: activePath === '/procomponent' }" href="/procomponent">
+                <a class="link" :class="{ active: activePath === '/procomponent/pro-table' }" href="/procomponent/pro-table">
                     <p class="link-text">ProTable</p>
+                </a>
+                <a class="link" :class="{ active: activePath === '/procomponent/pro-descriptions' }" href="/procomponent/pro-descriptions">
+                    <p class="link-text">ProDescriptions</p>
                 </a>
                 <a class="link" :class="{ active: activePath === '/procomponent/pro-text' }" href="/procomponent/pro-text">
                     <p class="link-text">ProText</p>
                 </a>
                 <a class="link" :class="{ active: activePath === '/procomponent/watermark' }" href="/procomponent/watermark">
                     <p class="link-text">Watermark</p>
+                </a>
+                <a class="link" :class="{ active: activePath === '/procomponent/naive-provider' }" href="/procomponent/naive-provider">
+                    <p class="link-text">NaiveProvider</p>
                 </a>
             </section>
 
