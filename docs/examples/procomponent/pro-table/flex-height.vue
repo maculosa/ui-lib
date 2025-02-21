@@ -246,7 +246,7 @@ const height = ref(300)
       gridCols: 2,
     }"
     :scroll-x="600"
-    :max-height="250"
+    :max-height="height"
     @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"
   />
