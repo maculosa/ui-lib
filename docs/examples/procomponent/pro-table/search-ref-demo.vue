@@ -1,7 +1,8 @@
 <script setup lang="tsx">
 import { ProTable } from '@banmao/procomponent'
 import { NButton, NSpace } from 'naive-ui'
-import { computed, watch, ref } from 'vue'
+import { computed, watch, ref, watchEffect } from 'vue'
+import { useElementSize } from '@vueuse/core'
 
 async function fetchCityList() {
   return new Promise<any[]>((resolve) => {
@@ -236,12 +237,11 @@ async function handleQuery(params) {
 const tableRef = ref<InstanceType<typeof ProTable> | null>(null)
 const searchHeight = ref<number>(0)
 
-watch(
-  () => tableRef.value?.searchRef.$el.offsetHeight,
-  (val) => {
-    searchHeight.value = val
-  },
-)
+watchEffect(() => {
+  const { height } = useElementSize(tableRef.value?.searchRef)
+  searchHeight.value = height.value
+})
+
 </script>
 
 <template>
@@ -257,7 +257,7 @@ watch(
       gridCols: 2,
     }"
     :scroll-x="600"
-    :max-height="250"
+    :max-height="800"
     @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"
   />
