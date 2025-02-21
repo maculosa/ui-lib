@@ -1,3 +1,9 @@
+<route lang="yaml">
+  meta:
+    layout: home
+</route>
+
+
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import IconLogo from '~icons/bm-icon/vue';
@@ -80,9 +86,46 @@ function initParticles() {
           <p>大量实践沉淀，满足企业级应用的复杂需求</p>
         </div>
       </div>
-      <div class="cta-buttons">
-        <a href="/docs" class="btn primary">开始使用</a>
-        <a href="/components" class="btn secondary">组件预览</a>
+
+      <div class="product-sections">
+        <div class="product-section">
+          <h2 class="section-title">ProComponent</h2>
+          <p class="section-desc">企业级中后台解决方案</p>
+          <div class="section-features">
+            <div class="section-feature">
+              <IconCopy class="section-feature-icon" />
+              <span>高性能表格</span>
+            </div>
+            <div class="section-feature">
+              <IconCopy class="section-feature-icon" />
+              <span>灵活布局</span>
+            </div>
+            <div class="section-feature">
+              <IconCopy class="section-feature-icon" />
+              <span>丰富组件</span>
+            </div>
+          </div>
+          <a href="/procomponent/" class="section-link">立即使用</a>
+        </div>
+        <div class="product-section">
+          <h2 class="section-title">Data V</h2>
+          <p class="section-desc">数据可视化解决方案</p>
+          <div class="section-features">
+            <div class="section-feature">
+              <IconCopy class="section-feature-icon" />
+              <span>图表组件</span>
+            </div>
+            <div class="section-feature">
+              <IconCopy class="section-feature-icon" />
+              <span>动态效果</span>
+            </div>
+            <div class="section-feature">
+              <IconCopy class="section-feature-icon" />
+              <span>主题定制</span>
+            </div>
+          </div>
+          <a href="/datav/" class="section-link">立即使用</a>
+        </div>
       </div>
     </div>
   </div>
@@ -95,8 +138,35 @@ function initParticles() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+  /* background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%); */
   overflow: hidden;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin: 4rem auto;
+  padding: 0 1rem;
+  max-width: 1200px;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .particles {
@@ -106,14 +176,6 @@ function initParticles() {
   width: 100%;
   height: 100%;
   z-index: 1;
-}
-
-.content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  padding: 2rem;
-  color: #fff;
 }
 
 .logo-container {
@@ -240,6 +302,97 @@ function initParticles() {
 
   .cta-buttons {
     flex-direction: column;
+  }
+}
+
+.product-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 4rem auto;
+  padding: 0 2rem;
+  max-width: 1200px;
+}
+
+.product-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: left;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.product-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-color: rgba(66, 133, 244, 0.3);
+}
+
+.section-title {
+  font-size: 2rem;
+  color: #fff;
+  margin: 0 0 0.5rem;
+  background: linear-gradient(45deg, #4285f4, #34a853);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-desc {
+  color: #b3b3b3;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.section-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.section-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+}
+
+.section-feature-icon {
+  width: 20px;
+  height: 20px;
+  color: #4285f4;
+}
+
+.section-link {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background: linear-gradient(45deg, #4285f4, #34a853);
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.section-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
+}
+
+@media (max-width: 768px) {
+  .product-sections {
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .section-desc {
+    font-size: 1rem;
   }
 }
 </style>

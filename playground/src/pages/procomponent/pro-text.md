@@ -5,9 +5,9 @@ description: ProText is a text-based game where you play as a professional text 
 ---
 
 <script setup>
-    import Base from './examples/ProText/index.vue'
-    import CopyDemo from './examples/ProText/copy.vue'
-    import Ellipsis from './examples/ProText/ellipsis.vue'
+    import Base from '@/examples/ProText/index.vue'
+    import CopyDemo from '@/examples/ProText/copy.vue'
+    import Ellipsis from '@/examples/ProText/ellipsis.vue'
 </script>
 
 # ProText

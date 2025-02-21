@@ -5,7 +5,7 @@ description: Watermark
 ---
 
 <script setup>
-    import Base from './examples/watermark/index.vue'
+    import Base from '@/examples/watermark/index.vue'
 </script>
 
 # Watermark

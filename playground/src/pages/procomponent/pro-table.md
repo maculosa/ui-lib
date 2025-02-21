@@ -5,8 +5,8 @@ desc: ProTable 是一个基于 Table 的高级表格组件，提供了搜索、�
 ---
 
 <script setup>
-    import BaseProTable from './examples/ProTable/base.vue'
-    import SimpleDemo from './examples/ProTable/simple-demo.vue'
+    import BaseProTable from '@/examples/ProTable/base.vue'
+    import SimpleDemo from '@/examples/ProTable/simple-demo.vue'
 </script>
 
 [[toc]]

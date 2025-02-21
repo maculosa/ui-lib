@@ -1,4 +1,6 @@
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
+import { join } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import vueJSX from '@vitejs/plugin-vue-jsx'
 // import VueRouter from 'unplugin-vue-router/vite'
@@ -8,7 +10,7 @@ import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
 import Markdown from 'unplugin-vue-markdown/vite'
-import Pages from 'vite-plugin-pages'
+import VueRouter from 'unplugin-vue-router/vite'
 // import prism from 'markdown-it-prism'
 import { full as emoji } from 'markdown-it-emoji'
 // import LightningCSS from 'unplugin-lightningcss/vite'
@@ -22,6 +24,7 @@ import Icons from 'unplugin-icons/vite'
 import Unocss from 'unocss/vite'
 // import { promises as fs } from 'fs'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
+import Layouts from 'vite-plugin-vue-layouts'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -84,13 +87,58 @@ export default defineConfig({
     }),
     // LightningCSS(),
     Unocss(),
-    Pages({
-      pagesDir: [
-        { dir: 'src/pages', baseRoute: '' },
-        { dir: 'src/docs', baseRoute: 'docs' },
+    VueRouter({
+      extensions: ['.vue', '.md'],
+      // extendRoute(route) {
+      //   // transform kebab-case to camelCase
+      //   route.params.forEach((param) => {
+      //     param.paramName = param.paramName.replace(/-([a-z])/g, (g) =>
+      //       g[1].toUpperCase()
+      //     )
+      //   })
+
+      //   // example of deleting routes
+      //   // if (route.name.startsWith('/users')) {
+      //   //   route.delete()
+      //   // }
+
+      //   if (route.name === '/[name]') {
+      //     route.addAlias('/hello-vite-:name')
+      //   }
+
+      //   // if (route.name === '/deep/nesting') {
+      //   //   const children = [...route]
+      //   //   children.forEach((child) => {
+      //   //     // TODO: remove one node while copying the children to its parent
+      //   //   })
+      //   // }
+
+      //   // example moving a route (without tis children to the root)
+      //   // if (route.fullPath.startsWith('/procomponent')) {
+      //   //   route.parent!.insert(
+      //   //     '/procomponent',
+      //   //     route.components.get('default')!
+      //   //   )
+      //   // }
+      // },
+      routesFolder: [
+        { src: 'src/pages' },
+        {
+          src:'src/docs',
+          extensions: ['.md'],
+        }
       ],
-      extensions: ['vue', 'md']
+      dts: 'types/typed-router.d.ts',
+      exclude: [
+        '**/__*',
+        '**/components/*.vue',
+        '**/*.component.vue',
+      ],
+      importMode: 'async',
+      routeBlockLang: 'yaml',
+      
     }),
+    Layouts(),
     Inspect(),
     Icons({
       compiler: 'vue3',

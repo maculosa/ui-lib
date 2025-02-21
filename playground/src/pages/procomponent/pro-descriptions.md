@@ -7,7 +7,7 @@ desc: ProDescriptions 是一个基于 Descriptions 的高级描述组件，提�
 [[toc]]
 
 <script setup lang="ts">
-    import BaseProDescriptions from './examples/ProDescriptions/base.vue'
+    import BaseProDescriptions from '@/examples/ProDescriptions/base.vue'
 </script>
 
 ## ProDescriptions

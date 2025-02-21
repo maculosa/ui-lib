@@ -1,7 +1,6 @@
 import { createHead } from '@unhead/vue'
-import routes from 'pages-generated'
 import { createApp } from 'vue'
-import { createRouter, createWebHistory } from 'vue-router'
+import { setupRouter } from './router'
 import App from './App.vue'
 import Demo from './components/Demo/index.vue'
 
@@ -19,17 +18,10 @@ const app = createApp(App)
 const head = createHead()
 // import config from '@/banmao.config.json'
 
-const router = createRouter({
-    history: createWebHistory(),
-    routes
-})
-
-
 app.component('Demo', Demo)
 
-// setupRouter(app)
+setupRouter(app)
 app.use(hljsVuePlugin)
 app.use(head)
-app.use(router)
 
 app.mount('#app')

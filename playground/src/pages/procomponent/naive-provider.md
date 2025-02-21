@@ -9,7 +9,7 @@ desc: NaiveProvider 是一个 Naive UI 的 Provider 组件，用于提供 Naive 
 
 <script setup>
     import { defineComponent } from 'vue'
-    import NaiveProvider from './examples/Provider/NaiveProvider.vue?raw'
+    import NaiveProvider from '@/examples/Provider/NaiveProvider.vue?raw'
 
     import 'highlight.js/lib/common';
     import hljsVuePlugin from "@highlightjs/vue-plugin";

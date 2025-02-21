@@ -50,11 +50,11 @@
     "unplugin-lightningcss": "^0.2.1",
     "unplugin-vue-components": "^0.28.0",
     "unplugin-vue-markdown": "^0.28.0",
-    "unplugin-vue-router": "^0.10.9",
+    "unplugin-vue-router": "^0.11.2",
     "uslug": "^1.0.4",
     "vite": "^6.0.5",
     "vite-plugin-inspect": "^0.10.6",
-    "vite-plugin-pages": "^0.32.4",
+    "vite-plugin-vue-layouts": "^0.11.0",
     "vue-tsc": "^2.2.0"
   }
 }
