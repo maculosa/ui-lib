@@ -15,31 +15,13 @@ import hljsVuePlugin from "@highlightjs/vue-plugin";
 hljs.registerLanguage('javascript', javascript);
 
 
-// import 'highlight.js/styles/github-dark-dimmed.css'
-
-// import setupRouter from './router'
-// import 'prismjs'
-// import 'prismjs/components/prism-bash'
-// import 'prismjs/components/prism-typescript'
-// import 'prismjs/components/prism-javascript'
-// import 'prismjs/components/prism-markup'
-// import 'prismjs/components/prism-markup-templating'
-// import 'prismjs/components/prism-rust'
-// import 'prismjs/components/prism-go'
-
-// import 'prismjs/themes/prism-tomorrow.css'
-
 const app = createApp(App)
 const head = createHead()
+// import config from '@/banmao.config.json'
+
 const router = createRouter({
     history: createWebHistory(),
-    routes: [
-        {
-            path: '/',
-            component: () => import('@/layouts/basicLayout.vue'),
-            children: routes
-        }
-    ]
+    routes
 })
 
 

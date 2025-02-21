@@ -1,4 +1,59 @@
 {
+    "routes": [
+        {
+            "path": "/",
+            "component": "@/layouts/homeLayout.vue",
+            "children": [
+                {
+                    "path": "",
+                    "component": "@/pages/home/index.vue"
+                }
+            ]
+        },
+        {
+            "path": "/docs",
+            "component": "@/layouts/docsLayout.vue",
+            "children": [
+                {
+                    "path": "",
+                    "component": "@/pages/docs/index.vue"
+                }
+            ]
+        },
+        {
+            "path": "/procomponent",
+            "component": "@/layouts/basicLayout.vue",
+            "children": [
+                {
+                    "path": "",
+                    "redirect": "/procomponent/overview"
+                },
+                {
+                    "path": "overview",
+                    "component": "@/pages/procomponent/overview.vue"
+                },
+                {
+                    "path": "component",
+                    "component": "@/pages/procomponent/component.vue"
+                },
+                {
+                    "path": "component/:name",
+                    "component": "@/pages/procomponent/pro-table.vue"
+                }
+                
+            ]
+        },
+        {
+            "path": "/datav",
+            "component": "@/layouts/basicLayout.vue",
+            "children": [
+                {
+                    "path": "",
+                    "component": "@/pages/datav/index.vue"
+                }
+            ]
+        }
+    ],
     "navItems": [
         {
             "name": "Home",

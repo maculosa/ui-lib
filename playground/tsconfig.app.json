@@ -11,7 +11,8 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "~icons": ["src/assets/icons/*"]
     },
     "typeRoots": ["./node_modules/@types", "./types"],
     "moduleResolution": "bundler"

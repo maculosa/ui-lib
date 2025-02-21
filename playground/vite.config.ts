@@ -11,7 +11,7 @@ import Markdown from 'unplugin-vue-markdown/vite'
 import Pages from 'vite-plugin-pages'
 // import prism from 'markdown-it-prism'
 import { full as emoji } from 'markdown-it-emoji'
-import LightningCSS from 'unplugin-lightningcss/vite'
+// import LightningCSS from 'unplugin-lightningcss/vite'
 import hljs from 'highlight.js'
 // import highlightjsIt from 'markdown-it-highlightjs'
 import markdownItAttrs from 'markdown-it-attrs'
@@ -19,7 +19,8 @@ import markdownItAnchor from 'markdown-it-anchor'
 import markdownItTOC from 'markdown-it-toc-done-right'
 import uslug from 'uslug'
 import Icons from 'unplugin-icons/vite'
-import { promises as fs } from 'fs'
+import Unocss from 'unocss/vite'
+// import { promises as fs } from 'fs'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 
 // https://vite.dev/config/
@@ -81,7 +82,8 @@ export default defineConfig({
         // }]
       ],
     }),
-    LightningCSS(),
+    // LightningCSS(),
+    Unocss(),
     Pages({
       pagesDir: [
         { dir: 'src/pages', baseRoute: '' },
@@ -107,7 +109,13 @@ export default defineConfig({
       imports: [
         'vue',
         'vue-router',
+        '@vueuse/head',
+        '@vueuse/core',
         VueRouterAutoImports,
+        {
+          // add any other imports you were relying on
+          'vue-router/auto': ['useLink']
+        }
       ],
       dts: 'types/auto-imports.d.ts'
     }),
@@ -115,6 +123,7 @@ export default defineConfig({
       include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
       resolvers: [NaiveUiResolver()],
       dts: 'types/components.d.ts',
+      extensions: ['vue', 'md']
     }),
   ],
   server: {

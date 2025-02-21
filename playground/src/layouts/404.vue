@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import IconLogo from '~icons/bm-icon/vue';
-import IconCopy from '~icons/bm-icon/copy';
+import { useRouter } from 'vue-router';
+// import IconLogo from '~icons/bm-icon/vue';
+
+const router = useRouter();
 
 onMounted(() => {
   initParticles();
@@ -55,43 +57,25 @@ function initParticles() {
 </script>
 
 <template>
-  <div class="hero">
+  <div class="error-page">
     <canvas id="particles" class="particles"></canvas>
     <div class="content">
       <div class="logo-container">
-        <IconLogo class="main-logo" />
-        <h1 class="title">Banmao UI</h1>
+        <!-- <IconLogo class="main-logo" /> -->
       </div>
-      <p class="subtitle">下一代高性能 Vue 组件库</p>
-      <div class="features">
-        <div class="feature-card">
-          <IconCopy class="feature-icon" />
-          <h3>高性能</h3>
-          <p>基于 Vue 3 + TypeScript 构建，提供卓越的性能体验</p>
-        </div>
-        <div class="feature-card">
-          <IconCopy class="feature-icon" />
-          <h3>可定制</h3>
-          <p>丰富的主题配置选项，打造专属的设计系统</p>
-        </div>
-        <div class="feature-card">
-          <IconCopy class="feature-icon" />
-          <h3>企业级</h3>
-          <p>大量实践沉淀，满足企业级应用的复杂需求</p>
-        </div>
-      </div>
+      <h1 class="error-code">404</h1>
+      <p class="error-message">页面不存在</p>
       <div class="cta-buttons">
-        <a href="/docs" class="btn primary">开始使用</a>
-        <a href="/components" class="btn secondary">组件预览</a>
+        <button class="btn primary" @click="router.push('/')">返回首页</button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.hero {
+.error-page {
   position: relative;
-  min-height: calc(100vh - var(--layout-header-height));
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,11 +101,7 @@ function initParticles() {
 }
 
 .logo-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .main-logo {
@@ -130,8 +110,8 @@ function initParticles() {
   filter: drop-shadow(0 0 10px rgba(66, 133, 244, 0.5));
 }
 
-.title {
-  font-size: 4rem;
+.error-code {
+  font-size: 8rem;
   font-weight: 700;
   margin: 0;
   background: linear-gradient(45deg, #4285f4, #34a853, #fbbc05, #ea4335);
@@ -140,58 +120,15 @@ function initParticles() {
   text-shadow: 0 0 20px rgba(66, 133, 244, 0.3);
 }
 
-.subtitle {
+.error-message {
   font-size: 1.5rem;
   color: #b3b3b3;
   margin: 1rem 0 3rem;
 }
 
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin: 3rem 0;
-  padding: 0 2rem;
-}
-
-.feature-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 2rem;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.feature-icon {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 1rem;
-  color: #4285f4;
-}
-
-.feature-card h3 {
-  font-size: 1.5rem;
-  margin: 0.5rem 0;
-  color: #fff;
-}
-
-.feature-card p {
-  color: #b3b3b3;
-  margin: 0;
-  line-height: 1.5;
-}
-
 .cta-buttons {
   display: flex;
-  gap: 1rem;
   justify-content: center;
-  margin-top: 3rem;
 }
 
 .btn {
@@ -199,7 +136,7 @@ function initParticles() {
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
-  text-decoration: none;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
@@ -214,32 +151,13 @@ function initParticles() {
   box-shadow: 0 0 20px rgba(66, 133, 244, 0.4);
 }
 
-.btn.secondary {
-  background: transparent;
-  color: #fff;
-  border: 2px solid #4285f4;
-}
-
-.btn.secondary:hover {
-  background: rgba(66, 133, 244, 0.1);
-  box-shadow: 0 0 20px rgba(66, 133, 244, 0.2);
-}
-
 @media (max-width: 768px) {
-  .title {
-    font-size: 3rem;
+  .error-code {
+    font-size: 6rem;
   }
 
-  .subtitle {
+  .error-message {
     font-size: 1.2rem;
-  }
-
-  .features {
-    grid-template-columns: 1fr;
-  }
-
-  .cta-buttons {
-    flex-direction: column;
   }
 }
 </style>
