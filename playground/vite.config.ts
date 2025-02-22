@@ -13,7 +13,6 @@ import Markdown from 'unplugin-vue-markdown/vite'
 import VueRouter from 'unplugin-vue-router/vite'
 // import prism from 'markdown-it-prism'
 import { full as emoji } from 'markdown-it-emoji'
-// import LightningCSS from 'unplugin-lightningcss/vite'
 import hljs from 'highlight.js'
 // import highlightjsIt from 'markdown-it-highlightjs'
 import markdownItAttrs from 'markdown-it-attrs'
@@ -34,17 +33,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    // VueRouter({
-    //   extensions: ['.vue', '.md'],
-    //   routesFolder: [
-    //     'src/pages',
-    //     {
-    //       src: 'src/docs',
-    //       extensions: ['.md'],
-    //     }
-    //   ],
-    //   dts: 'types/typed-router.d.ts'
-    // }),
     vue({
       include: [/\.vue$/, /\.md$/], // <-- allows Vue to compile markdown files
     }),
@@ -85,68 +73,37 @@ export default defineConfig({
         // }]
       ],
     }),
-    // LightningCSS(),
     Unocss(),
     VueRouter({
       extensions: ['.vue', '.md'],
-      // extendRoute(route) {
-      //   // transform kebab-case to camelCase
-      //   route.params.forEach((param) => {
-      //     param.paramName = param.paramName.replace(/-([a-z])/g, (g) =>
-      //       g[1].toUpperCase()
-      //     )
-      //   })
-
-      //   // example of deleting routes
-      //   // if (route.name.startsWith('/users')) {
-      //   //   route.delete()
-      //   // }
-
-      //   if (route.name === '/[name]') {
-      //     route.addAlias('/hello-vite-:name')
-      //   }
-
-      //   // if (route.name === '/deep/nesting') {
-      //   //   const children = [...route]
-      //   //   children.forEach((child) => {
-      //   //     // TODO: remove one node while copying the children to its parent
-      //   //   })
-      //   // }
-
-      //   // example moving a route (without tis children to the root)
-      //   // if (route.fullPath.startsWith('/procomponent')) {
-      //   //   route.parent!.insert(
-      //   //     '/procomponent',
-      //   //     route.components.get('default')!
-      //   //   )
-      //   // }
-      // },
+      importMode: 'async',
       routesFolder: [
         { src: 'src/pages' },
-        {
-          src:'src/docs',
-          extensions: ['.md'],
-        }
+        { src: 'src/docs',
+          path: 'docs/',
+          extensions: ['.md']
+         }
       ],
       dts: 'types/typed-router.d.ts',
       exclude: [
         '**/__*',
-        '**/components/*.vue',
+        '**/__**/*',
         '**/*.component.vue',
+        '**/examples/*.vue'
       ],
-      importMode: 'async',
+      logs: true,
       routeBlockLang: 'yaml',
-      
     }),
-    Layouts(),
+    Layouts({
+      pagesDirs: ['src/docs', 'src/pages'],
+      extensions: ['vue', 'md'],
+      defaultLayout: 'default',
+    }),
     Inspect(),
     Icons({
       compiler: 'vue3',
       autoInstall: true,
       customCollections: {
-        // 'bm-icon': {
-        //   logo: () => fs.readFile('./src/assets/icons/vue.svg', 'utf-8')
-        // }
         'bm-icon': FileSystemIconLoader(
           './src/assets/icons',
           svg => svg.replace(/^<svg /, '<svg fill="currentColor" ')
@@ -156,7 +113,6 @@ export default defineConfig({
     AutoImport({
       imports: [
         'vue',
-        'vue-router',
         '@vueuse/head',
         '@vueuse/core',
         VueRouterAutoImports,

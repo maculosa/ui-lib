@@ -1,7 +1,7 @@
 <template>
     <nav class="nav">
         <router-link v-for="item in navItems" :key="item.url" :to="item.url"
-            :class="{ active: route.path === item.url }">
+            :class="{ active: item.url.includes(route.fullPath.split('/')[1]) }">
             {{ item.name }}
         </router-link>
     </nav>
@@ -14,8 +14,6 @@ import config from '@/banmao.config.json'
 const route = useRoute()
 
 const navItems = config.navItems
-
-
 
 </script>
 <style lang="scss" scoped>

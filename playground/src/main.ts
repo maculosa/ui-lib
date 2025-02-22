@@ -4,14 +4,17 @@ import { setupRouter } from './router'
 import App from './App.vue'
 import Demo from './components/Demo/index.vue'
 
-import './style.css'
+// import '@unocss/reset/tailwind.css'
+import './styles/main.css'
+import 'virtual:uno.css'
 
-import 'highlight.js/styles/stackoverflow-light.css'
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
+import xml from 'highlight.js/lib/languages/xml';
 import hljsVuePlugin from "@highlightjs/vue-plugin";
 
 hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('xml', xml);
 
 
 const app = createApp(App)
@@ -20,8 +23,8 @@ const head = createHead()
 
 app.component('Demo', Demo)
 
-setupRouter(app)
 app.use(hljsVuePlugin)
 app.use(head)
 
+setupRouter(app)
 app.mount('#app')

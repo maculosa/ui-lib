@@ -3,7 +3,6 @@
     layout: home
 </route>
 
-
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import IconLogo from '~icons/bm-icon/vue';

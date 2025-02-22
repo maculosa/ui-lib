@@ -16,41 +16,41 @@ const activePath = computed(() => {
             <section class="sidebar-group">
                 <p class="sidebar-group__title">Overview</p>
                 <a class="link" :class="{ active: activePath === '/procomponent/overview' }" href="/procomponent/overview">
-                    <p class="link-text">Overview</p>
+                    <span class="link-text">Overview</span>
                 </a>
             </section>
             <section class="sidebar-group">
                 <p class="sidebar-group__title">ProComponent</p>
                 <a class="link" :class="{ active: activePath === '/procomponent/pro-table' }" href="/procomponent/pro-table">
-                    <p class="link-text">ProTable</p>
+                    <span class="link-text">ProTable</span>
                 </a>
                 <a class="link" :class="{ active: activePath === '/procomponent/pro-descriptions' }" href="/procomponent/pro-descriptions">
-                    <p class="link-text">ProDescriptions</p>
+                    <span class="link-text">ProDescriptions</span>
                 </a>
                 <a class="link" :class="{ active: activePath === '/procomponent/pro-text' }" href="/procomponent/pro-text">
-                    <p class="link-text">ProText</p>
+                    <span class="link-text">ProText</span>
                 </a>
                 <a class="link" :class="{ active: activePath === '/procomponent/watermark' }" href="/procomponent/watermark">
-                    <p class="link-text">Watermark</p>
+                    <span class="link-text">Watermark</span>
                 </a>
                 <a class="link" :class="{ active: activePath === '/procomponent/naive-provider' }" href="/procomponent/naive-provider">
-                    <p class="link-text">NaiveProvider</p>
+                    <span class="link-text">NaiveProvider</span>
                 </a>
             </section>
 
             <section class="sidebar-group">
                 <p class="sidebar-group__title">Data V</p>
                 <a class="link" :class="{ active: activePath === '/datav/bar_line' }" href="/datav/bar_line">
-                    <p class="link-text">Bar/Line</p>
+                    <span class="link-text">Bar/Line</span>
                 </a>
                 <a class="link" :class="{ active: activePath === '/datav/cube_bar' }" href="/datav/cube_bar">
-                    <p class="link-text">Cube Bar</p>
+                    <span class="link-text">Cube Bar</span>
                 </a>
                 <a class="link" :class="{ active: activePath === '/datav/circle_bar' }" href="/datav/circle_bar">
-                    <p class="link-text">Circle Bar</p>
+                    <span class="link-text">Circle Bar</span>
                 </a>
                 <a class="link" :class="{ active: activePath === '/datav/pie' }" href="/datav/pie">
-                    <p class="link-text">Pie</p>
+                    <span class="link-text">Pie</span>
                 </a>
             </section>
         </div>
@@ -60,31 +60,32 @@ const activePath = computed(() => {
 <style scoped>
 .sidebar {
     position: fixed;
-    top: 0;
+    top: 64px;
     bottom: 0;
     left: 0;
-    width: 200px;
+    width: 320px;
     background-color: var(--bg-color);
     padding: 48px 32px;
+    box-sizing: border-box;
     overflow-y: auto;
-    transform: translate(-100%);
-    transition: background-color 0.2s, opacity 0.25s, transform 0.5s cubic-bezier(.19, 1, .22, 1);
+    transform: translate(0);
     background-color: #fff;
     box-shadow: -2px 6px 4px 0 rgba(0, 0, 0, 0.3);
     transition: all 0.5s cubic-bezier(.19, 1, .22, 1);
+    z-index: 999;
     &:hover {
         box-shadow: 0px 6px 4px 0 rgba(0, 0, 0, 0.3);
     }
 }
 
-@media screen and (min-width: 1440px) {
+@media screen and (max-width: 1000px) {
     .sidebar {
         padding: 48px 32px;
         width: calc(200px + 32px);
     }
 }
 
-@media screen and (min-width: 960px) {
+@media screen and (max-width: 960px) {
     .sidebar {
         z-index: 99;
         top: 55px;
@@ -95,7 +96,6 @@ const activePath = computed(() => {
 .sidebar .sidebar-groups {
     padding: 0;
 }
-
 
 .sidebar .sidebar-groups .sidebar-group__title {
     font-size: 1rem;

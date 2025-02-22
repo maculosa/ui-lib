@@ -2,6 +2,11 @@
 name: Docs
 ---
 
+<router lang="yaml">
+meta:
+  layout: docs
+</router>
+
 <style>
 
 </style>

@@ -24,13 +24,15 @@ declare module 'vue-router/auto-routes' {
     '/datav/circle_bar': RouteRecordInfo<'/datav/circle_bar', '/datav/circle_bar', Record<never, never>, Record<never, never>>,
     '/datav/cube_bar': RouteRecordInfo<'/datav/cube_bar', '/datav/cube_bar', Record<never, never>, Record<never, never>>,
     '/datav/pie': RouteRecordInfo<'/datav/pie', '/datav/pie', Record<never, never>, Record<never, never>>,
+    '/docs/en/': RouteRecordInfo<'/docs/en/', '/docs/en', Record<never, never>, Record<never, never>>,
+    '/docs/overview': RouteRecordInfo<'/docs/overview', '/docs/overview', Record<never, never>, Record<never, never>>,
+    '/docs/zh/': RouteRecordInfo<'/docs/zh/', '/docs/zh', Record<never, never>, Record<never, never>>,
     '/error': RouteRecordInfo<'/error', '/error', Record<never, never>, Record<never, never>>,
-    'default': RouteRecordInfo<'default', '/procomponent', Record<never, never>, Record<never, never>>,
+    '/procomponent/': RouteRecordInfo<'/procomponent/', '/procomponent', Record<never, never>, Record<never, never>>,
     '/procomponent/naive-provider': RouteRecordInfo<'/procomponent/naive-provider', '/procomponent/naive-provider', Record<never, never>, Record<never, never>>,
     '/procomponent/pro-descriptions': RouteRecordInfo<'/procomponent/pro-descriptions', '/procomponent/pro-descriptions', Record<never, never>, Record<never, never>>,
     '/procomponent/pro-table': RouteRecordInfo<'/procomponent/pro-table', '/procomponent/pro-table', Record<never, never>, Record<never, never>>,
     '/procomponent/pro-text': RouteRecordInfo<'/procomponent/pro-text', '/procomponent/pro-text', Record<never, never>, Record<never, never>>,
     '/procomponent/watermark': RouteRecordInfo<'/procomponent/watermark', '/procomponent/watermark', Record<never, never>, Record<never, never>>,
-    '/ui/': RouteRecordInfo<'/ui/', '/ui', Record<never, never>, Record<never, never>>,
   }
 }

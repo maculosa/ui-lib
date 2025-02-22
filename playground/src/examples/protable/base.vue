@@ -95,7 +95,7 @@ const columns = ref([
   {
     title: '地址',
     key: 'address',
-    minWidth: 200,
+    minWidth: 400,
     hideInSearch: true,
     hideInForm: true,
     valueType: 'text',
@@ -245,10 +245,11 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div style="margin-bottom: 32px;">
+  <div>
     当前搜索栏高度为：
     <span style="color: #10b981;font-weight: bold;">{{ searchHeight }}px</span>
   </div>
+  <n-divider />
   <ProTable
     ref="tableRef"
     title="数据表格" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading"
@@ -256,7 +257,7 @@ watchEffect(() => {
       searchText: '查询',
       gridCols: 2,
     }"
-    :scroll-x="600"
+    :scroll-x="800"
     :max-height="300"
     @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"

@@ -1,0 +1,21 @@
+.prose pre:not(.shiki) {
+    padding: 0;
+}
+h1,h2,h3 {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+h1 {
+    font-size: 1.75rem;
+}
+h2 {
+    font-size: 1.5rem;
+}
+h3 {
+    font-size: 1rem;
+}
+
+p {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}

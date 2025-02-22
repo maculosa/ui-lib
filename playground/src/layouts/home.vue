@@ -16,6 +16,8 @@ const navItems = [
         url: 'https://github.com/banmao/ui-lib'
     }
 ]
+
+console.log('home layout')
 </script>
 
 <template>

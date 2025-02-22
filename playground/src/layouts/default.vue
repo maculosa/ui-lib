@@ -3,6 +3,7 @@ import Logo from './logo/index.vue'
 import Nav from './nav/index.vue'
 import Sidebar from './sidebar/index.vue'
 
+console.log('default.vue')
 </script>
 
 <template>
@@ -13,11 +14,17 @@ import Sidebar from './sidebar/index.vue'
             <Nav />
         </header>
 
-        <Sidebar />
-        <main class="layout-main">
-            
-            <router-view />
-        </main>
+        <section class="flex-1 flex mx-auto gap-10">
+            <div class="w-80 relative">
+                <Sidebar />
+            </div>
+            <main class="layout-main flex-auto">
+                <router-view />
+            </main>
+            <aside class="relative w-320px bg-emerald-400/10 mt-15">
+                
+            </aside>
+        </section>
     </div>
 </template>
 
@@ -49,7 +56,10 @@ import Sidebar from './sidebar/index.vue'
 }
 
 .layout {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    min-height: 100dvh;
     /* height: 100%; */
 }
 
@@ -72,18 +82,21 @@ import Sidebar from './sidebar/index.vue'
 }
 
 .layout-main {
-    padding: 0 32px;
+    /* padding: 0 32px; */
     box-sizing: border-box;
     max-width: 1280px;
     min-width: 460px;
-    margin: var(--layout-margin-top) auto;
+    margin: 0 auto;
     /* overflow-y: auto; */
-    padding-left: 320px;
+    padding-top: var(--layout-margin-top);
+    /* padding-left: 320px; */
 }
 
 @media screen and (max-width: 1000px) {
     .layout-main {
         max-width: 680px;
+        padding-left: 0;
+        margin: 0 auto;
     }
 }
 
