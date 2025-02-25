@@ -2,30 +2,33 @@
 import Logo from './logo/index.vue'
 import Nav from './nav/index.vue'
 import Sidebar from './sidebar/index.vue'
+import TOC from '@/components/TOC/index.vue'
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
 
-console.log('default.vue')
+const route = useRoute()
+const showTOC = computed(() => route.path.includes('/procomponent/'))
 </script>
 
 <template>
-    <div class="layout">
-        <header class="layout-header">
-            <Logo />
+  <div class="layout">
+    <header class="layout-header">
+      <Logo />
+      <Nav />
+    </header>
 
-            <Nav />
-        </header>
-
-        <section class="flex-1 flex gap-10">
-            <div class="w-80 relative">
-                <Sidebar />
-            </div>
-            <main class="layout-main flex-1">
-                <router-view />
-            </main>
-            <aside class="relative w-320px bg-emerald-400/10 mt-15">
-                
-            </aside>
-        </section>
-    </div>
+    <section class="flex-1 flex gap-10">
+      <div class="w-80 relative">
+        <Sidebar />
+      </div>
+      <main class="layout-main flex-1">
+        <router-view />
+      </main>
+      <aside v-if="showTOC" class="toc-container">
+        <TOC />
+      </aside>
+    </section>
+  </div>
 </template>
 
 <style>
@@ -104,5 +107,19 @@ console.log('default.vue')
     .table-of-contents {
         display: none;
     }
+}
+
+.toc-container {
+  position: relative;
+  width: 320px;
+  margin-top: var(--layout-margin-top);
+  background-color: #fff;
+  border-left: 1px solid #eee;
+}
+
+@media screen and (max-width: 1200px) {
+  .toc-container {
+    display: none;
+  }
 }
 </style>

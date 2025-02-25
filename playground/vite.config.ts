@@ -72,6 +72,14 @@ export default defineConfig({
         //   }
         // }]
       ],
+      markdownItSetup(md) {
+        md.use(markdownItAnchor, {
+          permalink: true,
+          permalinkBefore: true,
+          permalinkSymbol: '#',
+          permalinkAttrs: () => ({ 'aria-hidden': true })
+        })
+      }
     }),
     Unocss(),
     VueRouter({
