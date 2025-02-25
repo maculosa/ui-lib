@@ -26,6 +26,7 @@ async function fetchCityList() {
 }
 
 const columns = ref([
+  { type: 'index' },
   {
     title: '姓名',
     key: 'name',
@@ -236,11 +237,25 @@ async function handleQuery(params) {
 
 const tableRef = ref<InstanceType<typeof ProTable> | null>(null)
 const searchHeight = ref<number>(0)
+const searchRef = computed(() => tableRef.value?.searchRef)
 
+const { height } = useElementSize(searchRef)
+
+const tableHeight = ref(300)
 watchEffect(() => {
-  const { height } = useElementSize(tableRef.value?.searchRef)
-  searchHeight.value = height.value
+  if (height.value > 0) {
+    searchHeight.value = height.value
+  }
+  if (height.value === 124) {
+    tableHeight.value = 300
+  } else {
+    tableHeight.value = 300 + 50
+  }
 })
+
+const handleExportData = () => {
+  console.log('导出数据')
+}
 
 </script>
 
