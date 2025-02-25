@@ -14,11 +14,11 @@ console.log('default.vue')
             <Nav />
         </header>
 
-        <section class="flex-1 flex mx-auto gap-10">
+        <section class="flex-1 flex gap-10">
             <div class="w-80 relative">
                 <Sidebar />
             </div>
-            <main class="layout-main flex-auto">
+            <main class="layout-main flex-1">
                 <router-view />
             </main>
             <aside class="relative w-320px bg-emerald-400/10 mt-15">
@@ -84,9 +84,9 @@ console.log('default.vue')
 .layout-main {
     /* padding: 0 32px; */
     box-sizing: border-box;
-    max-width: 1280px;
+    /* max-width: 1280px; */
     min-width: 460px;
-    margin: 0 auto;
+    /* margin: 0 auto; */
     /* overflow-y: auto; */
     padding-top: var(--layout-margin-top);
     /* padding-left: 320px; */
