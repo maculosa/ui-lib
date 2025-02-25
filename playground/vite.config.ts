@@ -76,7 +76,8 @@ export default defineConfig({
         md.use(markdownItAnchor, {
           permalink: true,
           permalinkBefore: true,
-          permalinkSymbol: '#',
+          // permalinkSymbol: '#',
+          permalinkSymbol: '§',
           permalinkAttrs: () => ({ 'aria-hidden': true })
         })
       }

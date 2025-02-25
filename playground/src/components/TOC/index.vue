@@ -6,7 +6,7 @@ const activeId = ref('')
 
 onMounted(() => {
   headers.value = Array.from(document.querySelectorAll('h2, h3, h4'))
-  
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -27,14 +27,11 @@ function getLevel(tag: string): number {
   <nav class="toc">
     <div class="toc-title">目录</div>
     <ul class="toc-list">
-      <li 
-        v-for="header in headers" 
-        :key="header.id"
-        :class="[
-          `level-${getLevel(header.tagName)}`,
-          { active: activeId === header.id }
-        ]"
-      >
+      <li v-for="header in headers" :key="header.id" :class="[
+        `level-${getLevel(header.tagName)}`,
+        'cursor-pointer',
+        { active: activeId === header.id }
+      ]">
         <a :href="`#${header.id}`">{{ header.textContent }}</a>
       </li>
     </ul>
@@ -80,7 +77,15 @@ function getLevel(tag: string): number {
   color: #409eff;
 }
 
-.level-1 { padding-left: 0; }
-.level-2 { padding-left: 16px; }
-.level-3 { padding-left: 32px; }
+.level-1 {
+  padding-left: 0;
+}
+
+.level-2 {
+  padding-left: 16px;
+}
+
+.level-3 {
+  padding-left: 32px;
+}
 </style>
