@@ -8,7 +8,7 @@
       <div class="demo-header-right">
         <n-tooltip trigger="hover">
           <template #trigger>
-            <Icon icon="carbon:code" width="20" height="20" class="demo-action-icon" :class="{ 'active': visible }"
+            <Icon icon="carbon:code" width="20" height="20" class="outline-none p-1 rounded-1 text-[#9ca3af] hover:text-[#3b82f6] hover:bg-[#3b82f6]/10 active:text-[#3b82f6] cursor-pointer transition-all transition-delay-200 ease" :class="{ 'active': visible }"
               @click="toggle()" />
           </template>
           查看代码
@@ -21,35 +21,17 @@
     </div>
 
     <n-collapse-transition>
-      <div v-show="visible" class="demo-code">
-        <div class="demo-code-header">
-          <span>示例代码</span>
-          <n-tooltip trigger="hover">
-            <template #trigger>
-              <Icon icon="carbon:copy" width="18" height="18" class="demo-action-icon" @click="copyCode" />
-            </template>
-            复制代码
-          </n-tooltip>
-        </div>
-        <n-scrollbar style="max-height: 600px">
-          <highlightjs language="xml" :code="codeRaw" class="demo-code-content" />
-        </n-scrollbar>
-      </div>
+      <CodePreview v-show="visible" :code="raw" />
     </n-collapse-transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, toRefs } from 'vue'
-import { useToggle, useClipboard } from '@vueuse/core'
-import { NTooltip, NCollapseTransition, useMessage } from 'naive-ui'
-import 'highlight.js/lib/common'
-import 'highlight.js/styles/atom-one-dark.css'
-import hljsVuePlugin from '@highlightjs/vue-plugin';
+import { toRefs } from 'vue'
+import { useToggle } from '@vueuse/core'
+import { NTooltip, NCollapseTransition } from 'naive-ui'
 import { Icon } from '@iconify/vue'
 
-const highlightjs = hljsVuePlugin.component
-const message = useMessage()
 
 export interface DemoProps {
   title: string
@@ -61,16 +43,6 @@ export interface DemoProps {
 const props = defineProps<DemoProps>()
 const { title, desc, raw } = toRefs(props)
 const [visible, toggle] = useToggle(false)
-
-const codeRaw = computed(() => raw.value || '')
-
-const { copy } = useClipboard()
-const copyCode = async () => {
-  await copy(codeRaw.value)
-  message.success('复制成功')
-}
-
-
 </script>
 
 <style scoped lang="scss">
@@ -116,48 +88,6 @@ const copyCode = async () => {
 .demo-content {
   padding: 24px;
   background: #f7f5f5;
-}
-
-.demo-code {
-  border-top: 1px dashed #e5e7eb;
-  background: #282c34;
-
-  &-header {
-    padding: 8px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #e5e7eb;
-    font-size: 14px;
-    background: #21252b;
-  }
-  &-content {
-    padding: 16px;
-    margin: 0;
-    overflow-x: auto;
-
-    :deep(pre) {
-      margin: 0;
-      background: transparent;
-    }
-  }
-}
-
-.demo-action-icon {
-  cursor: pointer;
-  color: #9ca3af;
-  transition: all 0.2s ease;
-  padding: 4px;
-  border-radius: 4px;
-
-  &:hover {
-    color: #3b82f6;
-    background: rgba(59, 130, 246, 0.1);
-  }
-
-  &.active {
-    color: #3b82f6;
-  }
 }
 
 </style>
