@@ -3,6 +3,11 @@ title: NaiveProvider
 desc: NaiveProvider 是一个 Naive UI 的 Provider 组件，用于提供 Naive UI 的主题配置。
 ---
 
+<route lang="yaml">
+meta:
+  layout: default
+</route>
+
 # NaiveProvider
 
 

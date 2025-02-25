@@ -4,6 +4,12 @@ description: ProText is a text-based game where you play as a professional text 
 
 ---
 
+<route lang="yaml">
+meta:
+  layout: default
+</route>
+
+
 <script setup>
     import Base from '@/examples/ProText/index.vue'
     import CopyDemo from '@/examples/ProText/copy.vue'
