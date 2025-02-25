@@ -21,6 +21,9 @@ const activePath = computed(() => {
             </section>
             <section class="sidebar-group">
                 <p class="sidebar-group__title">ProComponent</p>
+                <a class="link" :class="{ active: activePath === '/procomponent/pro-form' }" href="/procomponent/pro-form">
+                    <span class="link-text">ProForm</span>
+                </a>
                 <a class="link" :class="{ active: activePath === '/procomponent/pro-table' }" href="/procomponent/pro-table">
                     <span class="link-text">ProTable</span>
                 </a>
