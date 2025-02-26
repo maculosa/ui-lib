@@ -9,8 +9,6 @@ meta:
   layout: default
 </route>
 
-[[toc]]
-
 <script setup lang="ts">
     import BaseProDescriptions from '@/examples/ProDescriptions/base.vue'
     import BaseProDescriptionsRaw from '@/examples/ProDescriptions/base.vue?raw'

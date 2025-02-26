@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { ProDescriptions } from '@banmao/procomponent'
-import { NDescriptions, NDescriptionsItem, NCard } from 'naive-ui'
+import { NCard } from 'naive-ui'
 import { ref } from 'vue'
 
 const dataSource = ref({
@@ -18,25 +18,28 @@ const columns = ref([
     title: '性别',
     key: 'gender',
     span: 2,
-    render(row) {
+    render(row: any) {
       return row.gender === 'male' ? '男' : '女'
     },
   },
 ])
 
 const loading = ref(false)
+
 </script>
 
 
 <template>
-  <ProDescriptions
-    title="基础用法"
-    label-placement="left"
-    size="large"
-    :column="2"
-    :bordered="false"
-    :columns="columns"
-    :data="dataSource"
-    :loading="loading"
-  />
+  <NCard>
+    <ProDescriptions
+      title="基础用法"
+      label-placement="left"
+      size="large"
+      :column="2"
+      :bordered="false"
+      :columns="columns"
+      :data="dataSource"
+      :loading="loading"
+    />
+  </NCard>
 </template>

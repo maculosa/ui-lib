@@ -1,14 +1,14 @@
 <template>
-  <div class="demo-warp">
-    <div class="demo-header">
+  <div class="demo-warp bg-transparent backdrop-blur-1 shadow-2xl b-white/40 dark:b-gray/40 b-[1px] b-solid">
+    <div class="demo-header dark:b-b-primary/20">
       <div class="demo-header-left">
-        <span class="demo-title">{{ title }}</span>
+        <span class="demo-title dark:text-white">{{ title }}</span>
         <span v-if="desc" class="demo-desc">{{ desc }}</span>
       </div>
       <div class="demo-header-right">
         <n-tooltip trigger="hover">
           <template #trigger>
-            <Icon icon="carbon:code" width="20" height="20" class="outline-none p-1 rounded-1 text-[#9ca3af] hover:text-[#3b82f6] hover:bg-[#3b82f6]/10 active:text-[#3b82f6] cursor-pointer transition-all transition-delay-200 ease" :class="{ 'active': visible }"
+            <Icon icon="carbon:code" width="20" height="20" class="outline-none p-1 rounded-1 text-[#9ca3af] hover:text-primary hover:bg-primary/10 active:text-primary cursor-pointer transition-all transition-delay-200 ease" :class="{ 'active': visible }"
               @click="toggle()" />
           </template>
           查看代码
@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <div class="demo-content">
+    <div class="demo-content bg-coolgray/10 dark:bg-dark/10">
       <slot />
     </div>
 
@@ -49,7 +49,6 @@ const [visible, toggle] = useToggle(false)
 .demo-warp {
   margin: 16px 0;
   border-radius: 8px;
-  background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   transition: all 0.3s ease;
@@ -65,7 +64,7 @@ const [visible, toggle] = useToggle(false)
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #f0f0f0;
+  // border-bottom: 1px solid #f0f0f0;
 
   &-left {
     display: flex;
@@ -87,7 +86,6 @@ const [visible, toggle] = useToggle(false)
 
 .demo-content {
   padding: 24px;
-  background: #f7f5f5;
 }
 
 </style>

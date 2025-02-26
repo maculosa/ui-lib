@@ -7,6 +7,7 @@ interface NavItem {
 interface SidebarItem {
   name: string
   url: string
+  children?: SidebarItem[]
 }
 
 interface Sidebar {
@@ -50,6 +51,59 @@ export const config: Config = {
         {
           name: 'Overview',
           url: '/procomponent/overview'
+        },
+        {
+          name: 'Components',
+          url: '/procomponent/components',
+          children: [
+            {
+              name: 'ProForm',
+              url: '/procomponent/pro-form',
+            },
+            {
+              name: 'ProTable',
+              url: '/procomponent/pro-table',
+            },
+            {
+              name: 'ProTree',
+              url: '/procomponent/pro-tree',
+            },
+            {
+              name: 'ProText',
+              url: '/procomponent/pro-text',
+            },
+            {
+              name: 'Watermark',
+              url: '/procomponent/watermark',
+            },
+            {
+              name: 'ProDescriptions',
+              url: '/procomponent/pro-descriptions',
+            },
+          ]
+        },
+      ]
+    },
+    {
+      name: 'Data V',
+      items: [
+        {
+          name: 'Overview',
+          url: '/datav/overview'
+        },
+        {
+          name: 'Components',
+          url: '/datav/components',
+          children: [
+            {
+              name: 'Bar',
+              url: '/datav/bar',
+            },
+            {
+              name: 'Line',
+              url: '/datav/line',
+            }
+          ]
         }
       ]
     }

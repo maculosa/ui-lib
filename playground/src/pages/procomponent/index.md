@@ -1,3 +1,8 @@
+---
+title: ProComponents
+
+---
+
 <route lang="yaml">
   meta:
     layout: default

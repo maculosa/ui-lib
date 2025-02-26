@@ -11,7 +11,7 @@ const activePath = computed(() => {
 </script>
 
 <template>
-    <aside class="sidebar">
+    <aside class="sidebar dark:text-white/80">
         <div class="sidebar-groups">
             <section class="sidebar-group">
                 <p class="sidebar-group__title">Overview</p>
@@ -63,17 +63,16 @@ const activePath = computed(() => {
 <style scoped>
 .sidebar {
     position: fixed;
-    top: 64px;
-    bottom: 0;
-    left: 0;
+    top: 80px;
+    bottom: 16px;
+    left: 16px;
     width: 320px;
-    background-color: var(--bg-color);
+    background-color: transparent;
     padding: 48px 32px;
     box-sizing: border-box;
     overflow-y: auto;
     transform: translate(0);
-    background-color: #fff;
-    box-shadow: -2px 6px 4px 0 rgba(0, 0, 0, 0.3);
+    @apply backdrop-blur-1 rounded-2 shadow;
     transition: all 0.5s cubic-bezier(.19, 1, .22, 1);
     z-index: 999;
     &:hover {
@@ -112,24 +111,58 @@ const activePath = computed(() => {
     line-height: 1.5;
     font-size: 0.9rem;
     border-radius: 8px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(.19, 1, .22, 1);
+
+    &:hover {
+        @apply bg-primary/5;
+        transform: translateX(4px);
+
+        .link-text {
+            @apply text-primary;
+        }
+    }
+
 }
 .link.active {
-    background-color: hsla(210, 100%, 63%, 0.1);
-    color: #409eff;
+    position: relative;
+    @apply text-primary bg-primary/10;
+    transform: none;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 100%;
+        @apply bg-primary shadow-[0 0 0 1px] shadow-primary;
+        border-radius: 8px 0 0 8px;
+        transition: all 0.3s cubic-bezier(.19, 1, .22, 1);
+        transform: scaleY(1);
+        transform-origin: left;
+        opacity: 1;
+        z-index: 1;
+    }
+
+    &:hover {
+        transform: none;
+    }
+}
+
+.lint-text {
+    transition: color 0.3 ease;
 }
 
 .link:not(.flex) {
     display: block;
 }
 
-.link-text:hover {
-    color: #409eff;
-}
-
 a {
     font-weight: 500;
     text-decoration: inherit;
-    color: #333333;
+    @apply text-dark dark:text-white/60;
 }
+
 
 </style>

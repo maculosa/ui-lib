@@ -39,7 +39,6 @@ import Header from './header/index.vue'
 
 .home-layout-main {
     box-sizing: border-box;
-    max-width: 1440px;
     min-width: 320px;
     padding: var(--layout-margin-top) auto;
 }

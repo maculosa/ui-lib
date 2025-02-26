@@ -24,6 +24,7 @@ import Unocss from 'unocss/vite'
 // import { promises as fs } from 'fs'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import Layouts from 'vite-plugin-vue-layouts'
+import { MarkdownTransform } from "./build/plugins/md-transform"
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -37,6 +38,7 @@ export default defineConfig({
       include: [/\.vue$/, /\.md$/], // <-- allows Vue to compile markdown files
     }),
     vueJSX(),
+    MarkdownTransform(),
     Markdown({
       markdownItOptions: {
         highlight: (str, lang) => {
@@ -77,7 +79,7 @@ export default defineConfig({
           permalink: true,
           permalinkBefore: true,
           // permalinkSymbol: '#',
-          permalinkSymbol: '§',
+          permalinkSymbol: '',
           permalinkAttrs: () => ({ 'aria-hidden': true })
         })
       }

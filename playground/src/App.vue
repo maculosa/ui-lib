@@ -18,6 +18,7 @@ const isDark = useDark({
     const meta = document.querySelector('meta[name="theme-color"]')
     if (meta) {
       meta.setAttribute('content', dark ? '#121212' : '#ffffff')
+      document.querySelector('html')?.setAttribute('class', dark? 'dark' : '')
     }
   }
 })
@@ -41,6 +42,7 @@ function toggleThemeMode() {
 //  手动切换主题
 function toggleTheme() {
   if (!isAutoTheme.value) {
+    console.log('切换主题', isDark.value)
     isDark.value = !isDark.value
   }
 }
@@ -51,10 +53,18 @@ provide('isAutoTheme', isAutoTheme)
 provide('toggleTheme', toggleTheme)
 provide('toggleThemeMode', toggleThemeMode)
 
+const themeOverrides = {
+  common: {
+    primaryColor: '#1890ff'
+  }
+}
+
 </script>
 
 <template>
-  <n-config-provider :theme="isDark ? darkTheme : null">
+  <n-config-provider :theme="isDark ? darkTheme : null"
+    :theme-overrides="themeOverrides"
+  >
     <naive-provider>
       <router-view />
     </naive-provider>

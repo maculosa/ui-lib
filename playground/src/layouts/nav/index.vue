@@ -1,7 +1,9 @@
 <template>
     <nav class="nav">
         <router-link v-for="item in navItems" :key="item.url" :to="item.url"
-            :class="{ active: item.url.includes(route.fullPath.split('/')[1]) }">
+            :class="{
+                active: isActive(item.url),
+            }">
             {{ item.name }}
         </router-link>
     </nav>
@@ -9,11 +11,21 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import config from '@/banmao.config.json'
+import config from '@/config'
 
 const route = useRoute()
 
 const navItems = config.navItems
+
+console.log(route.path)
+
+function isActive(path: string) {
+    if (path === '/') {
+        return route.path === '/'
+    } else {
+        return route.path.includes(path)
+    }
+}
 
 </script>
 <style lang="scss" scoped>
@@ -30,12 +42,11 @@ const navItems = config.navItems
         transition: all 0.3s;
 
         &:hover {
-            color: #ff8821;
             text-shadow: 0px 0px 2px #33333333;
         }
 
         &.active {
-            color: #ff8821;
+            color: #409eff;
         }
     }
 }

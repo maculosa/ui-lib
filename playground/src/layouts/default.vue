@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Layout from './layout/index.vue'
 import Header from './header/index.vue'
 import Sidebar from './sidebar/index.vue'
 import TOC from '@/components/TOC/index.vue'
@@ -10,48 +11,27 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
 </script>
 
 <template>
-  <div class="layout">
+  <Layout class="layout">
     <Header />
 
-    <section class="flex-1 flex gap-10">
-      <div class="w-80 relative">
+    <section class="flex-1 flex gap-4 mt-20">
+      <div class="w-84 flex relative">
         <Sidebar />
       </div>
       <main class="layout-main flex-1">
         <router-view />
       </main>
-      <aside v-if="showTOC" class="toc-container">
+      <aside v-if="showTOC" class="toc-container dark:bg-transparent">
         <TOC />
       </aside>
     </section>
-  </div>
+  </Layout>
 </template>
 
 <style>
 :root {
     --layout-header-height: 60px;
     --layout-margin-top: calc(60px + 32px);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-
-}
-
-.logo-pic {
-    width: 40px;
-    height: 40px;
-    background: #f0e5e5;
-    border-radius: 20%;
-}
-
-.logo-text {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
 }
 
 .layout {
@@ -73,7 +53,7 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
     box-sizing: border-box;
     background: transparent;
     backdrop-filter: blur(5px);
-    border-bottom: 1px solid #ddd;
+    /* border-bottom: 1px solid #ddd; */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -81,14 +61,16 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
 }
 
 .layout-main {
-    /* padding: 0 32px; */
+    padding: 0 32px;
     box-sizing: border-box;
     /* max-width: 1280px; */
     min-width: 460px;
     /* margin: 0 auto; */
     /* overflow-y: auto; */
     padding-top: var(--layout-margin-top);
+    padding-bottom: 32px;
     /* padding-left: 320px; */
+    @apply bg-white/10 shadow rounded-2 hover:shadow-xl;
 }
 
 @media screen and (max-width: 1000px) {
@@ -106,11 +88,11 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
 }
 
 .toc-container {
-  position: relative;
+  padding: 16px;
+  box-sizing: border-box;
   width: 320px;
-  margin-top: var(--layout-margin-top);
-  background-color: #fff;
-  border-left: 1px solid #eee;
+  /* margin-top: var(--layout-margin-top); */
+  @apply bg-white/10 backdrop-blur-1 shadow rounded-2 hover:shadow-xl;
 }
 
 @media screen and (max-width: 1200px) {

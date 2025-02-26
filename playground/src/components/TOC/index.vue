@@ -70,11 +70,11 @@ function getLevel(tag: string): number {
 }
 
 .toc-list li.active a {
-  color: #409eff;
+  @apply text-primary;
 }
 
 .toc-list li a:hover {
-  color: #409eff;
+  @apply text-primary;
 }
 
 .level-1 {

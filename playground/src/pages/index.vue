@@ -67,7 +67,7 @@ function initParticles() {
         <!-- <IconLogo class="main-logo" /> -->
         <h1 class="title">Banmao UI</h1>
       </div>
-      <p class="subtitle">下一代高性能 Vue 组件库</p>
+      <p class="subtitle"> 配置化 Vue 组件库</p>
       <div class="features">
         <div class="feature-card">
           <IconCopy class="feature-icon" />
