@@ -9,32 +9,29 @@ meta:
   layout: default
 </route>
 
-
 <script setup>
+    import { NGrid, NGridItem } from 'naive-ui'
     import Base from '@/examples/ProText/index.vue'
-    import CopyDemo from '@/examples/ProText/copy.vue'
     import Ellipsis from '@/examples/ProText/ellipsis.vue'
+    import CopyDemo from '@/examples/ProText/copy.vue'
 </script>
 
 # ProText
 
 ## Base
-<div style="display: grid; gap: 20px; grid-template-columns: 1fr 1fr;
-grid-auto-flow: row dense;
-">
-<Demo title="基本用法">
-    <Base />
-</Demo>
 
-<Demo title="可复制">
-    <CopyDemo />
-</Demo>
-
-<Demo title="超出部分省略">
-    <Ellipsis />
-</Demo>
-
-<Demo title="可复制">
-    <CopyDemo />
-</Demo>
-</div>
+<NGrid cols="2" x-gap="16">
+    <NGridItem>
+        <Demo title="基本用法" :raw="BaseRaw">
+            <Base />
+        </Demo>
+        <Demo title="超出部分省略" :raw="EllipsisRaw">
+            <Ellipsis />
+        </Demo>
+    </NGridItem>
+    <NGridItem>
+        <Demo title="可复制" :raw="CopyDemoRaw">
+            <CopyDemo />
+        </Demo>
+    </NGridItem>
+</NGrid>

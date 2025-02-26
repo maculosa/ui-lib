@@ -1,9 +1,6 @@
-import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
-import { join } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import vueJSX from '@vitejs/plugin-vue-jsx'
-// import VueRouter from 'unplugin-vue-router/vite'
 import Inspect from 'vite-plugin-inspect'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
@@ -11,20 +8,17 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
 import Markdown from 'unplugin-vue-markdown/vite'
 import VueRouter from 'unplugin-vue-router/vite'
-// import prism from 'markdown-it-prism'
 import { full as emoji } from 'markdown-it-emoji'
 import hljs from 'highlight.js'
-// import highlightjsIt from 'markdown-it-highlightjs'
 import markdownItAttrs from 'markdown-it-attrs'
 import markdownItAnchor from 'markdown-it-anchor'
 import markdownItTOC from 'markdown-it-toc-done-right'
 import uslug from 'uslug'
 import Icons from 'unplugin-icons/vite'
 import Unocss from 'unocss/vite'
-// import { promises as fs } from 'fs'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import Layouts from 'vite-plugin-vue-layouts'
-import { MarkdownTransform } from "./build/plugins/md-transform"
+import { autoImportRaw } from './build/plugins/vite-plugin-auto-import-raw'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -38,7 +32,7 @@ export default defineConfig({
       include: [/\.vue$/, /\.md$/], // <-- allows Vue to compile markdown files
     }),
     vueJSX(),
-    MarkdownTransform(),
+    autoImportRaw(),
     Markdown({
       markdownItOptions: {
         highlight: (str, lang) => {
@@ -67,19 +61,12 @@ export default defineConfig({
         [markdownItTOC, {
           slugify: (s: any) => uslug(s)
         }],
-        // [highlightjsIt, {
-        //   inline: true,
-        //   register: {
-        //     vue: () => import('highlight.js/lib/languages/xml'),
-        //   }
-        // }]
       ],
       markdownItSetup(md) {
         md.use(markdownItAnchor, {
           permalink: true,
           permalinkBefore: true,
-          // permalinkSymbol: '#',
-          permalinkSymbol: '',
+          permalinkSymbol: '', // TOC 开头的图标
           permalinkAttrs: () => ({ 'aria-hidden': true })
         })
       }

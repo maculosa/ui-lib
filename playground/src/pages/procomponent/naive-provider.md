@@ -14,7 +14,7 @@ meta:
 
 <script setup>
     import { defineComponent } from 'vue'
-    import NaiveProvider from '@/examples/Provider/NaiveProvider.vue?raw'
+    import NaiveProviderRaw from '@/examples/Provider/NaiveProvider.vue?raw'
 
     import 'highlight.js/lib/common';
     import hljsVuePlugin from "@highlightjs/vue-plugin";
@@ -29,4 +29,4 @@ meta:
 
 <!-- {{ NaiveProvider }} -->
 
-<highlightjs language="xml" :code="NaiveProvider" />
+<highlightjs language="xml" :code="NaiveProviderRaw" />

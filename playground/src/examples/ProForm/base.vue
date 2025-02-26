@@ -16,7 +16,7 @@ const login = () => {
 </script>
 
 <template>
-    <n-card class="w-600px">
+    <n-card class="max-w-600px">
         <n-form>
             <n-form-item label="用户名">
                 <n-input v-model:value="username" placeholder="用户名" />

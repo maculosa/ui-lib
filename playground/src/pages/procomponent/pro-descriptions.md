@@ -11,7 +11,6 @@ meta:
 
 <script setup lang="ts">
     import BaseProDescriptions from '@/examples/ProDescriptions/base.vue'
-    import BaseProDescriptionsRaw from '@/examples/ProDescriptions/base.vue?raw'
 </script>
 
 ## ProDescriptions

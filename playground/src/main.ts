@@ -3,6 +3,7 @@ import { createApp } from 'vue'
 import { setupRouter } from './router'
 import App from './App.vue'
 import Demo from './components/Demo/index.vue'
+import UiDemo from './components/UiDemo/index.vue'
 
 // import '@unocss/reset/tailwind.css'
 import './styles/main.css'
@@ -22,6 +23,7 @@ const head = createHead()
 // import config from '@/banmao.config.json'
 
 app.component('Demo', Demo)
+app.component('UiDemo', UiDemo)
 
 app.use(hljsVuePlugin)
 app.use(head)
