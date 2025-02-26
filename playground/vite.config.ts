@@ -141,5 +141,33 @@ export default defineConfig({
   ],
   server: {
     port: 5300
+  },
+  build: {
+    // 启用代码分割
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vue-vendor': ['vue', 'vue-router'],
+          'naive-ui': ['naive-ui'],
+          'echarts': ['echarts', 'vue-echarts']
+        }
+      }
+    },
+    // 压缩选项
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        // 移除 console
+        drop_console: true,
+        // 移除 debugger
+        drop_debugger: true
+      }
+    },
+    // 启用 gzip 压缩
+    reportCompressedSize: true,
+    // CSS 代码分割
+    cssCodeSplit: true,
+    // 资源文件大小限制
+    assetsInlineLimit: 4096
   }
 })

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import Logo from './logo/index.vue'
-import Nav from './nav/index.vue'
+import Header from './header/index.vue'
 import Sidebar from './sidebar/index.vue'
 import TOC from '@/components/TOC/index.vue'
 import { useRoute } from 'vue-router'
@@ -12,10 +11,7 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
 
 <template>
   <div class="layout">
-    <header class="layout-header">
-      <Logo />
-      <Nav />
-    </header>
+    <Header />
 
     <section class="flex-1 flex gap-10">
       <div class="w-80 relative">

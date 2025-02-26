@@ -5,7 +5,7 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import IconLogo from '~icons/bm-icon/vue';
+// import IconLogo from '~icons/bm-icon/vue';
 import IconCopy from '~icons/bm-icon/copy';
 
 onMounted(() => {
@@ -64,7 +64,7 @@ function initParticles() {
     <canvas id="particles" class="particles"></canvas>
     <div class="content">
       <div class="logo-container">
-        <IconLogo class="main-logo" />
+        <!-- <IconLogo class="main-logo" /> -->
         <h1 class="title">Banmao UI</h1>
       </div>
       <p class="subtitle">下一代高性能 Vue 组件库</p>
