@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.7.13
+
+### Patch Changes
+
+- fixed to the some bugs with ProTable.
+
 ## 0.7.12
 
 ### Patch Changes

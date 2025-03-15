@@ -189,29 +189,6 @@ export default defineComponent({
 
           {slots['summary']?.()}
 
-          {/* <div class="bm-card">
-            <div class="bm-card_header">
-              <div class="bm-card_header-title">{props.title}</div>
-              <div class="bm-card_header-extra">
-                <Toolbar
-                  v-model:size={size.value}
-                  title={props.title}
-                  config={toolbarConfig.value}
-                  loading={props.loading}
-                  formColumns={formColumns.value}
-                  onExport={handleExportData}
-                  onRefresh={handleRefresh}
-                >
-                  {slots['toolbar']?.()}
-                </Toolbar>
-              </div>
-            </div>
-
-            <div class="bm-card_body">
-              {slots['selection-action']?.()}
-              {OriginDataTable}
-            </div>
-          </div> */}
           <NCard title={props.title}>
             {{
               'header-extra': () => (
