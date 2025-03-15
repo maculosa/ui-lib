@@ -11,8 +11,6 @@ meta:
 
 </style>
 
-${toc}
-
 # Docs
 
 Front matter: {{ frontmatter }}

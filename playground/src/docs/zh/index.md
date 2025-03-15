@@ -11,7 +11,6 @@ name: Docs
 
 </style>
 
-${toc}
 
 # Docs
 
