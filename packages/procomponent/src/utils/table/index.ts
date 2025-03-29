@@ -125,6 +125,7 @@ export function renderTitle(column: Record<string, any>) {
                 BmIconInfoCircle,
                 {
                   style: {
+                    marginLeft: '4px',
                     fontSize: '14px',
                   },
                 },

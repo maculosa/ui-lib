@@ -8,7 +8,7 @@ import { computed, defineComponent, provide, ref, watchEffect } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import { ProForm } from '@components/ProForm'
 import { Toolbar } from './components'
-import { renderCopyableCell, renderEmptyCell, renderIndexCell, renderTitle } from '@/utils/table'
+import { renderEmptyCell } from '@/utils/table'
 import { useTableColumns } from '@hooks/useTableColumns'
 import { proTableProps, proTableEmits } from './types'
 import './styles/css'
@@ -56,22 +56,10 @@ export default defineComponent({
 
     const toolbarConfig = computed(() => props.toolbarConfig)
 
-    watchEffect(() => {
-      tableColumns.value = settingColumns.value.map((column) => {
-        if (column?.type === 'index') return renderIndexCell(column)
-        if (column?.copyable) return renderCopyableCell(column)
-        if (column?.tooltip && typeof column.title === 'string') {
-          column.title = renderTitle(column)
-        }
-        return column
-      })
-    })
-
     type TableSize = 'small' | 'medium' | 'large'
     const size = ref<TableSize>('large')
     const searchFormRef = ref(null)
     const searchRef = ref(null)
-
 
     /**
      * 加载数据
