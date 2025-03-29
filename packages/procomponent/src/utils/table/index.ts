@@ -101,8 +101,10 @@ export function renderTitle(column: Record<string, any>) {
       'div',
       {
         style: {
+          width: '100%',
           display: 'flex',
           alignItems: 'center',
+          justifyContent: column.align,
         },
       },
       {

@@ -1,5 +1,6 @@
 <script setup lang="tsx">
 import { ProTable } from '@banmao/procomponent'
+import { NButton, NSpace } from 'naive-ui'
 import { computed, ref, watchEffect } from 'vue'
 import { useElementSize } from '@vueuse/core'
 
@@ -25,13 +26,12 @@ async function fetchCityList() {
 }
 
 const columns = ref([
+  { type: 'selection' },
   { type: 'index' },
   {
     title: '姓名',
     key: 'name',
     minWidth: 100,
-    align: 'center',
-    tooltip: '这是姓名',
     valueType: 'text',
     rules: [{ required: true, message: '请输入姓名' }],
   },
@@ -39,7 +39,6 @@ const columns = ref([
     title: '年龄',
     key: 'age',
     minWidth: 100,
-    tooltip: '这是年龄',
     valueType: 'digit',
     hideInForm: true,
     formItemProps: { min: 1 },
@@ -49,8 +48,6 @@ const columns = ref([
     title: '性别',
     key: 'gender',
     minWidth: 100,
-    tooltip: '这是性别',
-    hideInSearch: true,
     valueType: 'select',
     options: [
       { label: '男', value: 'male' },
@@ -71,13 +68,17 @@ const columns = ref([
     },
   },
   {
-    title: '城市',
-    key: 'city',
-    tooltip: '这是城市',
-    valueType: 'cascader',
-    width: 200,
-    request: fetchCityList,
-  },
+    title: '地址',
+    key: 'address',
+    minWidth: 400,
+    hideInSearch: true,
+    hideInForm: true,
+    valueType: 'text',
+    formItemProps: {
+      type: 'textarea',
+    },
+    copyable: true,
+  }
 ])
 
 const dataSource = ref([
@@ -89,9 +90,6 @@ const dataSource = ref([
     gender: 'male',
     address: 'asdasdasdasdasd',
   },
-  { id: 2, name: '李四', age: 20 },
-  { id: 3, name: '王五', age: 22 },
-  { id: 4, name: '赵六', age: 24 },
 ])
 
 const pagination = ref({
@@ -118,22 +116,11 @@ function handleChangePageSize(pageSize: number) {
   fetchTableData()
 }
 
-// function handleEdit(row) {
-//   console.log('编辑', row)
-// }
-
-// function handleDelete(row) {
-//   console.log('删除', row)
-// }
-
 const rowKey = computed(() => {
   return (row: any) => row.id
 })
 
-const queryParams = ref({
-  name: '张三',
-  age: 18,
-})
+const queryParams = ref({})
 
 async function handleQuery(params: any) {
   console.error('查询', params)
@@ -167,9 +154,10 @@ const handleExportData = () => {
 <template>
   <ProTable
     ref="tableRef"
-    title="Tooltip In Columns Table" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading"
-    :params="queryParams" :on-query="handleQuery"
-    :search="false"
+    title="数据表格" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading"
+    :params="queryParams" :on-query="handleQuery" :search="{
+      searchText: '查询',
+    }"
     :scroll-x="800"
     @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"

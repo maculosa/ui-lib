@@ -15,6 +15,8 @@ desc: ProTable 是一个基于 Table 的高级表格组件，提供了搜索、�
     import SimpleDemo from '@/examples/ProTable/simple-demo.vue'
     import FixedHeight from '@/examples/ProTable/fixed-height.vue'
     import UseTooltipInColumns from '@/examples/ProTable/use-tooltip-in-columns.vue'
+    import SearchGrid from '@/examples/ProTable/search-grid.vue'
+    import SearchGridRaw from '@/examples/ProTable/search-grid.vue?raw'
 </script>
 
 # ProTable
@@ -74,5 +76,15 @@ Use tooltip in columns is a mode that displays the data with a tooltip in column
     :raw="UseTooltipInColumnsRaw"
 >
 <UseTooltipInColumns />
+</Demo>
+
+### Search Grid
+Search grid is a mode that displays the data with a search grid.
+<Demo
+    title="Search Grid Demo"
+    desc="Search grid is a mode that displays the data with a search grid."
+    :raw="SearchGridRaw"
+>
+<SearchGrid />
 </Demo>
 
