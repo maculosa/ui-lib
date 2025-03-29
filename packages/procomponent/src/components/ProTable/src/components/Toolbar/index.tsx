@@ -19,7 +19,7 @@ export default defineComponent({
       columnSettingLabel,
       create,
       createLabel,
-      createMode,
+      createMode = 'button',
       density,
       exportLabel,
       reload,

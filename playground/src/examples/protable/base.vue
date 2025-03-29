@@ -259,6 +259,7 @@ const handleExportData = () => {
       gridCols: 2,
     }"
     :toolbarConfig="{
+      create: true,
       export: true
     }"
     :scroll-x="800"
