@@ -1,5 +1,13 @@
 # @banmao/procomponent
 
+## 0.7.14
+
+### Patch Changes
+
+- - feat(ProTable): 优化表格
+  - fix: 修复在 tooltip 定义时，align 失效的问题
+  - fix(Protable): 修复 ProTable 工具栏的新建按钮不显示的问题
+
 ## 0.7.13
 
 ### Patch Changes
