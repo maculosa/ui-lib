@@ -178,6 +178,16 @@ const dataSource = ref([
   { id: 2, name: '李四', age: 20 },
   { id: 3, name: '王五', age: 22 },
   { id: 4, name: '赵六', age: 24 },
+  { id: 5, name: '孙七', age: 26 },
+  { id: 6, name: '周八', age: 28 },
+  { id: 7, name: '吴九', age: 30 },
+  { id: 8, name: '郑十', age: 32 },
+  { id: 9, name: '刘一', age: 34 },
+  { id: 10, name: '陈二', age: 36 },
+  { id: 11, name: '杨三', age: 38 },
+  { id: 12, name: '吴四', age: 40 },
+  { id: 13, name: '郑五', age: 42 },
+  { id: 14, name: '刘六', age: 44 },
 ])
 
 const pagination = ref({
@@ -251,6 +261,11 @@ const handleExportData = () => {
 </script>
 
 <template>
+  <div>
+    当前搜索栏高度为：
+    <span style="color: #10b981;font-weight: bold;">{{ searchHeight }}px</span>
+  </div>
+  <n-divider />
   <ProTable
     ref="tableRef"
     title="数据表格" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading"
@@ -262,6 +277,8 @@ const handleExportData = () => {
       export: true
     }"
     :scroll-x="800"
+    :max-height="tableHeight"
+    :min-height="tableHeight"
     @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"
     @export-data="handleExportData"
