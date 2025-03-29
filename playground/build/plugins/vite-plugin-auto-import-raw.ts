@@ -1,7 +1,4 @@
 import type { Plugin } from 'vite'
-import { parse } from '@vue/compiler-sfc'
-import * as fs from 'fs'
-import * as path from 'path'
 
 export function autoImportRaw(): Plugin {
   return {
@@ -24,9 +21,11 @@ export function autoImportRaw(): Plugin {
           const hasRawImport = code.includes(`${rawImportPath}`)
           if (!hasRawImport) {
             // 在原始导入后添加 raw 导入
+
+            const rawImport = `import ${rawImportName} from '${rawImportPath}'`
             modifiedCode = modifiedCode.replace(
               fullMatch,
-              `${fullMatch}\nimport ${rawImportName} from '${rawImportPath}'`
+              `${fullMatch}\n${rawImport}`
             )
           }
         }
