@@ -151,5 +151,3 @@ export function useList<
     loadData,
   }
 }
-
-export default useList
