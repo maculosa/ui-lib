@@ -1,6 +1,6 @@
 // import { EnumResponseCode } from '@/enums/responseCode'
 import type { OptionsType } from './types'
-import { useMessage } from 'naive-ui'
+import { useMessage, type DataTableSortState } from 'naive-ui'
 import { computed, onMounted, ref } from 'vue'
 import { useExportFile } from '../useExportRemoteFile'
 // import { getPagination } from '@/utils'
@@ -123,6 +123,21 @@ export function useList<
     updatePaginationAndLoadData(1, pageSize)
   }
 
+  const handleSortChange = (options: DataTableSortState) => {
+    if (options.sorter) {
+      const sortData = [...dataSource.value].sort((a, b) => {
+        if (options.order === 'ascend') {
+          return a[options.columnKey] > b[options.columnKey] ? 1 : -1
+        }
+        if (options.order === 'descend') {
+          return a[options.columnKey] < b[options.columnKey] ? 1 : -1
+        }
+        return 0
+      })
+      dataSource.value = sortData
+    }
+  }
+
   onMounted(() => immediate && loadData(pagination.value.page))
 
   return {
@@ -132,6 +147,7 @@ export function useList<
     handleExcelData,
     handlePageChange,
     handlePageSizeChange,
+    handleSortChange,
     loadData,
   }
 }
