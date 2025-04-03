@@ -9,6 +9,26 @@ import { textProps } from './types'
 
 import './styles/css'
 
+const ProTextIcon = defineComponent({
+  name: 'ProTextIcon',
+  props: {
+    copied: {
+      type: Boolean,
+      default: false,
+    }
+  },
+  setup(props) {
+    
+    return () => {
+      if (props.copied) {
+        return <BmIconCheck style="color: #22c55e;" />
+      } else {
+        return <BmIconCopy style="color: #3b82f6;" />
+      }
+    }
+  }
+})
+
 export default defineComponent({
   name: 'ProText',
   components: {
@@ -25,11 +45,11 @@ export default defineComponent({
     const copyable = computed(() => props.copyable !== false)
     const maxLines = computed(() => props.lineClamp)
 
-    const bmIconStyle = computed(() => ({
+    const bmIconStyle = {
       display: 'inline-block',
-      verticalAlign: 'middle',
+      verticalAlign: 'text-top',
       cursor: 'pointer',
-    }))
+    }
 
     const text = toRef(props, 'text')
     const { text: _clipboardText, copy } = useClipboard({ legacy: true })
@@ -59,16 +79,14 @@ export default defineComponent({
                   {{
                     after: () => {
                       return copyable.value && (
-                        <div
+                        <span
                           style={{
-                            ...bmIconStyle.value,
+                            ...bmIconStyle,
                           }}
                           onClick={handleCopy}
                         >
-                          {
-                            isCopied.value ? <BmIconCheck style="color: #22c55e;" /> : <BmIconCopy style="color: #3b82f6;" />
-                          }
-                        </div>
+                          <ProTextIcon copied={isCopied.value} />
+                        </span>
                       )
                     },
                   }}
@@ -85,23 +103,21 @@ export default defineComponent({
       }
       else {
         return (
-          <div>
+          <span>
             <NText {...attrs}>
               {props.text}
             </NText>
             {copyable.value && (
-              <div
+              <span
                 style={{
-                  ...bmIconStyle.value,
+                  ...bmIconStyle,
                 }}
                 onClick={handleCopy}
               >
-                {
-                  isCopied.value ? <BmIconCheck style="color: #22c55e;" /> : <BmIconCopy style="color: #3b82f6;" />
-                }
-              </div>
+                <ProTextIcon copied={isCopied.value} />
+              </span>
             )}
-          </div>
+          </span>
         )
       }
     }
