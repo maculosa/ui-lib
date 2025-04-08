@@ -41,6 +41,10 @@ export default defineComponent({
       type: Number,
       default: 1,
     },
+    responsive: {
+      type: String as PropType<'self' | 'screen'>,
+      default: 'self',
+    },
     gridCollapsed: {
       type: Boolean,
       default: false,
