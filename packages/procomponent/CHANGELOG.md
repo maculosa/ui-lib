@@ -1,5 +1,12 @@
 # @banmao/procomponent
 
+## 0.7.15
+
+### Patch Changes
+
+- - fix(procomponents): 修复 NFormItemGi label 自定义显示
+  - feat(procomponent): 【新增】ProForm 组件添加 reponsive 属性
+
 ## 0.7.14
 
 ### Patch Changes
