@@ -366,7 +366,7 @@ export default defineComponent({
                       }}
                     </NTooltip>
                   </div>
-                ) : () => item.title
+                ) : item.title
               },
               default: () => {
                 if (item.valueType === 'custom') {
