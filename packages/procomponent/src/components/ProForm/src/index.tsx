@@ -349,7 +349,7 @@ export default defineComponent({
           </NUpload>
         ),
       }
-      if (item.tooltip) {
+      if (item.tooltip && typeof item.title === 'string') {
         return (
           <NFormItemGi path={item.key} rule={item.rule} span={item.grid}>
             {{
