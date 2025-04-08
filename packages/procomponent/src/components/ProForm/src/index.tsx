@@ -349,23 +349,25 @@ export default defineComponent({
           </NUpload>
         ),
       }
-      if (item.tooltip && typeof item.title === 'string') {
+      if (item.tooltip) {
         return (
           <NFormItemGi path={item.key} rule={item.rule} span={item.grid}>
             {{
-              label: () => typeof item.title === 'string' ? (
-                <div style={styles.proFormItemLabel}>
-                  <span>{item.title}</span>
-                  <NTooltip trigger="hover">
-                    {{
-                      trigger: () => (
-                        <BmIconInfoCircle />
-                      ),
-                      default: () => item.tooltip,
-                    }}
-                  </NTooltip>
-                </div>
-              ) : item.title,
+              label: () => {
+                return typeof item.title === 'string' ? (
+                  <div style={styles.proFormItemLabel}>
+                    <span>{item.title}</span>
+                    <NTooltip trigger="hover">
+                      {{
+                        trigger: () => (
+                          <BmIconInfoCircle />
+                        ),
+                        default: () => item.tooltip,
+                      }}
+                    </NTooltip>
+                  </div>
+                ) : () => item.title
+              },
               default: () => {
                 if (item.valueType === 'custom') {
                   return item.formRender(item.key, formData, item.formItemProps)
