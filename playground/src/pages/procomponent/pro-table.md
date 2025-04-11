@@ -31,7 +31,7 @@ ProTable 是一个基于 Table 的高级表格组件，提供了搜索、筛选�
 
 ## Examples
 
-### Simple Usage
+下边展示的一些示例。
 
 <Demo title="Simple Demo"
     desc="Simple mode is a mode that only displays the data without any additional features."
@@ -39,11 +39,6 @@ ProTable 是一个基于 Table 的高级表格组件，提供了搜索、筛选�
 >
 <SimpleDemo />
 </Demo>
-
-
-### Base Usage
-
-Base mode is a mode that displays the data with some basic features.
 
 <Demo
     title="Base Demo"
@@ -53,8 +48,6 @@ Base mode is a mode that displays the data with some basic features.
 <BaseProTable />
 </Demo>
 
-### No Search
-No search is a mode that displays the data without search.
 <Demo
     title="No Search Demo"
     desc="No search is a mode that displays the data without search."
@@ -63,18 +56,14 @@ No search is a mode that displays the data without search.
 <NoSearchBar />
 </Demo>
 
-### Fixed Height
-Fixed height is a mode that displays the data with a fixed height.
 <Demo
-    title="Fixed Height Demo"
+    title="Fixed Height"
     desc="Fixed height is a mode that displays the data with a fixed height."
     :raw="FixedHeightRaw"
 >
 <FixedHeight />
 </Demo>
 
-### Use Tooltip in Columns
-Use tooltip in columns is a mode that displays the data with a tooltip in columns.
 <Demo
     title="Use Tooltip in Columns Demo"
     desc="Use tooltip in columns is a mode that displays the data with a tooltip in columns."
@@ -83,8 +72,6 @@ Use tooltip in columns is a mode that displays the data with a tooltip in column
 <UseTooltipInColumns />
 </Demo>
 
-### Search Grid
-Search grid is a mode that displays the data with a search grid.
 <Demo
     title="Search Grid Demo"
     desc="Search grid is a mode that displays the data with a search grid."
@@ -92,4 +79,3 @@ Search grid is a mode that displays the data with a search grid.
 >
 <SearchGrid />
 </Demo>
-

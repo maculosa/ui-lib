@@ -2,7 +2,7 @@
   <div class="demo-warp bg-transparent backdrop-blur-1 shadow-2xl b-white/40 dark:b-gray/40 b-[1px] b-solid">
     <div class="demo-header dark:b-b-primary/20">
       <div class="demo-header-left">
-        <span class="demo-title dark:text-white">{{ title }}</span>
+        <h3 class="demo-title dark:text-white" :id="title">{{ title }}</h3>
         <span v-if="desc" class="demo-desc">{{ desc }}</span>
       </div>
       <div class="demo-header-right">
@@ -34,7 +34,7 @@ import { Icon } from '@iconify/vue'
 
 
 export interface DemoProps {
-  title: string
+  title?: string
   desc?: string,
   url?: string,
   raw?: string
