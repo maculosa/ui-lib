@@ -39,6 +39,9 @@ const activePath = computed(() => {
                 <a class="link" :class="{ active: activePath === '/procomponent/naive-provider' }" href="/procomponent/naive-provider">
                     <span class="link-text">NaiveProvider</span>
                 </a>
+                <a class="link" :class="{ active: activePath === '/procomponent/pro-layout' }" href="/procomponent/pro-layout">
+                    <span class="link-text">ProLayout</span>
+                </a>
             </section>
 
             <section class="sidebar-group">

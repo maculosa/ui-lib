@@ -21,6 +21,8 @@ declare global {
   const ProDescriptionsPlugin: typeof import('./components/ProDescriptions/index')['ProDescriptionsPlugin']
   const ProForm: typeof import('./components/ProForm/index')['ProForm']
   const ProFormPlugin: typeof import('./components/ProForm/index')['ProFormPlugin']
+  const ProLayout: typeof import('./components/ProLayout/index')['ProLayout']
+  const ProLayoutPlugin: typeof import('./components/ProLayout/index')['ProLayoutPlugin']
   const ProList: typeof import('./components/ProList/index')['ProList']
   const ProListPlugin: typeof import('./components/ProList/index')['ProListPlugin']
   const ProTable: typeof import('./components/ProTable/index')['ProTable']
@@ -130,6 +132,8 @@ declare module 'vue' {
     readonly ProDescriptionsPlugin: UnwrapRef<typeof import('./components/ProDescriptions/index')['ProDescriptionsPlugin']>
     readonly ProForm: UnwrapRef<typeof import('./components/ProForm/index')['ProForm']>
     readonly ProFormPlugin: UnwrapRef<typeof import('./components/ProForm/index')['ProFormPlugin']>
+    readonly ProLayout: UnwrapRef<typeof import('./components/ProLayout/index')['ProLayout']>
+    readonly ProLayoutPlugin: UnwrapRef<typeof import('./components/ProLayout/index')['ProLayoutPlugin']>
     readonly ProList: UnwrapRef<typeof import('./components/ProList/index')['ProList']>
     readonly ProListPlugin: UnwrapRef<typeof import('./components/ProList/index')['ProListPlugin']>
     readonly ProTable: UnwrapRef<typeof import('./components/ProTable/index')['ProTable']>

@@ -15,8 +15,6 @@ meta:
 
 # Watermark
 
-## 基本用法
-
 <Demo title="基本用法" :raw="BaseRaw">
     <Base />
 </Demo>

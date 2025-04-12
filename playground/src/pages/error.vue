@@ -79,7 +79,7 @@ function initParticles() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #322e2e 0%, #0a0a0a 100%);
   overflow: hidden;
 }
 

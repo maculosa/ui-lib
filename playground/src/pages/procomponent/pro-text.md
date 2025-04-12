@@ -18,7 +18,6 @@ meta:
 
 # ProText
 
-## Base
 
 <NGrid cols="2" x-gap="16">
     <NGridItem>
