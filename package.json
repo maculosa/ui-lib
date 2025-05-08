@@ -8,7 +8,8 @@
     "build:datav": "pnpm run --filter @banmao/datav build",
     "build:draw": "pnpm run --filter @banmao/draw build",
     "build:hooks": "pnpm run --filter @banmao/hooks build",
-    "build:all": "pnpm run build:hooks && pnpm run build:datav && pnpm run build:draw && pnpm run build:lib",
+    "build:blocks": "pnpm run --filter @banmao/blocks build",
+    "build:all": "pnpm run build:hooks && pnpm run build:datav && pnpm run build:draw && pnpm run build:lib && pnpm run build:blocks",
     "docs:dev": "vitepress dev docs",
     "docs:build": "pnpm build:all && vitepress build docs",
     "docs:preview": "vitepress preview docs",
@@ -18,6 +19,7 @@
     "release:datav": "pnpm build:datav && pnpm release:only",
     "release:draw": "pnpm build:draw && pnpm release:only",
     "release:hooks": "pnpm build:hooks && pnpm release:only",
+    "release:blocks": "pnpm build:blocks && pnpm release:only",
     "release:all": "pnpm build:all && pnpm release:only",
     "release:only": "changeset publish --registry=https://registry.npmjs.com/",
     "play": "pnpm run --filter ./playground dev"
@@ -31,6 +33,7 @@
   "dependencies": {
     "@banmao/datav": "workspace:^",
     "@banmao/procomponent": "workspace:^",
+    "@banmao/blocks": "workspace:^",
     "@highlightjs/vue-plugin": "^2.1.0",
     "@types/lodash-es": "^4.17.12",
     "@vueuse/core": "^12.3.0",

@@ -1,0 +1,53 @@
+@use "sass:map";
+
+// 定义阴影配置
+$shadow-config: (
+  'base': (
+    y: 1px,
+    blur: 3px,
+    spread: 0,
+    opacity: 0.1
+  ),
+  'md': (
+    y: 4px,
+    blur: 6px,
+    spread: -1px,
+    opacity: 0.1
+  ),
+  'lg': (
+    y: 10px,
+    blur: 15px,
+    spread: -3px,
+    opacity: 0.1
+  ),
+  'xl': (
+    y: 20px,
+    blur: 25px,
+    spread: -5px,
+    opacity: 0.1
+  ),
+  '2xl': (
+    y: 25px,
+    blur: 50px,
+    spread: -12px,
+    opacity: 0.25
+  )
+);
+
+// 创建阴影函数
+@function create-shadow($config) {
+  $y: map.get($config, 'y');
+  $blur: map.get($config, 'blur');
+  $spread: map.get($config, 'spread');
+  $opacity: map.get($config, 'opacity');
+  
+  @return 0 #{$y} #{$blur} #{$spread} rgba(0, 0, 0, $opacity);
+}
+
+// 生成阴影类
+@each $size, $config in $shadow-config {
+  $class-name: if($size == 'base', 'shadow', 'shadow-#{$size}');
+  .#{$class-name} {
+    box-shadow: create-shadow($config);
+  }
+}
