@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { Login } from '@banmao/blocks'
 import type { LoginProps } from '@banmao/blocks';
-import Logo from './logo.vue';
 
 const loginProps: LoginProps = {
-    layout: 'simple',
+    layout: 'card',
     title: 'Login',
     description: 'Login to your account',
     signUpUrl: '/signup',
@@ -41,9 +40,5 @@ const handleCaptcha = () => {
         @finish="handleLogin"
         @error="handleError"
         @captcha="handleCaptcha"
-    >
-        <template #logo>
-            <Logo />
-        </template>
-    </Login>
+    />
 </template>

@@ -19,3 +19,11 @@ blocks/login/simple-login
 blocks/login/two-column-login
 
 :::
+
+# Card Login with Image
+
+::: demo Card Login with Image
+
+blocks/login/card-login
+
+:::

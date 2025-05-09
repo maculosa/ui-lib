@@ -1,4 +1,4 @@
-import type { PropType } from "vue";
+import type { PropType, VNodeChild } from "vue";
 
 export type LoginLayout = "simple" | "column" | "muted" | "card";
 
@@ -30,6 +30,7 @@ export interface LoginProps {
   /** 授权登录 */
   authLogin?: AuthLoginConfig[];
   bgImage?: string;
+  logo?: () => VNodeChild
 }
 
 export interface LoginEmits {
@@ -70,6 +71,9 @@ export const loginProps = {
   bgImage: {
     type: String as PropType<LoginProps["bgImage"]>,
     default: "",
+  },
+  logo: {
+    type: Function as PropType<LoginProps["logo"]>,
   },
 };
 

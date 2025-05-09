@@ -29,6 +29,7 @@ const CardTitle = defineComponent({
 export default defineComponent({
     name: "LoginForm",
     props: loginFormProps,
+    emits: loginEmits,
     setup(props, { emit }) {
         const { title, description, signUpUrl, forgotUrl, shadow } = props
 
