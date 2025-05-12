@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.0.1-alpha.4
+
+### Patch Changes
+
+- 支持 slot
+
 ## 0.0.1-alpha.3
 
 ### Patch Changes
