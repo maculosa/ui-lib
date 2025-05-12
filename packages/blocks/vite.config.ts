@@ -23,9 +23,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src'),
-        '@hooks': resolve(__dirname, 'src/hooks'),
         '@components': resolve(__dirname, 'src/components'),
-        '@styles': resolve(__dirname, 'src/styles'),
       }
     },
     plugins: [
