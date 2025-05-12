@@ -33,3 +33,10 @@ blocks/login/two-column-login
 blocks/login/card-login
 
 :::
+
+# Slot Login
+::: demo A Simple Login With Slot
+
+blocks/login/slot-login
+
+:::

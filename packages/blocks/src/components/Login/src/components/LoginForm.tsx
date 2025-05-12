@@ -7,7 +7,7 @@ export default defineComponent({
     name: "LoginForm",
     props: loginFormProps,
     emits: loginEmits,
-    setup(props, { emit }) {
+    setup(props, { emit, slots }) {
         const { actions, title, subTitle, signUpUrl, forgotUrl, shadow, radius } = props
 
         const formData = reactive({
@@ -45,6 +45,7 @@ export default defineComponent({
             console.error('Weixin login is not supported yet.')
             emit('wechatFinish')
         }
+        // console.log({ slot: slots.default })
 
         return () => (
             <div
@@ -66,6 +67,8 @@ export default defineComponent({
                 <div class='sub-title'>
                     { subTitle }
                 </div>
+
+                { slots.default ? slots.default() : (
                 <NForm ref={formRef} model={formData} rules={rules} size="large"
                     show-require-mark={false}
                 >
@@ -87,7 +90,7 @@ export default defineComponent({
                     {actions && <NFormItem showLabel={false}>
                         <NButton color="#02E16E" ghost block onClick={() => handleLoginWithWeChat()}>微信登录</NButton>
                     </NFormItem>}
-                </NForm>
+                </NForm>)}
                 {signUpUrl && <div class="signUp">
                     还没有账号？
                     <a href={signUpUrl as string}>立即注册</a>
