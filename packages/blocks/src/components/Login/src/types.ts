@@ -103,6 +103,10 @@ export const loginFormProps = {
     type: String as PropType<LoginProps["signUpUrl"]>,
     default: "",
   },
+  radius: {
+    type: [Number, Boolean],
+    default: 8,
+  },
   shadow: {
     type: Boolean,
     default: true,
