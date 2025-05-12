@@ -23,23 +23,56 @@
     gap: 16px;
 }
 
+.login-form {
+    padding: 32px 32px 24px;
+    min-width: 350px;
+    background: rgb(255 255 255 / 80%);
+    backdrop-filter: blur(10px);
+    box-sizing: border-box;
+}
+
+.card .login-form {
+    width: 100%;
+}
+
+.column .login-form {
+    background: transparent;
+}
+
+.dark .column .login-form {
+    background: transparent;
+}
+
+:root {
+    --color-link: #2563eb;
+    --color-text: #3f3f46;
+    --color-section-text: #71717a;
+}
+
+.login-form-shadow {
+    box-shadow: 0 2px 12px 0 rgba(0 0 0 / 10%);
+}
+
 .title {
     font-size: 20px;
     font-weight: bold;
+    color: var(--color-text);
 }
 
-.description {
+.sub-title {
     font-size: 16px;
-    color: #71717a;
+    color: var(--color-section-text);
+    margin-bottom: 32px;
 }
 
 .signUp {
     text-align: center;
+    color: var(--color-text);
 }
 
 .signUp a,
 .link {
-    color: #3b82f6;
+    color: var(--color-link);
     text-decoration: none;
 }
 
@@ -52,11 +85,12 @@
 }
 
 .password-forgot a {
-    color: #3b82f6;
+    color: var(--color-link);
     text-decoration: none;
 }
 
-.column, .grid {
+.column,
+.grid {
     display: grid;
 }
 
@@ -64,7 +98,7 @@
     direction: rtl;
 }
 
-.column-reverse > * {
+.column-reverse>* {
     direction: ltr;
 }
 
@@ -77,6 +111,21 @@
     border-radius: 0.5rem;
     overflow: hidden;
 }
+
+.card-column-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-column-muted {
+    width: 100%;
+    position: relative;
+    display: none;
+    background-color: hsl(240, 3.6%, 15.9%);
+}
+
 .flex-1 {
     flex: 1;
 }
@@ -96,7 +145,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 16px;
+    gap: 1rem;
     /* padding: 24px; */
 }
 
@@ -112,6 +161,7 @@
     inset: 0;
     height: 100%;
     width: 100%;
+    object-fit: cover;
 }
 
 @media screen and (max-width: 1199px) {
@@ -130,7 +180,11 @@
     .column {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
     .column-muted {
+        display: block;
+    }
+    .card-column-muted {
         display: block;
     }
 }
@@ -140,5 +194,25 @@
 }
 
 .dark .column-muted-image {
-    filter: grayscale(100%)
+    filter: grayscale(40%)
+}
+
+.dark .login-form {
+    background-color: rgb(0 0 0 / 40%);
+}
+
+@media (prefers-color-scheme: light) {
+
+    :root {
+        --color-text: #333;
+        --color-section-text: #4f4f4f;
+    }
+
+    .login-form {
+        background: rgb(255 255 255 / 80%);
+    }
+
+    .sub-title {
+        color: var(--color-section-text);
+    }
 }
