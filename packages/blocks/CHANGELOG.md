@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.0.1-alpha.3
+
+### Patch Changes
+
+- 优化暗色注册颜色显示
+
 ## 0.0.1-alpha.2
 
 ### Patch Changes
