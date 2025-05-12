@@ -31,7 +31,7 @@ export default defineComponent({
     props: loginFormProps,
     emits: loginEmits,
     setup(props, { emit }) {
-        const { title, description, signUpUrl, forgotUrl, shadow } = props
+        const { actions, title, subTitle, signUpUrl, forgotUrl, shadow } = props
 
         const formData = reactive({
             username: '',
@@ -71,9 +71,9 @@ export default defineComponent({
 
         return () => (
             <NCard
-            title={() => <CardTitle title={title} description={description} />}
+            title={() => <CardTitle title={title} description={subTitle} />}
             style={[{
-                width: '350px',
+                    width: '350px',
                 },
                 shadow && "box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);"
             ]}
@@ -98,9 +98,9 @@ export default defineComponent({
                 <NFormItem showLabel={false}>
                     <NButton attr-type="button" type="primary" block onClick={() => handleLogin()}>登录</NButton>
                 </NFormItem>
-                <NFormItem showLabel={false}>
+                {actions && <NFormItem showLabel={false}>
                     <NButton color="#02E16E" ghost block onClick={() => handleLoginWithWeChat()}>微信登录</NButton>
-                </NFormItem>
+                </NFormItem>}
             </NForm>
             {signUpUrl && <div class={styles.signUp}>
                 还没有账号？

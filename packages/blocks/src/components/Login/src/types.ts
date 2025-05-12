@@ -2,7 +2,7 @@ import type { PropType, VNodeChild } from "vue";
 
 export type LoginLayout = "simple" | "column" | "muted" | "card";
 
-export interface AuthLoginConfig {
+export interface Action {
   name: "Weixin";
   label: string;
   config: Record<string, any>;
@@ -20,7 +20,7 @@ export interface LoginProps {
   /** 登录页的背景图，仅当 layout = column 或 card */
   bg?: string;
   /** 登录页的描述语，默认为 Login to your account */
-  description?: string;
+  subTitle?: string;
   /** title 登录页标题, 默认为 Welcome back */
   title?: string;
   /** 忘记登录密码，当设置了忘记登录密码，显示 "忘记密码？" 超链接 */
@@ -28,9 +28,10 @@ export interface LoginProps {
   /** 立即注册的地址，默认为 /signup */
   signUpUrl?: string;
   /** 授权登录 */
-  authLogin?: AuthLoginConfig[];
-  bgImage?: string;
+  actions?: Action[];
+  bgImageUrl?: string;
   logo?: () => VNodeChild
+  imagePosition?: 'left' | 'right';
 }
 
 export interface LoginEmits {
@@ -40,6 +41,7 @@ export interface LoginEmits {
   captcha: () => Record<string, string>;
   wechatFinish: (values: Record<string, any>) => void;
 }
+
 export type LoginEmitsType = keyof LoginEmits;
 export const loginEmits: LoginEmitsType[] = ["finish", "error", "captcha", "wechatFinish"];
 
@@ -48,8 +50,8 @@ export const loginProps = {
     type: String as PropType<LoginProps["title"]>,
     default: "Welcome back",
   },
-  description: {
-    type: String as PropType<LoginProps["description"]>,
+  subTitle: {
+    type: String as PropType<LoginProps["subTitle"]>,
     default: "Login to your account",
   },
   layout: {
@@ -68,23 +70,29 @@ export const loginProps = {
     type: String as PropType<LoginProps["signUpUrl"]>,
     default: "",
   },
-  bgImage: {
-    type: String as PropType<LoginProps["bgImage"]>,
+  bgImageUrl: {
+    type: String as PropType<LoginProps["bgImageUrl"]>,
     default: "",
   },
   logo: {
     type: Function as PropType<LoginProps["logo"]>,
   },
+  imagePosition: {
+    type: String as PropType<LoginProps["imagePosition"]>,
+    default: "right",
+  },
+  actions: {
+    type: Array as PropType<LoginProps["actions"]>,
+  },
 };
-
 
 export const loginFormProps = {
   title: {
     type: String as PropType<LoginProps["title"]>,
     default: "Welcome back",
   },
-  description: {
-    type: String as PropType<LoginProps["description"]>,
+  subTitle: {
+    type: String as PropType<LoginProps["subTitle"]>,
     default: "Login to your account",
   }, 
   forgotUrl: {
@@ -98,5 +106,8 @@ export const loginFormProps = {
   shadow: {
     type: Boolean,
     default: true,
-  }
+  },
+  actions: {
+    type: Array as PropType<LoginProps["actions"]>,
+  },
 }

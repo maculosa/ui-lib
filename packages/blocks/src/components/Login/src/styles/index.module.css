@@ -60,6 +60,14 @@
     display: grid;
 }
 
+.column-reverse {
+    direction: rtl;
+}
+
+.column-reverse > * {
+    direction: ltr;
+}
+
 .card {
     width: 100%;
     max-width: 48rem;
@@ -104,7 +112,6 @@
     inset: 0;
     height: 100%;
     width: 100%;
-    object-fit: cover;
 }
 
 @media screen and (max-width: 1199px) {

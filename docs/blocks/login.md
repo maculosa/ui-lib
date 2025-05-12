@@ -12,6 +12,12 @@ blocks/login/simple-login
 
 :::
 
+::: demo A Simple Login With Image Page
+
+blocks/login/simple-bg-login
+
+:::
+
 # Column Login with Muted Image
 
 ::: demo Column Login with Muted Image

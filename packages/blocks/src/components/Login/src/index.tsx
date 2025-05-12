@@ -9,27 +9,37 @@ export default defineComponent({
     props: loginProps,
     emits: loginEmits,
     setup(props, { emit, slots }) {
-        const { layout, bg, bgImage, logo, ...loginFormProps } = props
+        const { layout, bg, bgImageUrl, logo, ...loginFormProps } = props
         
         // const LogoComponent = () => logo
         
+        const isRightImage = computed(() => props.imagePosition === 'right')
+
         return () =>  {
             if (layout === 'column') {
                 return (
-                    <div class={[styles.container, styles.column]}>
+                    <div class={[
+                        styles.container,
+                        styles.column,
+                        { [styles['column-reverse']]: props.imagePosition === 'left' }
+                    ]}>
                         <div class={styles['column-item']}>
-                            <div class={styles['logo']}>
+                            {isRightImage.value && <div class={styles['logo']}>
                                 {slots.logo?.()}
-                            </div>
+                            </div>}
                             <LoginForm {...loginFormProps} shadow={false}
                                 onFinish={(values) => emit('finish', values)}
                             />
                         </div>
                         <div class={styles['column-muted']}>
-                            {props.bgImage && (
+                            {!isRightImage.value && <div class={styles['logo']}>
+                                {slots.logo?.()}
+                            </div>}
+                            {props.bgImageUrl && (
                                 <NImage
-                                    src={props.bgImage}
+                                    src={props.bgImageUrl}
                                     alt="Image"
+                                    objectFit='cover'
                                     class={styles['column-muted-image']}
                                 />
                             )}
@@ -41,6 +51,9 @@ export default defineComponent({
             if (layout === 'card') {
                 return (
                     <div class={[styles.container, styles['flex-center']]}>
+                        <div class={styles['logo']}>
+                                {slots.logo?.()}
+                            </div>
                         <div class={[styles['card']]}>
                             <div class={[styles['column-item'], styles['flex-1']]}>
                                 <LoginForm {...loginFormProps} shadow={false}
@@ -52,10 +65,11 @@ export default defineComponent({
 
                                 }}
                             >
-                                {props.bgImage && (
+                                {bgImageUrl && (
                                     <NImage
-                                        src={props.bgImage}
+                                        src={bgImageUrl}
                                         alt="Image"
+                                        objectFit='cover'
                                         class={styles['column-muted-image']}
                                     />
                                 )}
@@ -66,7 +80,12 @@ export default defineComponent({
             }
 
             return (
-                <div class={[styles.container, styles['flex-center']]}>
+                <div class={[styles.container, styles['flex-center']]}
+                    style={{
+                        backgroundImage: `url(${bgImageUrl})`,
+                        backgroundSize: 'cover',
+                    }}
+                >
                     <div class={[styles['flex-col'], styles['space-y-4']]}>
                         {slots.logo?.()}
                         <LoginForm {...loginFormProps} />

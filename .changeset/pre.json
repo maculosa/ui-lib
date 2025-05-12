@@ -1,0 +1,15 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@banmao/blocks": "0.0.0",
+    "@banmao/datav": "0.0.5",
+    "@banmao/draw": "0.0.4",
+    "@banmao/hooks": "0.0.4",
+    "@banmao/procomponent": "0.7.15",
+    "site": "0.0.4"
+  },
+  "changesets": [
+    "ripe-places-share"
+  ]
+}

@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.0.1-alpha.0
+
+### Patch Changes
+
+- 创建登录页 block
+
 ## 0.7.15
 
 ### Patch Changes

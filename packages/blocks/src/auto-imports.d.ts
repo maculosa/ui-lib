@@ -105,7 +105,7 @@ declare global {
   export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
-  export type { LoginLayout, AuthLoginConfig, LoginProps, LoginEmits, LoginEmitsType } from './components/Login/src/types'
+  export type { LoginLayout, Action, LoginProps, LoginEmits, LoginEmitsType } from './components/Login/src/types'
   import('./components/Login/src/types')
 }
 
