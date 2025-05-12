@@ -1,6 +1,6 @@
-# @banmao/procomponent
+# @banmao/blocks
 
-基于 Naive UI 封装的高级组件库，旨在帮助开发者快速搭建企业级中后台应用。
+基于 Naive UI 封装的登录组件。
 
 ## 特性
 
@@ -12,51 +12,30 @@
 ## 安装
 
 ```bash
-# 安装 naive-ui
-pnpm add naive-ui
-
-# 安装 @banmao/procomponent
-pnpm add @banmao/procomponent
+# 安装 @banmao/blocks
+pnpm add @banmao/blocks
 ```
 
 ## 使用
 
-```ts
-import { createApp } from 'vue'
-import { 
-  ProLayout,
-  ProTable,
-  ProForm,
-  DrawerForm,
-  ModalForm
-} from '@banmao/procomponent'
+```vue
+<script setup lang="ts">
+import { Login } from '@banmao/blocks'
 
-const app = createApp()
+</script>
 
-// 注册需要使用的组件
-app.use(ProLayout)
-app.use(ProTable)
-app.use(ProForm)
-app.use(DrawerForm)
-app.use(ModalForm)
+<template>
+<Login />
+</template>
 ```
 
 ## 组件列表
 
-- DrawerForm - 抽屉表单组件
-- ModalForm - 弹窗表单组件
-- ProForm - 表单组件
-- ProLayout - 布局组件
-- ProTable - 表格组件
-- ProText - 文本组件
-- ProDescriptions - 描述列表组件
-- ProList - 列表组件
-- Tour - 漫游式引导组件
-- Watermark - 水印组件
+- Login - 登录表单组件
 
 ## 文档
 
-访问 [ProComponent 文档](https://procomponent.banmao.cc/) 了解更多使用细节。
+访问 [ProComponent 文档](https://procomponent.banmao.cc/blocks) 了解更多使用细节。
 
 ## License
 
