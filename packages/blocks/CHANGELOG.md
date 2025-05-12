@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.0.1-alpha.2
+
+### Patch Changes
+
+- 优化显示样式
+
 ## 0.0.1-alpha.1
 
 ### Patch Changes
