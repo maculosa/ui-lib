@@ -1,6 +1,5 @@
 import { loginEmits, loginProps } from './types'
 import LoginForm from './components/LoginForm'
-// import { RouterLink } from 'vue-router'
 import './styles/login.css'
 
 export default defineComponent({
@@ -10,8 +9,6 @@ export default defineComponent({
     setup(props, { emit, slots }) {
         const { layout, bg, bgImageUrl, logo, ...loginFormProps } = props
         
-        // const LogoComponent = () => logo
-        
         const isRightImage = computed(() => props.imagePosition === 'right')
 
         return () =>  {
@@ -20,10 +17,10 @@ export default defineComponent({
                     <div class={[
                         'container',
                         'column',
-                        { ['column-reverse']: props.imagePosition === 'left' }
+                        { 'column-reverse': props.imagePosition === 'left' }
                     ]}>
-                        <div class={'column-item'}>
-                            {isRightImage.value && <div class={['logo']}>
+                        <div class='column-item'>
+                            {isRightImage.value && <div class='logo'>
                                 {slots.logo?.()}
                             </div>}
                             <LoginForm {...loginFormProps} shadow={false}
@@ -31,15 +28,15 @@ export default defineComponent({
                                 onFinish={(values) => emit('finish', values)}
                             />
                         </div>
-                        <div class={['column-muted']}>
-                            {!isRightImage.value && <div class={['logo']}>
+                        <div class='column-muted'>
+                            {!isRightImage.value && <div class='logo'>
                                 {slots.logo?.()}
                             </div>}
                             {props.bgImageUrl && (
                                 <img
                                     src={props.bgImageUrl}
                                     alt="Image"
-                                    class={['column-muted-image']}
+                                    class='column-muted-image'
                                 />
                             )}
                         </div>
@@ -50,7 +47,7 @@ export default defineComponent({
             if (layout === 'card') {
                 return (
                     <div class={['container', 'flex-center']}>
-                        <div class={['logo']}>
+                        <div class='logo'>
                                 {slots.logo?.()}
                             </div>
                         <div class="card">
@@ -69,7 +66,7 @@ export default defineComponent({
                                     <img
                                         src={bgImageUrl}
                                         alt="Image"
-                                        class={['column-muted-image']}
+                                        class='column-muted-image'
                                     />
                                 )}
                             </div>

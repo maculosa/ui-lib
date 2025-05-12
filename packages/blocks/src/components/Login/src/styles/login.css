@@ -1,3 +1,9 @@
+:root {
+    --color-link: #2563eb;
+    --color-text: #f4f4f5;
+    --color-section-text: #e4e4e7;
+}
+
 .container {
     position: relative;
     width: 100%;
@@ -43,11 +49,6 @@
     background: transparent;
 }
 
-:root {
-    --color-link: #2563eb;
-    --color-text: #3f3f46;
-    --color-section-text: #71717a;
-}
 
 .login-form-shadow {
     box-shadow: 0 2px 12px 0 rgba(0 0 0 / 10%);
