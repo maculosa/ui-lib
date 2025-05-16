@@ -1,6 +1,7 @@
 export * from './DrawerForm'
 export * from './LinkDiagram'
 export * from './LiteFilter'
+export * from './LoginForm'
 export * from './ModalForm'
 export * from './NaiveProvider'
 export * from './ProDescriptions'

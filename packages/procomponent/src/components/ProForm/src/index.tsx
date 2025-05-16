@@ -2,7 +2,6 @@ import type {
   SelectOption,
 } from 'naive-ui'
 import {
-  formProps,
   NButton,
   NCascader,
   NCheckbox,
@@ -23,7 +22,7 @@ import {
   NTooltip,
   NUpload,
 } from 'naive-ui'
-import { defineComponent, onMounted, reactive, ref, watch, type PropType } from 'vue'
+import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { useShowSuffix } from '@/hooks/useShowSuffix'
 // import RemoteCascader from './components/RemoteCascader'
 import initTreeData from '@/utils/buildTree'
@@ -32,57 +31,12 @@ import BmIconRefresh from '~icons/bm-icon/refresh'
 import BmIconSearch from '~icons/bm-icon/search'
 import BmIconArrowDown from '~icons/bm-icon/arrow-down'
 import BmIconArrowUp from '~icons/bm-icon/arrow-up'
+import { proFormEmits, proFormProps } from './types'
 
 export default defineComponent({
   name: 'ProForm',
-  props: {
-    ...formProps,
-    gridCols: {
-      type: Number,
-      default: 1,
-    },
-    responsive: {
-      type: String as PropType<'self' | 'screen'>,
-      default: 'self',
-    },
-    gridCollapsed: {
-      type: Boolean,
-      default: false,
-    },
-    gridCollapsedRows: {
-      type: Number,
-      default: 1,
-    },
-    columns: {
-      type: Array as PropType<any[]>,
-      default: () => ([]),
-    },
-    mode: {
-      type: String as PropType<'normal' | 'modal' | 'drawer' | 'search'>,
-      default: 'normal',
-    },
-    defaultValue: {
-      type: Object as PropType<any>,
-      default: () => ({}),
-    },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    searchText: {
-      type: String,
-      default: '搜索',
-    },
-    submitText: {
-      type: String,
-      default: '提交',
-    },
-    resetText: {
-      type: String,
-      default: '重置',
-    },
-  },
-  emits: ['submit', 'reset'],
+  props: proFormProps,
+  emits: proFormEmits,
   setup(props, ctx) {
     const formData = ref<any>({})
 
@@ -408,7 +362,7 @@ export default defineComponent({
     }
 
     // 重置表单
-    const handleReset = (e: MouseEvent) => {
+    const handleReset = () => {
       if (props.defaultValue && Object.keys(props.defaultValue).length > 0) {
         formData.value = { ...defaultValue }
       }
@@ -416,7 +370,7 @@ export default defineComponent({
         formData.value = createFormData()
       }
 
-      ctx.emit('reset', e)
+      ctx.emit('reset')
     }
 
     ctx.expose({
@@ -451,7 +405,7 @@ export default defineComponent({
           {props.mode === 'search' && (
             <NGi suffix>
               <NSpace justify="end" wrap={false}>
-                <NButton onClick={e => handleReset(e)}>
+                <NButton onClick={() => handleReset()}>
                   {{
                     icon: () => <BmIconRefresh />,
                     default: () => props.resetText,
@@ -487,13 +441,18 @@ export default defineComponent({
         </NGrid>
         {props.mode === 'normal' && (
           <NSpace justify="center" wrap={false}>
-            <NButton onClick={e => handleReset(e)}>
+            <NButton onClick={() => handleReset()}>
               {props.resetText}
             </NButton>
             <NButton attr-type="button" type="primary" onClick={handleSubmit}>
               {props.submitText}
             </NButton>
           </NSpace>
+        )}
+        {props.mode === 'login' && (
+          <NButton type="primary" block onClick={handleSubmit}>
+            登录
+          </NButton>
         )}
       </NForm>
     )

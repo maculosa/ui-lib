@@ -1,0 +1,5 @@
+export const SITE_NAME = 'Banmao Components'
+export const SITE_DESC = 'A Vue 3 Advanced UI Component Library, highly customizable, full Typescript'
+export const SITE_TITLE = 'Banmao Components - Make interesting in development'
+export const SITE_DESC_ZH = '一个基于 Vue 3 的高级 UI 组件库，高度定制化，支持 TypeScript'
+export const SITE_TITLE_ZH = 'Banmao Components - 为开发而生'
