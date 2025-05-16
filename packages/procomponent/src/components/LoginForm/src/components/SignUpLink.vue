@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SignUpLinkProps } from '../types';
+import type { SignUpLinkProps } from '../types';
 
 defineOptions({
   name: 'SignUpLink',

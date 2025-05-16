@@ -18,6 +18,7 @@
     "noEmit": true,
     "module": "ESNext",
     "lib": ["ES2021", "DOM"],
+    "verbatimModuleSyntax": true,
 
     "baseUrl": ".",
     "paths": {

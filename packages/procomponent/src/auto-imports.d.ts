@@ -13,6 +13,7 @@ declare global {
   const LinkDiagramPlugin: typeof import('./components/LinkDiagram/index')['LinkDiagramPlugin']
   const LiteFilter: typeof import('./components/LiteFilter/index')['LiteFilter']
   const LiteFilterPlugin: typeof import('./components/LiteFilter/index')['LiteFilterPlugin']
+  const LoginForm: typeof import('./components/LoginForm/index')['LoginForm']
   const ModalForm: typeof import('./components/ModalForm/index')['ModalForm']
   const ModalFormPlugin: typeof import('./components/ModalForm/index')['ModalFormPlugin']
   const NaiveProvider: typeof import('./components/NaiveProvider/index')['NaiveProvider']
@@ -122,6 +123,7 @@ declare module 'vue' {
     readonly LinkDiagramPlugin: UnwrapRef<typeof import('./components/LinkDiagram/index')['LinkDiagramPlugin']>
     readonly LiteFilter: UnwrapRef<typeof import('./components/LiteFilter/index')['LiteFilter']>
     readonly LiteFilterPlugin: UnwrapRef<typeof import('./components/LiteFilter/index')['LiteFilterPlugin']>
+    readonly LoginForm: UnwrapRef<typeof import('./components/LoginForm/index')['LoginForm']>
     readonly ModalForm: UnwrapRef<typeof import('./components/ModalForm/index')['ModalForm']>
     readonly ModalFormPlugin: UnwrapRef<typeof import('./components/ModalForm/index')['ModalFormPlugin']>
     readonly NaiveProvider: UnwrapRef<typeof import('./components/NaiveProvider/index')['NaiveProvider']>
