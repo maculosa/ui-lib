@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.0.1-alpha.9
+
+### Patch Changes
+
+- fix(styles): 更新登录组件的 CSS 变量以使用 oklch 颜色模式，确保视觉一致性
+
 ## 0.0.1-alpha.8
 
 ### Patch Changes
