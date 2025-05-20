@@ -7,27 +7,20 @@ export default defineComponent({
     props: loginProps,
     emits: loginEmits,
     setup(props, { emit, slots }) {
-        const { layout, bg, bgImageUrl, logo, ...loginFormProps } = props
+        const { layout, bg, bgImageUrl, ...loginFormProps } = props
 
         const isRightImage = computed(() => props.imagePosition === 'right')
 
         return () => {
-            const defaultSlots = slots.default?.() || []
-
-
-
-
-
-            console.log(slots.default)
             if (slots.default) {
                 if (layout === 'column') {
                     return (
                         <div class={[
                             'container',
                             'column',
-                            { 'column-reverse': props.imagePosition === 'left' }
+                            { 'order-1': props.imagePosition === 'left' }
                         ]}>
-                            <div class='column-item'>
+                            <div class='column-item' >
                                 {isRightImage.value && <div class='logo'>
                                     {slots.logo?.()}
                                 </div>}
@@ -55,10 +48,15 @@ export default defineComponent({
                 }
                 if (layout === 'card') {
                     return (
-                        <div class={['container', 'flex-center']}>
+                        <div class={['container', 'flex-center', 'card-login-wrapper']}
+                            style={{
+                                backgroundImage: bgImageUrl ? `url(${bgImageUrl})` : 'transparent',
+                            }}
+                        >
                             <div class='logo'>
                                 {slots.logo?.()}
                             </div>
+                            <div class="card-img-cover"></div>
                             <div class="card">
                                 <div class={['card-column-item', 'flex-1']}>
                                     <LoginForm {...loginFormProps} shadow={false}
