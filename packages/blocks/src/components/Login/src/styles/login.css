@@ -1,9 +1,9 @@
 :root {
-    --color-link: #2563eb;
-    --color-text: #f4f4f5;
-    --color-section-text: #e4e4e7;
-    --img-cover-color: hsl(220 9% 46% / 60%);
-    --img-cover-color-dark: hsl(221 39% 11% / 60%);
+    --color-link: hsl(221 100% 58%);
+    --color-text: hsl(240 5% 96%);
+    --color-section-text: hsl(240 6% 90%);
+    --img-cover-color: hsla(0 0% 100% / 0.6);
+    --img-cover-color-dark: hsl(0 0% 5% / 60%);
 }
 
 .container {
