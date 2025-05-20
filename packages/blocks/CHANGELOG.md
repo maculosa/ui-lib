@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.0.1-alpha.10
+
+### Patch Changes
+
+- fix(login): 修改登录组件以根据图像位置动态调整元素顺序，确保布局一致性
+
 ## 0.0.1-alpha.9
 
 ### Patch Changes
