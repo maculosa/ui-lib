@@ -7,9 +7,9 @@ export default defineComponent({
     props: loginProps,
     emits: loginEmits,
     setup(props, { emit, slots }) {
-        const { layout, bg, bgImageUrl, ...loginFormProps } = props
+        const { layout, bg, bgImageUrl, imagePosition, ...loginFormProps } = props
 
-        const isRightImage = computed(() => props.imagePosition === 'right')
+        const isRightImage = computed(() => imagePosition === 'right')
 
         return () => {
             if (slots.default) {
@@ -18,9 +18,10 @@ export default defineComponent({
                         <div class={[
                             'container',
                             'column',
-                            { 'order-1': props.imagePosition === 'left' }
                         ]}>
-                            <div class='column-item' >
+                            <div class='column-item' style={{
+                                order: isRightImage.value ? 1 : 2,
+                            }}>
                                 {isRightImage.value && <div class='logo'>
                                     {slots.logo?.()}
                                 </div>}
@@ -31,7 +32,9 @@ export default defineComponent({
                                     {slots.default()}
                                 </LoginForm>
                             </div>
-                            <div class='column-muted'>
+                            <div class='column-muted' style={{
+                                order: isRightImage.value ? 2 : 1,
+                            }}>
                                 {!isRightImage.value && <div class='logo'>
                                     {slots.logo?.()}
                                 </div>}
@@ -58,7 +61,11 @@ export default defineComponent({
                             </div>
                             <div class="card-img-cover"></div>
                             <div class="card">
-                                <div class={['card-column-item', 'flex-1']}>
+                                <div class={['card-column-item', 'flex-1']}
+                                    style={{
+                                        "flex-direction": isRightImage.value ? "column" : "column-reverse",
+                                    }}
+                                >
                                     <LoginForm {...loginFormProps} shadow={false}
                                         radius={false}
                                         onFinish={(values) => emit('finish', values)}
@@ -68,7 +75,8 @@ export default defineComponent({
                                 </div>
                                 <div class={['card-column-muted', 'flex-1']}
                                     style={{
-                                        width: '350px'
+                                        width: '350px',
+                                        "flex-direction": isRightImage.value ? "column-reverse" : "column",
                                     }}
                                 >
                                     {bgImageUrl && (
