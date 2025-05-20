@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.0.1-alpha.11
+
+### Patch Changes
+
+- fix(login): 动态调整卡片布局方向以适应图像位置，确保视觉一致性
+
 ## 0.0.1-alpha.10
 
 ### Patch Changes
