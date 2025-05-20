@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
+  "type": "module",
   "scripts": {
     "build:lib": "pnpm run --filter @banmao/procomponent build",
     "build:datav": "pnpm run --filter @banmao/datav build",
@@ -11,7 +12,7 @@
     "build:blocks": "pnpm run --filter @banmao/blocks build",
     "build": "pnpm run build:hooks && pnpm run build:datav && pnpm run build:draw && pnpm run build:lib && pnpm run build:blocks",
     "docs:dev": "vitepress dev docs",
-    "docs:build": "pnpm build:all && vitepress build docs",
+    "docs:build": "pnpm build && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "changeset": "changeset",
     "version-packages": "changeset version",
@@ -20,7 +21,7 @@
     "release:draw": "pnpm build:draw && pnpm release:only",
     "release:hooks": "pnpm build:hooks && pnpm release:only",
     "release:blocks": "pnpm build:blocks && pnpm release:only",
-    "release:all": "pnpm build:all && pnpm release:only",
+    "release:all": "pnpm build && pnpm release:only",
     "release:only": "changeset publish --registry=https://registry.npmjs.com/",
     "play": "pnpm run --filter ./playground dev"
   },
