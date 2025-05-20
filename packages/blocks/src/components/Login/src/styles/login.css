@@ -2,8 +2,8 @@
     --color-link: #2563eb;
     --color-text: #f4f4f5;
     --color-section-text: #e4e4e7;
-    --img-cover-color: hsl(220 9% 46% / 60);
-    --img-cover-color-dark: hsl(221 39% 11% / 60);
+    --img-cover-color: hsl(220 9% 46% / 60%);
+    --img-cover-color-dark: hsl(221 39% 11% / 60%);
 }
 
 .container {
