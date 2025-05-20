@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.0.1-alpha.7
+
+### Patch Changes
+
+- fix(login): 修复 CSS 变量语法错误，确保颜色覆盖正常工作
+
 ## 0.0.1-alpha.6
 
 ### Patch Changes
