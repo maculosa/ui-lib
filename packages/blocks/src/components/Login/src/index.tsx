@@ -60,11 +60,12 @@ export default defineComponent({
                                 {slots.logo?.()}
                             </div>
                             <div class="card-img-cover"></div>
-                            <div class="card">
+                            <div class="card"
+                                style={{
+                                    flexDirection: isRightImage.value ? 'row' : 'row-reverse',
+                                }}
+                            >
                                 <div class={['card-column-item', 'flex-1']}
-                                    style={{
-                                        "flex-direction": isRightImage.value ? "column" : "column-reverse",
-                                    }}
                                 >
                                     <LoginForm {...loginFormProps} shadow={false}
                                         radius={false}
@@ -76,7 +77,6 @@ export default defineComponent({
                                 <div class={['card-column-muted', 'flex-1']}
                                     style={{
                                         width: '350px',
-                                        "flex-direction": isRightImage.value ? "column-reverse" : "column",
                                     }}
                                 >
                                     {bgImageUrl && (
