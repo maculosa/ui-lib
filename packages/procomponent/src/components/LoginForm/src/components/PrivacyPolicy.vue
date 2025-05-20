@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PrivacyPolicyProps } from '../types';
+import type { PrivacyPolicyProps } from '../types';
 
 defineOptions({
     name: 'PrivacyPolicy'

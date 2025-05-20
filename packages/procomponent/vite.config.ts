@@ -14,6 +14,7 @@ import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -34,6 +35,7 @@ export default defineConfig(({ mode }) => {
       dts({
         tsconfigPath: "./tsconfig.lib.json"
       }),
+      tailwindcss(),
       libInjectCss(),
       createSvgIconsPlugin({
         iconDirs: [resolve(process.cwd(), './assets/icons')],

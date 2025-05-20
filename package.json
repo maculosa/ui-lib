@@ -9,7 +9,7 @@
     "build:draw": "pnpm run --filter @banmao/draw build",
     "build:hooks": "pnpm run --filter @banmao/hooks build",
     "build:blocks": "pnpm run --filter @banmao/blocks build",
-    "build:all": "pnpm run build:hooks && pnpm run build:datav && pnpm run build:draw && pnpm run build:lib && pnpm run build:blocks",
+    "build": "pnpm run build:hooks && pnpm run build:datav && pnpm run build:draw && pnpm run build:lib && pnpm run build:blocks",
     "docs:dev": "vitepress dev docs",
     "docs:build": "pnpm build:all && vitepress build docs",
     "docs:preview": "vitepress preview docs",
