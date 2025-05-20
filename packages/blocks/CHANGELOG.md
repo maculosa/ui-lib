@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.0.1-alpha.8
+
+### Patch Changes
+
+- fix(login): 修改登录组件的 z-index 值以确保正确的层级显示
+
 ## 0.0.1-alpha.7
 
 ### Patch Changes
