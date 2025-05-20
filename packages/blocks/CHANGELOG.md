@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.0.1-alpha.6
+
+### Patch Changes
+
+- 修复已知问题
+
 ## 0.0.1-alpha.5
 
 ### Patch Changes
