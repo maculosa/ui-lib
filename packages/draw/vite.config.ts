@@ -31,7 +31,7 @@ export default defineConfig({
       output: {
         globals: {
           vue: 'Vue',
-          echarts: 'echarts',
+          echarts: 'Echarts',
         }
       }
     }
