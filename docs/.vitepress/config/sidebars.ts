@@ -89,12 +89,26 @@ function getHooksSideBar() {
     ]
 }
 
+function getBlocksSideBar() {
+    return [
+        {
+            text: 'Overview',
+            link: '/blocks'
+        },
+        {
+            text: 'Login',
+            link: '/blocks/login'
+        }
+    ]
+}
+
 function getSidebars() {
     return {
         '/guide/': getGuideSideBar(),
         '/data-v/': getDataVSideBar(),
         '/procomponent/': getProComponentSideBar(),
-        '/hooks/': getHooksSideBar()
+        '/hooks/': getHooksSideBar(),
+        '/blocks/': getBlocksSideBar(),
     }
 }
 

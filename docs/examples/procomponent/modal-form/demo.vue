@@ -32,5 +32,7 @@ const modelForm = ref({
 </script>
 
 <template>
-  <ModalForm ref="modalRef" :model="modelForm" :columns="columns" title="ModalForm" @submit="handleSubmit" />
+  <ModalForm ref="modalRef" :model="modelForm" :columns="columns" title="ModalForm" @submit="handleSubmit"
+    width="800px"
+  />
 </template>

@@ -1,6 +1,5 @@
 ---
 name: Login Block
-layout: page
 pageClass: blocks-page
 ---
 

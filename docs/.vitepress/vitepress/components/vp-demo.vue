@@ -72,24 +72,18 @@ const copyCode = async () => {
             <slot name="source" />
         </div>
         <div class="toolbar">
-            <NButton v-show="false" size="small" text @click="onPlaygroundClick"
+            <button type="button" v-show="false" @click="onPlaygroundClick"
                 @keydown.prevent.enter="onPlaygroundClick"
                 @keydown.prevent.space="onPlaygroundClick"   
             >
-                <template #icon>
-                    <IconPlayground />
-                </template>
-            </NButton>
-            <NButton v-show="false" size="small" text @click="copyCode">
-                <template #icon>
-                    <IconCopy />
-                </template>
-            </NButton>
-            <NButton size="small" text @click="toggleSourceVisible()">
-                <template #icon>
-                    <IconCode />
-                </template>
-            </NButton>
+                <IconPlayground />
+            </button>
+            <button v-show="false" @click="copyCode">
+                <IconCopy />
+            </button>
+            <button @click="toggleSourceVisible()">
+                <IconCode />
+            </button>
         </div>
         <SourceCode :visible="sourceVisible" :source="source" />
     </div>
@@ -118,6 +112,15 @@ const copyCode = async () => {
         
         & + * {
             border-top: 1px solid #ccc;
+        }
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    .demo {
+        .toolbar {
+            background: hsl(0 0% 20%);
+            color: #fff;
         }
     }
 }

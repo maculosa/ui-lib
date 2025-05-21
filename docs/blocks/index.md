@@ -1,9 +1,8 @@
 ---
-name: Blocks
-
+title: Blocks
 ---
 
-# Blocks with Vue
+## Blocks with Vue
 
 灵感来源于 Shadcn UI
 
