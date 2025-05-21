@@ -235,7 +235,7 @@
     height: 100%;
     background: var(--img-cover-color);
     z-index: 0;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(10px);
 }
 .dark .card-img-cover {
     background: var(--img-cover-color-dark);
