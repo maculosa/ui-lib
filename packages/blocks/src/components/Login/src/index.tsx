@@ -140,11 +140,21 @@ export default defineComponent({
                 }
                 if (layout === 'card') {
                     return (
-                        <div class={['container', 'flex-center']}>
+                        <div class={['container', 'flex-center', 'card-login-wrapper']}
+                        style={{
+                            backgroundImage: bgImageUrl ? `url(${bgImageUrl})` : 'transparent',
+                            backgroundSize: 'cover',
+                        }}
+                        >
                             <div class='logo'>
                                 {slots.logo?.()}
                             </div>
-                            <div class="card">
+                            <div class="card-img-cover"></div>
+                            <div class="card"
+                             style={{
+                                flexDirection: isRightImage.value ? 'row' : 'row-reverse',
+                            }}
+                            >
                                 <div class={['card-column-item', 'flex-1']}>
                                     <LoginForm {...loginFormProps} shadow={false}
                                         radius={false}
