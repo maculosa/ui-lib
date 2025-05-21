@@ -17,7 +17,7 @@ import uslug from 'uslug'
 import Icons from 'unplugin-icons/vite'
 import Unocss from 'unocss/vite'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
-import Layouts from 'vite-plugin-vue-layouts'
+import Layouts from 'vite-plugin-vue-layouts-next'
 import { autoImportRaw } from './build/plugins/vite-plugin-auto-import-raw'
 
 // https://vite.dev/config/
