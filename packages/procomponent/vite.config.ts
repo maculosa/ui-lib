@@ -15,11 +15,13 @@ import IconsResolver from 'unplugin-icons/resolver'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import tailwindcss from '@tailwindcss/vite'
+import { visualizer } from 'rollup-plugin-visualizer'
+import compression from 'vite-plugin-compression'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  console.log(env)
+  console.log(env.NODE_ENV)
   return {
     resolve: {
       alias: {
@@ -82,25 +84,41 @@ export default defineConfig(({ mode }) => {
         dts: 'src/auto-imports.d.ts',
         dirs: ['src/hooks', 'src/components'],
         vueTemplate: true
+      }),
+      compression(), // 启用 gzip 压缩
+      visualizer({
+        filename: 'stats.html',
+        gzipSize: true,
+        brotliSize: true,
       })
     ],
-
     build: {
       // copyPublicDir: false,
       lib: {
         entry: resolve(__dirname, 'src/index.ts'),
         name: 'index',
-        formats: ['es', 'cjs'],
-        fileName: (format) => format === 'es' ? `index.js` : `index.cjs`
+        formats: ['es'],
+        fileName: 'index'
       },
       rollupOptions: {
-        external: ['vue', 'naive-ui', '@vueuse/core'],
+        external: ['vue', 'naive-ui', '@vueuse/core', 'vue-router', '@banmao/draw',  /^@iconify\/.*$/, /^@?icons-vue\/.*$/],
         output: {
           globals: {
             vue: 'Vue',
-            'naive-ui': 'naive',
+            'naive-ui': 'NaiveUI',
             '@vueuse/core': 'VueUse',
-          }
+            '@banmao/draw': 'Draw',
+          },
+          // manualChunks: {
+          //   'icons': ['@iconify/vue']
+          // }
+        }
+      },
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true
         }
       }
     },
