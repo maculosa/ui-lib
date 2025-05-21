@@ -3,6 +3,10 @@ import { computed, defineComponent, ref } from 'vue'
 import { ProForm } from '@components/ProForm'
 import { modalFormProps, modalFormEmits, type ModalFormExpose } from './types'
 
+interface FormValues {
+  [key: string]: any
+}
+
 export default defineComponent({
   name: 'ModalForm',
   props: modalFormProps,
@@ -11,8 +15,9 @@ export default defineComponent({
     const visible = ref(false)
 
     const columns = computed(() => {
-      const cols = props.columns
-      return cols.filter(col => (col?.type !== 'index' && col?.type !== 'selection') && col?.key !== 'actions')
+      return props.columns.filter(col => 
+        !['index', 'selection'].includes(col?.type) && col?.key !== 'actions'
+      )
     })
 
     const width = computed(() => {
@@ -29,7 +34,7 @@ export default defineComponent({
 
     const formRef = ref()
 
-    async function handleSubmit(values: any) {
+    async function handleSubmit(values: FormValues) {
       try {
         await emit('submit', values)
         close()
@@ -56,11 +61,11 @@ export default defineComponent({
     })
 
     return () => (
-      <div>
-        <div style="display: inline-block" onClick={handleVisible}>
+      <>
+        <div class="modal-trigger" style="display: inline-block">
           { slots.default?.() || (
             <NButton size="small" type="primary" onClick={handleVisible}>
-              { props.title ? props.title : '打开' }
+              { props.title ?? '打开' }
             </NButton>
           )}
         </div>
@@ -69,7 +74,7 @@ export default defineComponent({
           v-model:show={visible.value}
           preset="card"
           title={props.title}
-          style={{ width }}
+          style={{ bodyStyle: typeof width === 'number' ? { width: `${width}px` } : { width } }}
         >
           {{
             default: () => (
@@ -92,7 +97,7 @@ export default defineComponent({
             ),
           }}
         </NModal>
-      </div>
+      </>
     )
   },
 })

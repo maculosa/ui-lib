@@ -6,14 +6,6 @@ export interface ModalFormColumn {
   [key: string]: any
 }
 
-export interface ModalFormProps {
-  title?: string
-  width?: number
-  columns?: ModalFormColumn[]
-  closable?: boolean
-  model?: Record<string, any>
-}
-
 export const modalFormProps = {
   title: {
     type: String,
@@ -36,13 +28,14 @@ export const modalFormProps = {
     default: () => ({}),
   },
 }
+export type ModalFormProps = ExtractPropTypes<typeof modalFormProps>
 
+export const modalFormEmits = ['submit', 'reset']
 export type ModalFormEmits = {
   submit: (values: Record<string, any>) => void
   reset: () => void
 }
 
-export const modalFormEmits = ['submit', 'reset']
 
 export interface ModalFormExpose {
   reset: () => void
