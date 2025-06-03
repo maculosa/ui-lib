@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.7.16-alpha.0
+
+### Patch Changes
+
+- fix(table): 隐藏表格中姓名列以改善显示效果
+
 ## 0.7.15
 
 ### Patch Changes
