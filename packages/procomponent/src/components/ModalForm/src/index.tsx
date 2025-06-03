@@ -16,7 +16,7 @@ export default defineComponent({
 
     const columns = computed(() => {
       return props.columns.filter(col => 
-        !['index', 'selection'].includes(col?.type) && col?.key !== 'actions'
+        !['index', 'selection'].includes(col?.type as string) && col?.key !== 'actions'
       )
     })
 

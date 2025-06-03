@@ -1,4 +1,4 @@
-import type { PropType } from 'vue'
+import type { ExtractPublicPropTypes, PropType } from 'vue'
 
 export interface ModalFormColumn {
   type?: 'index' | 'selection' | string
@@ -28,7 +28,7 @@ export const modalFormProps = {
     default: () => ({}),
   },
 }
-export type ModalFormProps = ExtractPropTypes<typeof modalFormProps>
+export type ModalFormProps = ExtractPublicPropTypes<typeof modalFormProps>
 
 export const modalFormEmits = ['submit', 'reset']
 export type ModalFormEmits = {
