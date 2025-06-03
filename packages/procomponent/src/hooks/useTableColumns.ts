@@ -23,7 +23,7 @@ export function useTableColumns(columns: any[]) {
   /**
    * 表格列
    */
-  const tableColumns = ref(settingColumns.value)
+  const tableColumns = ref(settingColumns.value.filter((column) => !column.hideInTable))
 
   /**
    * 搜索栏列
@@ -56,7 +56,7 @@ export function useTableColumns(columns: any[]) {
 
   watchEffect(() => {
     if (settingColumns.value.length > 0) {
-      const cloneSettingColumns = [...settingColumns.value]
+      const cloneSettingColumns = settingColumns.value.filter((column) => !column.hideInTable)
       tableColumns.value = cloneSettingColumns.map((column) => {
         if (column?.type === 'index') return renderIndexCell(column)
         if (column?.copyable) return renderCopyableCell(column)

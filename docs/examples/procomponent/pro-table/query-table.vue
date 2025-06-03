@@ -25,12 +25,14 @@ async function fetchCityList() {
 }
 
 const columns = ref([
+  { type: 'index' },
   {
     title: '姓名',
     key: 'name',
     minWidth: 100,
     valueType: 'text',
     tooltip: '这是姓名',
+    hideInTable: true,
     rules: [{ required: true, message: '请输入姓名' }],
   },
   {
