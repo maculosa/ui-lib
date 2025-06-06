@@ -20,10 +20,24 @@ export function useTableColumns(columns: any[]) {
     })
   )
 
+
+  /**
+   * 初始化表格列配置
+   * 
+   * 本函数用于从全局列配置中筛选出需要显示在表格中的列。
+   * 通过过滤掉设置中标记了`hideInTable`属性的列，保留需要在表格展示的列配置。
+   * 
+   * @returns {Array<object>} 过滤后的表格列配置数组，包含所有未标记隐藏的列配置项
+   */
+  function initTableColumns() {
+    // 从响应式列配置中筛选出未隐藏的列（hideInTable为假值的列）
+    return settingColumns.value.filter((column) => !column.hideInTable)
+  }
+
   /**
    * 表格列
    */
-  const tableColumns = ref(settingColumns.value.filter((column) => !column.hideInTable))
+  const tableColumns = ref(initTableColumns())
 
   /**
    * 搜索栏列
@@ -56,7 +70,7 @@ export function useTableColumns(columns: any[]) {
 
   watchEffect(() => {
     if (settingColumns.value.length > 0) {
-      const cloneSettingColumns = settingColumns.value.filter((column) => !column.hideInTable)
+      const cloneSettingColumns = initTableColumns()
       tableColumns.value = cloneSettingColumns.map((column) => {
         if (column?.type === 'index') return renderIndexCell(column)
         if (column?.copyable) return renderCopyableCell(column)
