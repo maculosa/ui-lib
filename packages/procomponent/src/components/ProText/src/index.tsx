@@ -47,7 +47,7 @@ export default defineComponent({
 
     const bmIconStyle = {
       display: 'inline-block',
-      verticalAlign: 'text-top',
+      verticalAlign: 'inherit',
       cursor: 'pointer',
     }
 
