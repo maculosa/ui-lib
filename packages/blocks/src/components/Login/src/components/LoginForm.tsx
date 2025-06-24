@@ -2,7 +2,6 @@ import '../styles/login.css'
 import { NButton, NCheckbox, NForm, NFormItem, NInput, type FormInst } from 'naive-ui'
 import { loginFormProps } from '../types'
 
-
 export default defineComponent({
     name: "LoginForm",
     props: loginFormProps,
@@ -53,7 +52,7 @@ export default defineComponent({
                     'login-form',
                     {
                         ['login-form-shadow']: shadow,
-                    }
+                    },
                 ]}
                 style={[
                     {

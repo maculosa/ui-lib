@@ -1,7 +1,9 @@
 :root {
     --color-link: hsl(221 100% 58%);
-    --color-text: hsl(240 5% 96%);
-    --color-section-text: hsl(240 6% 90%);
+    --color-text: hsl(240 5% 20%);
+    --color-text-dark: hsl(240 5% 96%);
+    --color-section-text: hsl(240 6% 30%);
+    --color-section-text-dark: hsl(240 6% 90%);
     --img-cover-color: oklch(1 0 none / 0.6);
     --img-cover-color-dark: oklch(0.3 0 none / 0.6);
     --bg-color: oklch(1 0 none / 0.8);
@@ -206,6 +208,14 @@
 
 .dark .login-form {
     background-color: var(--bg-color-dark);
+}
+
+.dark .title {
+    color: var(--color-text-dark);
+}
+
+.dark .sub-title {
+    color: var(--color-section-text-dark);
 }
 
 @media (prefers-color-scheme: light) {
