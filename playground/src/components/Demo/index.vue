@@ -16,9 +16,11 @@
       </div>
     </div>
 
-    <div class="demo-content bg-coolgray/10 dark:bg-dark/10">
+    <div v-if="!url" class="demo-content bg-coolgray/10 dark:bg-dark/10">
       <slot />
     </div>
+
+    <iframe v-if="url" class="mx-auto w-960px h-600px" :src="url"></iframe>
 
     <n-collapse-transition>
       <CodePreview v-show="visible" :code="raw" />
@@ -41,7 +43,7 @@ export interface DemoProps {
 }
 
 const props = defineProps<DemoProps>()
-const { title, desc, raw } = toRefs(props)
+const { title, desc, raw, url } = toRefs(props)
 const [visible, toggle] = useToggle(false)
 </script>
 

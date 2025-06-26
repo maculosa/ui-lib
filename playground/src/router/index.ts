@@ -7,7 +7,23 @@ console.log(routes)
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: setupLayouts(routes),
+  routes: [
+    {
+      path: '/examples/blocks/login',
+      component: () => import('@/layouts/blank.vue'),
+      children: [
+        {
+          path: 'simple-login',
+          component: () => import('@/examples/blocks/login/simple-login.vue')
+        },
+        {
+          path: 'simple-bg-login',
+          component: () => import('@/examples/blocks/login/simple-bg-login.vue')
+        }
+      ]
+    },
+    ...setupLayouts(routes),
+  ]
 })
 
 // 全局错误处理

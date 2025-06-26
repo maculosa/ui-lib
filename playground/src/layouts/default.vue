@@ -65,6 +65,7 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
     box-sizing: border-box;
     /* max-width: 1280px; */
     min-width: 460px;
+    margin-right: 32px;
     /* margin: 0 auto; */
     /* overflow-y: auto; */
     padding-top: var(--layout-margin-top);

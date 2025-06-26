@@ -1,5 +1,5 @@
 <template>
-    <div class="logo">
+    <div class="bm-logo">
         <div class="logo-pic"></div>
         <div class="logo-text">{{ logoText }}</div>
     </div>
@@ -22,7 +22,7 @@ watchEffect(() => {
 </script>
 
 <style scoped>
-.logo {
+.bm-logo {
     display: flex;
     align-items: center;
     gap: 8px;

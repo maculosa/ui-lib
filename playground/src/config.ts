@@ -36,6 +36,10 @@ export const config: Config = {
       mode: 'dev'
     },
     {
+      name: 'Blocks',
+      url: '/blocks',
+    },
+    {
       name: 'Data V',
       url: '/datav'
     }
@@ -102,6 +106,33 @@ export const config: Config = {
             {
               name: 'Line',
               url: '/datav/line',
+            }
+          ]
+        }
+      ]
+    },
+    {
+      name: 'Blocks',
+      items: [
+        {
+          name: 'Overview',
+          url: '/blocks/overview'
+        },
+        {
+          name: 'Components',
+          url: '/blocks/components',
+          children: [
+            {
+              name: 'Login',
+              url: '/blocks/login',
+            },
+            {
+              name: 'Register',
+              url: '/blocks/register',
+            },
+            {
+              name: 'Dashboard',
+              url: '/blocks/dashboard',
             }
           ]
         }

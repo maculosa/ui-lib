@@ -56,6 +56,13 @@ const activePath = computed(() => {
                     <span class="link-text">Pie</span>
                 </a>
             </section>
+
+            <section class="sidebar-section">
+                <p class="sidebar-group__title">Blocks</p>
+                <a class="link" :class="{ active: activePath === '/blocks/accordion' }" href="/blocks/login">
+                    <span class="link-text">Login</span>
+                </a>
+            </section>
         </div>
     </aside>
 </template>
