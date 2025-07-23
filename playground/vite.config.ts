@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import { resolve } from 'path'
 import vue from '@vitejs/plugin-vue'
 import vueJSX from '@vitejs/plugin-vue-jsx'
 import Inspect from 'vite-plugin-inspect'
@@ -24,7 +25,7 @@ import { autoImportRaw } from './build/plugins/vite-plugin-auto-import-raw'
 export default defineConfig({
   resolve: {
     alias: {
-      '@': '/src',
+      '@': resolve(__dirname, 'src'),
     },
   },
   plugins: [

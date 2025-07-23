@@ -1,14 +1,14 @@
 <template>
-  <div class="demo-warp bg-transparent backdrop-blur-1 shadow-2xl b-white/40 dark:b-gray/40 b-[1px] b-solid">
-    <div class="demo-header dark:b-b-primary/20">
+  <div class="my-[20px] demo-warp bg-transparent backdrop-blur-1 shadow-2xl b-zinc-300/40 dark:b-gray/40 b-[1px] b-solid">
+    <div class="demo-header dark:b-b-primary/20 bg-white/60">
       <div class="demo-header-left">
-        <h3 class="demo-title dark:text-white" :id="title">{{ title }}</h3>
-        <span v-if="desc" class="demo-desc">{{ desc }}</span>
+        <h3 class="text-[20px] dark:text-zinc-100" :id="title">{{ title }}</h3>
+        <span v-if="desc" class="text-[16px] text-zinc-600 dark:text-zinc-300">{{ desc }}</span>
       </div>
       <div class="demo-header-right">
         <n-tooltip trigger="hover">
           <template #trigger>
-            <Icon icon="carbon:code" width="20" height="20" class="outline-none p-1 rounded-1 text-[#9ca3af] hover:text-primary hover:bg-primary/10 active:text-primary cursor-pointer transition-all transition-delay-200 ease" :class="{ 'active': visible }"
+            <Icon icon="carbon:code" width="28" height="28" class="outline-0 p-1 rounded-1 dark:text-zinc-300 hover:text-primary hover:bg-primary/10 active:text-primary cursor-pointer transition-all transition-delay-200 ease" :class="{ 'active': visible }"
               @click="toggle()" />
           </template>
           查看代码
@@ -16,14 +16,14 @@
       </div>
     </div>
 
-    <div v-if="!url" class="demo-content bg-coolgray/10 dark:bg-dark/10">
+    <div v-if="!url" class="demo-content bg-gray/10 dark:bg-dark/10">
       <slot />
     </div>
 
     <iframe v-if="url" class="mx-auto w-960px h-600px" :src="url"></iframe>
 
-    <n-collapse-transition>
-      <CodePreview v-show="visible" :code="raw" />
+    <n-collapse-transition :show="visible">
+      <CodePreview :code="raw" />
     </n-collapse-transition>
   </div>
 </template>
@@ -33,7 +33,6 @@ import { toRefs } from 'vue'
 import { useToggle } from '@vueuse/core'
 import { NTooltip, NCollapseTransition } from 'naive-ui'
 import { Icon } from '@iconify/vue'
-
 
 export interface DemoProps {
   title?: string
@@ -45,6 +44,7 @@ export interface DemoProps {
 const props = defineProps<DemoProps>()
 const { title, desc, raw, url } = toRefs(props)
 const [visible, toggle] = useToggle(false)
+
 </script>
 
 <style scoped lang="scss">
@@ -75,11 +75,6 @@ const [visible, toggle] = useToggle(false)
   }
 }
 
-.demo-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-}
 
 .demo-desc {
   font-size: 14px;

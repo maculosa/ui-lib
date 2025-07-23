@@ -1,5 +1,11 @@
-<script setup>
+<script setup lang="ts">
+import { inject } from 'vue'
 import { Icon } from '@iconify/vue'
+
+defineOptions({
+  name: 'SwitchTheme'
+})
+
 const isDark = inject('isDark')
 const toggleTheme = inject('toggleTheme')
 </script>

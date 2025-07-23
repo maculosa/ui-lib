@@ -17,8 +17,6 @@ const route = useRoute()
 
 const navItems = config.navItems
 
-console.log(route.path)
-
 function isActive(path: string) {
     if (path === '/') {
         return route.path === '/'
@@ -44,6 +42,16 @@ function isActive(path: string) {
         &:hover {
             text-shadow: 0px 0px 2px #33333333;
         }
+
+        &.active {
+            color: #409eff;
+        }
+    }
+}
+
+.dark .nav {
+    a {
+        color: #eee;
 
         &.active {
             color: #409eff;

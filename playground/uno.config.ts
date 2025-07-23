@@ -6,8 +6,8 @@ import {
     presetAttributify,
     presetIcons,
     presetTypography,
-    presetUno,
     presetWebFonts,
+    presetWind4,
     transformerDirectives,
     transformerVariantGroup,
   } from 'unocss'
@@ -24,7 +24,7 @@ import {
       }
     },
     presets: [
-      presetUno(),
+      presetWind4(),
       presetAttributify(),
       presetIcons({
         scale: 1.2,

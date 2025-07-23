@@ -21,10 +21,13 @@ onMounted(() => {
 function getLevel(tag: string): number {
   return parseInt(tag.replace('H', '')) - 1
 }
+
+const currentPos = ref('0px')
 </script>
 
 <template>
   <nav class="toc">
+    <div class="outline-marker" :style="{ top: currentPos, opacity: 1 }"></div>
     <div class="toc-title">目录</div>
     <ul class="toc-list">
       <li v-for="header in headers" :key="header.id" :class="[
@@ -42,13 +45,26 @@ function getLevel(tag: string): number {
 .toc {
   position: sticky;
   top: var(--layout-margin-top);
-  padding: 16px;
+  padding-left: 16px;
+  border-left: 1px solid #ccc;
+}
+
+.outline-marker { 
+  position: absolute;
+  top: 32px;
+  left: -1px;
+  opacity: 0;
+  width: 2px;
+  height: 18px;
+  background-color: skyblue;
+  border-radius: 2px;
+  transition: top 0.25s cubic-bezier(0, 1 0.5, 1), background-color 0.5s, opacity 0.25s;
 }
 
 .toc-title {
-  font-size: 16px;
+  line-height: 32px;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 12px;
 }
 
 .toc-list {
@@ -66,7 +82,12 @@ function getLevel(tag: string): number {
   color: #666;
   text-decoration: none;
   font-size: 14px;
+  line-height: 2;
   transition: color 0.2s;
+}
+
+.toc-list li a:hover {
+  @apply bg-primary;
 }
 
 .toc-list li.active a {
@@ -78,6 +99,7 @@ function getLevel(tag: string): number {
 }
 
 .level-1 {
+  font-weight: 600;
   padding-left: 0;
 }
 
@@ -87,5 +109,13 @@ function getLevel(tag: string): number {
 
 .level-3 {
   padding-left: 32px;
+}
+
+.dark .toc-list li a {
+  color: #ddd;
+}
+
+.dark .toc-list li.active a {
+  @apply text-primary;
 }
 </style>
