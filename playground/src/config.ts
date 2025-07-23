@@ -62,19 +62,19 @@ export const config: Config = {
           children: [
             {
               name: 'ProForm',
-              url: '/procomponent/pro-form',
+              url: '/procomponent/ProForm',
             },
             {
               name: 'ProTable',
-              url: '/procomponent/pro-table',
+              url: '/procomponent/ProTable',
             },
             {
               name: 'ProTree',
-              url: '/procomponent/pro-tree',
+              url: '/procomponent/ProTree',
             },
             {
               name: 'ProText',
-              url: '/procomponent/pro-text',
+              url: '/procomponent/ProText',
             },
             {
               name: 'Watermark',
@@ -82,7 +82,7 @@ export const config: Config = {
             },
             {
               name: 'ProDescriptions',
-              url: '/procomponent/pro-descriptions',
+              url: '/procomponent/ProDescriptions',
             },
           ]
         },

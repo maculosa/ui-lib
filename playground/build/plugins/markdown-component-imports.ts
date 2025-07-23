@@ -1,7 +1,7 @@
 import camelCase from 'camelcase';
 import type { Plugin } from 'vite'
-import { parse } from '@vue/compiler-sfc'
-import * as fs from 'fs'
+// import { parse } from '@vue/compiler-sfc'
+// import * as fs from 'fs'
 import * as path from 'path'
 import glob from 'fast-glob'
 
@@ -14,10 +14,10 @@ export function markdownComponentImports(): Plugin {
       const examplesDir = path.resolve(process.cwd(), 'src/examples')
       const mdDir = path.dirname(id)
       const mdName = path.basename(id, '.md')
-      
+
       // 查找对应目录下的所有示例组件
       const demoFiles = glob.sync(`${examplesDir}/${mdName}/**/*.vue`)
-      
+
       if (demoFiles.length === 0) return
 
       // 生成导入语句
@@ -26,10 +26,12 @@ export function markdownComponentImports(): Plugin {
         const componentName = camelCase(path.basename(file, '.vue').replaceAll('/', '-'), {
           pascalCase: true
         })
-        console.log({ componentName })
+        const componentNameRaw = `${componentName}Raw`
         return `import ${componentName} from '${relativePath}'
-import ${componentName}Raw from '${relativePath}?raw'`
+            import ${componentNameRaw} from '${relativePath}?raw'`
       }).join('\n')
+
+      // console.log({ imports })
 
       // 在 setup 标签后插入导入语句
       const setupRegex = /(<script\s*setup[^>]*>)/

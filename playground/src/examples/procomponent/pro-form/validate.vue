@@ -119,12 +119,8 @@ const columns = ref([
   },
 ])
 
-function handleSubmit(e) {
-  console.error(
-    '%cdocs/procomponent/pro-form/demo.vue:24 e',
-    'color: #007acc;',
-    e,
-  )
+function handleSubmit(e: any) {
+  console.error(e)
 }
 
 const formModel = ref({})

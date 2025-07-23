@@ -22,12 +22,12 @@ function getLevel(tag: string): number {
   return parseInt(tag.replace('H', '')) - 1
 }
 
-const currentPos = ref('0px')
+const currentPos = ref('0')
 </script>
 
 <template>
   <nav class="toc">
-    <div class="outline-marker" :style="{ top: currentPos, opacity: 1 }"></div>
+    <div class="outline-marker" :style="{ top: `${currentPos}px`, opacity: 1 }"></div>
     <div class="toc-title">目录</div>
     <ul class="toc-list">
       <li v-for="header in headers" :key="header.id" :class="[
@@ -84,10 +84,6 @@ const currentPos = ref('0px')
   font-size: 14px;
   line-height: 2;
   transition: color 0.2s;
-}
-
-.toc-list li a:hover {
-  @apply bg-primary;
 }
 
 .toc-list li.active a {

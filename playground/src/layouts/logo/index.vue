@@ -1,7 +1,7 @@
 <template>
     <div class="bm-logo">
         <div class="logo-pic"></div>
-        <div class="logo-text">{{ logoText }}</div>
+        <div class="logo-text dark:text-zinc-300">{{ logoText }}</div>
     </div>
 </template>
 <script setup lang="ts">
@@ -27,14 +27,13 @@ watchEffect(() => {
     align-items: center;
     gap: 8px;
     cursor: pointer;
-
 }
 
 .logo-pic {
     width: 40px;
     height: 40px;
     border-radius: 20%;
-    @apply bg-primary dark:bg-[#409EFF]/10;
+    @apply bg-primary dark:bg-[#409EFF]/80;
 }
 
 .logo-text {

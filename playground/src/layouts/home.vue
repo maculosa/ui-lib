@@ -16,7 +16,6 @@ import Header from './header/index.vue'
 .home-layout {
     width: 100%;
     min-height: 100vh;
-    background-color: var(--bg-color,rgb(13, 12, 12));
 }
 
 .home-layout-header {

@@ -34,10 +34,10 @@ declare module 'vue-router/auto-routes' {
     '/procomponent/': RouteRecordInfo<'/procomponent/', '/procomponent', Record<never, never>, Record<never, never>>,
     '/procomponent/naive-provider': RouteRecordInfo<'/procomponent/naive-provider', '/procomponent/naive-provider', Record<never, never>, Record<never, never>>,
     '/procomponent/overview': RouteRecordInfo<'/procomponent/overview', '/procomponent/overview', Record<never, never>, Record<never, never>>,
-    '/procomponent/pro-descriptions': RouteRecordInfo<'/procomponent/pro-descriptions', '/procomponent/pro-descriptions', Record<never, never>, Record<never, never>>,
-    '/procomponent/pro-form': RouteRecordInfo<'/procomponent/pro-form', '/procomponent/pro-form', Record<never, never>, Record<never, never>>,
-    '/procomponent/pro-table': RouteRecordInfo<'/procomponent/pro-table', '/procomponent/pro-table', Record<never, never>, Record<never, never>>,
-    '/procomponent/pro-text': RouteRecordInfo<'/procomponent/pro-text', '/procomponent/pro-text', Record<never, never>, Record<never, never>>,
+    '/procomponent/ProDescriptions': RouteRecordInfo<'/procomponent/ProDescriptions', '/procomponent/ProDescriptions', Record<never, never>, Record<never, never>>,
+    '/procomponent/ProForm': RouteRecordInfo<'/procomponent/ProForm', '/procomponent/ProForm', Record<never, never>, Record<never, never>>,
+    '/procomponent/ProTable': RouteRecordInfo<'/procomponent/ProTable', '/procomponent/ProTable', Record<never, never>, Record<never, never>>,
+    '/procomponent/ProText': RouteRecordInfo<'/procomponent/ProText', '/procomponent/ProText', Record<never, never>, Record<never, never>>,
     '/procomponent/watermark': RouteRecordInfo<'/procomponent/watermark', '/procomponent/watermark', Record<never, never>, Record<never, never>>,
   }
 }

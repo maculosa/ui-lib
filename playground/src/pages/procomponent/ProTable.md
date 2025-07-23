@@ -9,25 +9,9 @@ desc: ProTable 是一个基于 Table 的高级表格组件，提供了搜索、�
     layout: default
 </route>
 
-<script setup>
-    import BaseProTable from '@/examples/ProTable/base.vue'
-    import BaseProTableRaw from '@/examples/ProTable/base.vue?raw'
-    import NoSearchBar from '@/examples/ProTable/no-searchbar.vue'
-    import NoSearchBarRaw from '@/examples/ProTable/no-searchbar.vue?raw'
-    import SimpleDemo from '@/examples/ProTable/simple-demo.vue'
-    import SimpleDemoRaw from '@/examples/ProTable/simple-demo.vue?raw'
-    import FixedHeight from '@/examples/ProTable/fixed-height.vue'
-    import FixedHeightRaw from '@/examples/ProTable/fixed-height.vue?raw'
-    import UseTooltipInColumns from '@/examples/ProTable/use-tooltip-in-columns.vue'
-    import UseTooltipInColumnsRaw from '@/examples/ProTable/use-tooltip-in-columns.vue?raw'
-    import SearchGrid from '@/examples/ProTable/search-grid.vue'
-    import SearchGridRaw from '@/examples/ProTable/search-grid.vue?raw'
-</script>
-
 # ProTable
 
 ProTable 是一个基于 Table 的高级表格组件，提供了搜索、筛选、分页等常用的表格功能，可以帮助开发者快速构建数据表格界面。
-
 
 ## Examples
 
@@ -43,17 +27,17 @@ ProTable 是一个基于 Table 的高级表格组件，提供了搜索、筛选�
 <Demo
     title="Base Demo"
     desc="Base mode is a mode that displays the data with some basic features."
-    :raw="BaseProTableRaw"
+    :raw="BaseRaw"
 >
-<BaseProTable />
+<Base />
 </Demo>
 
 <Demo
     title="No Search Demo"
     desc="No search is a mode that displays the data without search."
-    :raw="NoSearchBarRaw"
+    :raw="NoSearchbarRaw"
 >
-<NoSearchBar />
+<NoSearchbar />
 </Demo>
 
 <Demo

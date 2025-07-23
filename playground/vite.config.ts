@@ -19,7 +19,8 @@ import Icons from 'unplugin-icons/vite'
 import Unocss from 'unocss/vite'
 import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import Layouts from 'vite-plugin-vue-layouts-next'
-import { autoImportRaw } from './build/plugins/vite-plugin-auto-import-raw'
+// import { autoImportRaw } from './build/plugins/vite-plugin-auto-import-raw'
+import { markdownComponentImports } from './build/plugins/markdown-component-imports'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -29,11 +30,12 @@ export default defineConfig({
     },
   },
   plugins: [
+    markdownComponentImports(),
     vue({
       include: [/\.vue$/, /\.md$/], // <-- allows Vue to compile markdown files
     }),
     vueJSX(),
-    autoImportRaw(),
+    // autoImportRaw(),
     Markdown({
       markdownItOptions: {
         highlight: (str, lang) => {

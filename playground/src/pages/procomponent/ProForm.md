@@ -19,29 +19,19 @@ ProForm 是一个基于 Form 的高级表单组件，提供了表单布局、表
 
 ## 代码示例
 
-<script setup lang="ts">
+<script setup>
     import { NGrid, NGridItem } from 'naive-ui'
-    import BaseProForm from '@/examples/ProForm/base.vue'
 </script>
 
-### 基本用法
 
-<NGrid :cols="2" :x-gap="16">
+<NGrid :cols="1" :x-gap="16">
   <NGridItem class="flex flex-col">
-    <Demo title="基本用法" :raw="BaseProFormRaw">
-        <BaseProForm />
-    </Demo>
-    <Demo title="基本用法" :raw="BaseProFormRaw">
-        <BaseProForm />
-    </Demo>
-  </NGridItem>
-  <NGridItem>
-    <Demo title="基本用法" :raw="BaseProFormRaw">
-        <BaseProForm />
+    <Demo title="基本用法" :raw="BaseRaw">
+        <Base />
     </Demo>
   </NGridItem>
 </NGrid>
 
 ## ProForm API
 
-<API-Table name="ProForm" />
+<!-- <API-Table name="ProForm" /> -->

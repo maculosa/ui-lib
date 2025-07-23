@@ -2,20 +2,35 @@
     padding: 0;
 }
 h1,h2,h3 {
-    font-weight: bold;
+    font-weight: bold!important;
     margin-bottom: 0.5rem;
 }
 h1 {
-    font-size: 1.75rem;
+    position: relative;
+    font-size: 1.75rem!important;
+    padding-left: 24px;
+    @apply text-primary;
+    &::after {
+        content: "#";
+        position: absolute;
+        top: -8px;
+        left: 0;
+        display: block;
+        /* width: 4px; */
+        /* height: 20px; */
+        /* background: #1d77ff; */
+        margin-top: 0.5rem;
+    }
 }
+
 h2 {
-    font-size: 1.5rem;
+    font-size: 1.5rem!important;
 }
 h3 {
-    font-size: 1rem;
+    font-size: 1.25rem!important;
 }
 
 p {
     margin-bottom: 1rem;
-    font-size: 1rem;
+    font-size: 1.14rem;
 }

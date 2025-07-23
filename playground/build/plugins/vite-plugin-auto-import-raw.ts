@@ -22,11 +22,13 @@ export function autoImportRaw(): Plugin {
           if (!hasRawImport) {
             // 在原始导入后添加 raw 导入
 
-            const rawImport = `import ${rawImportName} from '${rawImportPath}'`
+            const rawImport = `import ${rawImportName} from "${rawImportPath}"`
             modifiedCode = modifiedCode.replace(
               fullMatch,
-              `${fullMatch}\n${rawImport}`
+              `${fullMatch};\n${rawImport}`
             )
+
+            console.log({ modifiedCode})
           }
         }
       })

@@ -14,23 +14,23 @@ const activePath = computed(() => {
     <aside class="sidebar dark:text-white/80">
         <div class="sidebar-groups">
             <section class="sidebar-group">
-                <p class="sidebar-group__title">Overview</p>
+                <p class="sidebar-group__title">概览</p>
                 <a class="link" :class="{ active: activePath === '/procomponent/overview' }" href="/procomponent/overview">
                     <span class="link-text">Overview</span>
                 </a>
             </section>
             <section class="sidebar-group">
                 <p class="sidebar-group__title">ProComponent</p>
-                <a class="link" :class="{ active: activePath === '/procomponent/pro-form' }" href="/procomponent/pro-form">
+                <a class="link" :class="{ active: activePath === '/procomponent/ProForm' }" href="/procomponent/ProForm">
                     <span class="link-text">ProForm</span>
                 </a>
-                <a class="link" :class="{ active: activePath === '/procomponent/pro-table' }" href="/procomponent/pro-table">
+                <a class="link" :class="{ active: activePath === '/procomponent/ProTable' }" href="/procomponent/ProTable">
                     <span class="link-text">ProTable</span>
                 </a>
-                <a class="link" :class="{ active: activePath === '/procomponent/pro-descriptions' }" href="/procomponent/pro-descriptions">
+                <a class="link" :class="{ active: activePath === '/procomponent/ProDescriptions' }" href="/procomponent/ProDescriptions">
                     <span class="link-text">ProDescriptions</span>
                 </a>
-                <a class="link" :class="{ active: activePath === '/procomponent/pro-text' }" href="/procomponent/pro-text">
+                <a class="link" :class="{ active: activePath === '/procomponent/ProText' }" href="/procomponent/ProText">
                     <span class="link-text">ProText</span>
                 </a>
                 <a class="link" :class="{ active: activePath === '/procomponent/watermark' }" href="/procomponent/watermark">
@@ -114,6 +114,7 @@ const activePath = computed(() => {
 }
 
 .link {
+    margin: 8px 0;
     padding: 10px 16px;
     line-height: 1.5;
     font-size: 0.9rem;

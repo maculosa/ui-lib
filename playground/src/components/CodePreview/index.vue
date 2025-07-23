@@ -31,7 +31,7 @@ const copyCode = async () => {
         <span>示例代码</span>
         <n-tooltip trigger="hover">
             <template #trigger>
-                <Icon icon="carbon:copy" width="24" height="24" class="outline-none p-1 rounded-1 text-zinc-300 hover:text-[#3b82f6] hover:bg-[#3b82f6]/10 active:text-[#3b82f6] cursor-pointer transition-all transition-delay-200 ease" @click="copyCode" />
+                <Icon icon="carbon:copy" width="24" height="24" class="outline-0 p-1 rounded-1 text-zinc-300 hover:text-[#3b82f6] hover:bg-[#3b82f6]/10 active:text-[#3b82f6] cursor-pointer transition-all transition-delay-200 ease" @click="copyCode" />
             </template>
             复制代码
         </n-tooltip>

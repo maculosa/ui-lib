@@ -11,9 +11,6 @@ meta:
 
 <script setup>
     import { NGrid, NGridItem } from 'naive-ui'
-    import Base from '@/examples/ProText/index.vue'
-    import Ellipsis from '@/examples/ProText/ellipsis.vue'
-    import CopyDemo from '@/examples/ProText/copy.vue'
 </script>
 
 # ProText

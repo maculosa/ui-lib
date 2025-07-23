@@ -8,11 +8,6 @@ meta:
   layout: default
 </route>
 
-<script setup>
-    import Base from '@/examples/watermark/index.vue'
-    import BaseRaw from '@/examples/watermark/index.vue?raw'
-</script>
-
 # Watermark
 
 ## 基本用法
