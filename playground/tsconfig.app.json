@@ -16,7 +16,6 @@
     },
     "typeRoots": ["./node_modules/@types", "./types"],
     "types": [
-      "vite-plugin-vue-layouts/client",
       "unplugin-vue-router/client"
     ],
     "moduleResolution": "bundler"

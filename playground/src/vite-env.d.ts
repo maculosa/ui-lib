@@ -6,3 +6,7 @@ declare module '~icons/bm-icon/*' {
     const component: DefineComponent;
     export default component;
 }
+
+declare module 'virtual:generated-layouts' {
+    export function setupLayouts(routes: RouteRecordRaw[]): RouteRecordRaw[]
+}
