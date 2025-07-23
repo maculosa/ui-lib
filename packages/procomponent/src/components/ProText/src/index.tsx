@@ -21,9 +21,9 @@ const ProTextIcon = defineComponent({
     
     return () => {
       if (props.copied) {
-        return <BmIconCheck style="color: #22c55e;" />
+        return <BmIconCheck style="color: #22c55e; font-size: 18px;" />
       } else {
-        return <BmIconCopy style="color: #3b82f6;" />
+        return <BmIconCopy style="color: #3b82f6; font-size: 18px;" />
       }
     }
   }
@@ -38,9 +38,6 @@ export default defineComponent({
   },
   props: textProps,
   setup(props, { attrs }) {
-    // const defaultColor = ref('#3b82f6')
-    // const copiedColor = ref('#22c55e')
-
     const ellipsis = computed(() => props.ellipsis !== false)
     const copyable = computed(() => props.copyable !== false)
     const maxLines = computed(() => props.lineClamp)
