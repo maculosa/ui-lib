@@ -1,6 +1,6 @@
 {
   "name": "@banmao/procomponent",
-  "version": "0.7.16-alpha.0",
+  "version": "0.7.16-alpha.1",
   "type": "module",
   "exports": {
     ".": {
