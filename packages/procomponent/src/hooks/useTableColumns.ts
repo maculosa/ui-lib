@@ -52,10 +52,10 @@ export function useTableColumns(columns: any[]) {
   )
     .sort((a: ProTableColumn, b: ProTableColumn) => {
       if (a?.order === undefined)
-        return 1
-      if (b?.order === undefined)
         return -1
-      return a.order - b.order
+      if (b?.order === undefined)
+        return 1
+      return b.order - a.order
     }),
   )
 
