@@ -1,5 +1,23 @@
 # @banmao/procomponent
 
+## 0.0.1
+
+### Patch Changes
+
+- 9ec9d4a: 优化显示样式
+- 94bfe5a: fix(login): 修改登录组件的 z-index 值以确保正确的层级显示
+- 94a0a13: 优化暗色注册颜色显示
+- d315864: fix(login): 修复 CSS 变量语法错误，确保颜色覆盖正常工作
+- 979558e: 修复已知问题
+- d77150c: 创建登录页 block
+- a041cd5: 优化卡片模式的样式
+- 18a45cf: fix(login): 动态调整卡片布局方向以适应图像位置，确保视觉一致性
+- b3cce6c: 修复登录卡片内标题不支持亮色模式,改善文本可读性
+- 68ed6f2: 支持 slot
+- 9ec9d4a: 修复已知问题
+- 8ab4d0b: fix(styles): 更新登录组件的 CSS 变量以使用 oklch 颜色模式，确保视觉一致性
+- c3411f6: fix(login): 修改登录组件以根据图像位置动态调整元素顺序，确保布局一致性
+
 ## 0.0.1-alpha.12
 
 ### Patch Changes
