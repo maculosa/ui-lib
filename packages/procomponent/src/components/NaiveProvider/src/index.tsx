@@ -3,24 +3,29 @@ import {
   NMessageProvider,
   NModalProvider,
   NNotificationProvider,
+  NConfigProvider
 } from 'naive-ui'
 import { defineComponent } from 'vue'
+import { NaiveProviderProps } from './types'
 
 export default defineComponent({
   name: 'NaiveProvider',
-  setup(_, { slots }) {
-    const chilren = slots.default?.() || []
+  props: NaiveProviderProps,
+  setup(props, { slots }) {
+    const children = slots.default?.() || []
 
     return () => (
-      <NLoadingBarProvider>
-        <NMessageProvider>
-          <NNotificationProvider>
-            <NModalProvider>
-              { chilren }
-            </NModalProvider>
-          </NNotificationProvider>
-        </NMessageProvider>
-      </NLoadingBarProvider>
+      <NConfigProvider {...props}> 
+        <NLoadingBarProvider>
+          <NMessageProvider>
+            <NNotificationProvider>
+              <NModalProvider>
+                { children }
+              </NModalProvider>
+            </NNotificationProvider>
+          </NMessageProvider>
+        </NLoadingBarProvider>
+      </NConfigProvider>
     )
   },
 })
