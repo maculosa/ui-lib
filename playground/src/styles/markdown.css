@@ -34,3 +34,37 @@ p {
     margin-bottom: 1rem;
     font-size: 1.14rem;
 }
+
+.table-responsive table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+}
+.table-responsive table thead {
+    background-color: #f5f5f5;
+}
+.table-responsive table th,
+.table-responsive table td {
+    padding: 0.75rem;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.table-responsive table td code {
+    font-size: 0.9rem;
+    background-color: #ffebeb;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #ff4d4d;
+}
+
+.table-responsive table a {
+    color: #1d77ff;
+    text-decoration: none;
+}
+.table-responsive table a::before {
+    content: "🔗";
+    margin-right: 4px;
+    font-size: 0.6rem;
+}
