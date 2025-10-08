@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.7.17
+
+### Patch Changes
+
+- feat(ProTable): 添加搜索栏列排序功能
+
 ## 0.7.16
 
 ### Patch Changes
