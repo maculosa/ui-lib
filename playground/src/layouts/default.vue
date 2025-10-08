@@ -21,9 +21,11 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
       <main class="layout-main flex-1">
         <router-view />
       </main>
-      <aside v-if="showTOC" class="toc-container dark:bg-transparent">
-        <TOC />
-      </aside>
+      <div class="w-84 flex relative">
+        <aside v-if="showTOC" class="fixed top-[80px] toc-container dark:bg-transparent">
+          <TOC />
+        </aside>
+      </div>
     </section>
   </Layout>
 </template>
@@ -38,7 +40,7 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
     display: flex;
     flex-direction: column;
     width: 100%;
-    min-height: 100dvh;
+    min-height: 100svh;
     /* height: 100%; */
 }
 
