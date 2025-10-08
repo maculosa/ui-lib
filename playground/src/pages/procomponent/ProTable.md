@@ -77,14 +77,14 @@ ProTable 是一个基于 Table 的高级表格组件，提供了搜索、筛选�
 | columns | 表格列的配置描述 | [ProTableColumn[]](#columns) | - |
 | dataSource | 数据源 | `any[]` | - |
 | loading | 加载中动画 | `boolean` | `false` |
-| search | 搜索配置 | [SearchConfig](#search) | `false` |
+| search | 搜索配置 | [SearchConfig](#searchConfig) | `false` |
 | toolbarConfig | 工具栏配置 | [ToolbarConfig](#toolbarConfig) | `{ createMode: 'button' }` |
 | params | 额外的查询参数 | `object` | - |
 | onQuery | 查询回调函数 | `(params: Record<string, any>) => void` | |
 | height | 表格高度 | `string` | - | |
 
 
-### ProTable.Search
+### SearchConfig
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | gridCols | 搜索表单的列数 | number | 3 |
@@ -102,7 +102,7 @@ ProTable 是一个基于 Table 的高级表格组件，提供了搜索、筛选�
 | searchText | 搜索按钮的文字 | string | '搜索' |
 | sort | 排序 | `asc` \| `desc` | - |
 
-### ProTable.ToolbarConfig
+### ToolbarConfig
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
