@@ -50,7 +50,9 @@ export default defineComponent({
       settingColumns,
       searchColumns,
       formColumns,
-    } = useTableColumns(props.columns)
+    } = useTableColumns(props.columns, {
+      searchSort: props.search && props.search?.sort || 'desc',
+    })
 
     provide('settingColumns', settingColumns)
 

@@ -1,17 +1,32 @@
 import { renderCopyableCell, renderIndexCell, renderTitle } from '@/utils/table'
 import type { ProTableColumn } from 'naive-ui'
 import { computed, ref } from 'vue'
+import { orderBy } from 'lodash-es'
+
 
 /**
  * useColumns - 获取表格列、搜索栏列、表单列
  * @param columns - 表格列
+ * @param options - 选项
+ * @param options.searchSort - 搜索栏列排序方式，'asc'表示升序，'desc'表示降序，默认值为'desc'
  * @returns
  */
-export function useTableColumns(columns: any[]) {
+export function useTableColumns(columns: any[], options?: { searchSort?: 'asc' | 'desc' }) {
+  if (!Array.isArray(columns)) {
+    console.warn('useTableColumns: columns should be an array')
+    return {
+      settingColumns: ref([]),
+      tableColumns: ref([]),
+      searchColumns: ref([]),
+      formColumns: ref([]),
+    }
+  }
+  const { searchSort = 'asc' } = options ?? {}
+
   /**
    * 设置列的数据
    */
-  const settingColumns = ref( 
+  const settingColumns = ref(
     columns?.map(column => {
       if (column?.type === 'index') {
         return renderIndexCell(column)
@@ -42,21 +57,14 @@ export function useTableColumns(columns: any[]) {
   /**
    * 搜索栏列
    */
-  const searchColumns = ref(columns?.filter(
+  const searchColumns = ref(orderBy(columns?.filter(
     (column: ProTableColumn) =>
       column?.type !== 'selection'
       && column?.type !== 'index'
       && column.key !== 'action'
       && column.key !== 'actions'
       && column.hideInSearch !== true,
-  )
-    .sort((a: ProTableColumn, b: ProTableColumn) => {
-      if (a?.order === undefined)
-        return -1
-      if (b?.order === undefined)
-        return 1
-      return b.order - a.order
-    }),
+  ), ['order'], [searchSort])
   )
 
   /**

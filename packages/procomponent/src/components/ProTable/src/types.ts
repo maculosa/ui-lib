@@ -18,6 +18,8 @@ export type ProTableEmits = ExtractPropTypes<typeof proTableEmits>
  * @interface SearchConfig
  */
 export interface SearchConfig {
+  /** 搜索栏表格列排序方式 */
+  sort?: 'asc' | 'desc'
   /** 搜索栏表格列数 */
   gridCols?: number
   /** 搜索栏默认值 */
