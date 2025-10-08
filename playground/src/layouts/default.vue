@@ -60,6 +60,7 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
     justify-content: space-between;
     align-items: center;
     z-index: 99;
+    @apply shadow-[0_2px_8px_rgba(0,0,0,0.08)];
 }
 
 .layout-main {
@@ -73,7 +74,7 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
     padding-top: var(--layout-margin-top);
     padding-bottom: 32px;
     /* padding-left: 320px; */
-    @apply bg-white/10 shadow rounded-2 hover:shadow-xl;
+    @apply bg-white/10 shadow rounded-2 ;
 }
 
 @media screen and (max-width: 1000px) {
