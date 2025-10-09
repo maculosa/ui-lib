@@ -2,6 +2,7 @@ import {
   NLoadingBarProvider,
   NMessageProvider,
   NModalProvider,
+  NDialogProvider,
   NNotificationProvider,
   NConfigProvider
 } from 'naive-ui'
@@ -19,9 +20,11 @@ export default defineComponent({
         <NLoadingBarProvider>
           <NMessageProvider>
             <NNotificationProvider>
-              <NModalProvider>
-                { children }
-              </NModalProvider>
+              <NDialogProvider>
+                <NModalProvider>
+                  { children }
+                </NModalProvider>
+              </NDialogProvider>
             </NNotificationProvider>
           </NMessageProvider>
         </NLoadingBarProvider>
