@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.7.18
+
+### Patch Changes
+
+- fix(NaiveProvider): 添加 NDialogProvider 以优化组件嵌套结构
+
 ## 0.7.17
 
 ### Patch Changes
