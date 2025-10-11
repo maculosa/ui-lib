@@ -108,7 +108,7 @@ export default defineComponent({
     }
 
     return () => (
-      <NSpace>
+      <NSpace align="center">
         { slots.default?.() }
         {
           // 导出按钮
