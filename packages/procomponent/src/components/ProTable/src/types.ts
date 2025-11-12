@@ -22,6 +22,8 @@ export interface SearchConfig {
   sort?: 'asc' | 'desc'
   /** 搜索栏表格列数 */
   gridCols?: number
+  /** 折叠搜索栏 */
+  gridCollapsed?: boolean
   /** 搜索栏默认值 */
   defaultValue?: Record<string, any>
   /** 搜索栏校验规则 */
