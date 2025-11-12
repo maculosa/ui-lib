@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.7.19
+
+### Patch Changes
+
+- style(ProTable/Toolbar): 调整工具栏按钮垂直居中
+
 ## 0.7.18
 
 ### Patch Changes
