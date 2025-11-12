@@ -1,5 +1,14 @@
 # @banmao/procomponent
 
+## 0.7.20
+
+### Patch Changes
+
+- feat(procomponent): 为 ProTable 搜索配置添加折叠功能
+
+  在 SearchConfig 接口中新增 gridCollapsed 属性，用于控制搜索栏的折叠状态。
+  该属性允许用户自定义搜索栏是否默认折叠，提升表格组件的灵活性和用户体验。
+
 ## 0.7.19
 
 ### Patch Changes
