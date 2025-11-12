@@ -15,7 +15,7 @@ export function useWatermarkBg(props: WatermarkProps) {
 
     // 获取文字高度
     ctx.font = font
-    const { width } = ctx?.measureText(props.text)
+    const { width } = ctx.measureText(props.text)
     const canvasSize = Math.max(100, width) + (props.gap || 50) * devicePixelRatio
     canvas.width = canvasSize
     canvas.height = canvasSize
