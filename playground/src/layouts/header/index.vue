@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Logo from '../logo/index.vue'
-import Nav from '../nav/index.vue'
+import Logo from '@/components/layout/logo/index.vue'
+import Nav from '@/components/layout/nav/index.vue'
 import SwitchTheme from '@/components/SwitchTheme.vue'
 
 </script>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Layout from './layout/index.vue'
+import Layout from '@/components/layout/layout/index.vue'
 import Header from './header/index.vue'
-import Sidebar from './sidebar/index.vue'
+import Sidebar from '@/components/layout/sidebar/index.vue'
 import TOC from '@/components/TOC/index.vue'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'

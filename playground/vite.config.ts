@@ -98,6 +98,12 @@ export default defineConfig({
       pagesDirs: ['src/docs', 'src/pages'],
       extensions: ['vue', 'md'],
       defaultLayout: 'default',
+      exclude: [
+        '**/layouts/layout/**',     // 排除layout子目录
+        '**/layouts/logo/**',       // 排除logo子目录
+        '**/layouts/nav/**',        // 排除nav子目录
+        '**/layouts/sidebar/**',    // 排除sidebar子目录
+      ],
     }),
     Inspect(),
     Icons({
