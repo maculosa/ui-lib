@@ -24,7 +24,7 @@
     "release:all": "pnpm build && pnpm release:only",
     "release:only": "changeset publish --registry=https://registry.npmjs.com/",
     "play": "pnpm run --filter ./playground dev",
-    "play:build": "pnpm run --filter ./playground build"
+    "play:build": "pnpm build && pnpm run --filter ./playground build"
   },
   "publishConfig": {
     "access": "public"
