@@ -1,10 +1,10 @@
-interface NavItem {
+export interface NavItem {
   name: string
   url: string
   mode?: 'dev' | 'prod'
 }
 
-interface SidebarItem {
+export interface SidebarItem {
   name: string
   url: string
   children?: SidebarItem[]
@@ -20,38 +20,12 @@ interface Config {
   sidebars: Sidebar[]
 }
 
-export const config: Config = {
-  navItems: [
-    {
-      name: 'Home',
-      url: '/'
-    },
-    {
-      name: 'Docs',
-      url: '/docs/zh'
-    },
-    {
-      name: 'ProComponent',
-      url: '/procomponent',
-      mode: 'dev'
-    },
-    {
-      name: 'Blocks',
-      url: '/blocks',
-    },
-    {
-      name: 'Data V',
-      url: '/datav'
-    }
-  ],
-  sidebars: [
-    {
-      name: 'Docs',
-      items: []
-    },
-    {
-      name: 'ProComponent',
-      items: [
+function getDocsSidebar() {
+  return []
+}
+
+function getComponentSidebar() {
+  return [
         {
           name: 'Overview',
           url: '/procomponent/overview'
@@ -87,10 +61,10 @@ export const config: Config = {
           ]
         },
       ]
-    },
-    {
-      name: 'Data V',
-      items: [
+}
+
+function getDataVSidebar() {
+  return [
         {
           name: 'Overview',
           url: '/datav/overview'
@@ -110,10 +84,10 @@ export const config: Config = {
           ]
         }
       ]
-    },
-    {
-      name: 'Blocks',
-      items: [
+}
+
+function getBlocksSidebar() {
+  return [
         {
           name: 'Overview',
           url: '/blocks/overview'
@@ -137,8 +111,62 @@ export const config: Config = {
           ]
         }
       ]
+}
+
+
+export const config: Config = {
+  navItems: [
+    {
+      name: 'Home',
+      url: '/'
+    },
+    {
+      name: 'Docs',
+      url: '/docs/zh'
+    },
+    {
+      name: 'Component',
+      url: '/procomponent',
+      mode: 'dev'
+    },
+    {
+      name: 'Blocks',
+      url: '/blocks',
+    },
+    {
+      name: 'Data V',
+      url: '/datav'
+    }
+  ],
+  sidebars: [
+    {
+      name: 'Docs',
+      items: getDocsSidebar()
+    },
+    {
+      name: 'ProComponent',
+      items: getComponentSidebar()
+    },
+    {
+      name: 'Data V',
+      items: getDataVSidebar()
+    },
+    {
+      name: 'Blocks',
+      items: getBlocksSidebar()
     }
   ]
 }
+
+function getSidebars(): Record<string, SidebarItem[]> {
+  return {
+    '/docs/': getDocsSidebar(),
+    '/procomponent/': getComponentSidebar(),
+    '/datav/': getDataVSidebar(),
+    '/blocks/': getBlocksSidebar(),
+  }
+}
+
+export const sidebar = getSidebars()
 
 export default config

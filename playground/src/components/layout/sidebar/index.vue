@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, ref, watchEffect } from 'vue';
+import { useRoute, RouterLink } from 'vue-router';
+import { sidebar, type SidebarItem } from '@/config'
 
 const route = useRoute()
 
@@ -8,12 +9,41 @@ const activePath = computed(() => {
     return route.path
 })
 
+const prefixPath = computed(() => {
+    return '/' + route.path.split('/')[1] + '/'
+})
+
+
+// const sidebarItems = computed(() => {
+//     return sidebar[prefixPath.value]
+// })
+const sidebarItems = ref<SidebarItem[]>([])
+
+watchEffect(() => {
+// console.log(prefixPath.value)
+    console.log(activePath.value)
+    sidebarItems.value = sidebar[prefixPath.value]
+})
+
+
 </script>
 
 <template>
     <aside class="sidebar dark:text-white/80">
+
         <div class="sidebar-groups">
-            <section class="sidebar-group">
+            <template v-for="(item, index) in sidebarItems" :key="index">
+                <section class="sidebar-group" v-if="item.children" >
+                    <p class="font-semibold text-zinc-600 text-sm pl-0">{{ item.name }}</p>
+                    <RouterLink v-for="(child, childIndex) in item.children" :key="childIndex" class="link text-zinc-200! block py-2" :class="{ active: activePath === child.url }" :to="child.url">
+                        <span class="link-text">{{ child.name }}</span>
+                    </RouterLink>
+                </section>
+                <RouterLink v-else class="link" :class="{ active: activePath === item.url }" :to="item.url">
+                    <span class="link-text">{{ item.name }}</span>
+                </RouterLink>
+            </template>
+            <!-- <section class="sidebar-group">
                 <p class="sidebar-group__title">概览</p>
                 <a class="link" :class="{ active: activePath === '/procomponent/overview' }" href="/procomponent/overview">
                     <span class="link-text">Overview</span>
@@ -62,7 +92,7 @@ const activePath = computed(() => {
                 <a class="link" :class="{ active: activePath === '/blocks/accordion' }" href="/blocks/login">
                     <span class="link-text">Login</span>
                 </a>
-            </section>
+            </section> -->
         </div>
     </aside>
 </template>
