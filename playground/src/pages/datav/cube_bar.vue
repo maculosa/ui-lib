@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CubeBar } from 'datav'
+import { CubeBar } from '@banmao/datav'
 </script>
 
 <template>

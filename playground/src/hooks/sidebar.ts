@@ -1,6 +1,6 @@
-import config from '@/banmao.config.json'
+// import config from '@/banmao.config.json'
 
-const sidebars = config.sidebars
+// const sidebars = config.sidebars
 
 export function useSidebar() {
 

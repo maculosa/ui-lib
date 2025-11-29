@@ -95,7 +95,7 @@ const columns = ref([
     rule: [
       {
         required: true,
-        validator(rule: FormItemRule, value: [string, string] | null) {
+        validator(_rule: FormItemRule, value: [string, string] | null) {
           if (!value) {
             return new Error('请选择活动时间')
           }

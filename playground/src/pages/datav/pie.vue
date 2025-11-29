@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Pie, Pie3D } from 'datav'
+import { Pie, Pie3D } from '@banmao/datav'
 import { ref } from 'vue';
 
 const data = ref([

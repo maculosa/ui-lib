@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CircleBar } from 'datav'
+import { CircleBar } from '@banmao/datav'
 </script>
 
 <template>

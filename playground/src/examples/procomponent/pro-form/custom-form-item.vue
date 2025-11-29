@@ -31,7 +31,7 @@ const columns = ref([
     key: 'remark',
     valueType: 'custom',
     grid: 2,
-    formRender: (key, _formData, formItemProps) => {
+    formRender: (key: string, _formData: any, formItemProps: any) => {
       return (
         <NInput
           placeholder="请输入备注"
@@ -43,11 +43,11 @@ const columns = ref([
   },
 ])
 
-function handleSubmit(e) {
+function handleSubmit(e: any) {
   console.error(e)
 }
 
-const formModel = ref({
+const formModel = ref<{ [key: string]: any }>({
   name: '里斯',
   age: 30,
   remark: '',

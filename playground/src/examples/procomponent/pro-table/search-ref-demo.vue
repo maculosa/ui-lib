@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { ProTable } from '@banmao/procomponent'
 import { NButton, NSpace } from 'naive-ui'
-import { computed, watch, ref, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useElementSize } from '@vueuse/core'
 
 async function fetchCityList() {
@@ -54,7 +54,7 @@ const columns = ref([
       { label: '女', value: 'female' },
       { label: '保密', value: 'secret' },
     ],
-    render(row) {
+    render(row: any) {
       switch (row.gender) {
         case 'male':
           return '男'
@@ -109,7 +109,7 @@ const columns = ref([
     key: 'actions',
     width: 120,
     fixed: 'right',
-    render(_row) {
+    render(_row: any) {
       return (
         <NSpace justify="center">
           <NButton size="tiny" ghost type="primary">
@@ -195,7 +195,7 @@ const pagination = ref({
   showQuickJumper: true,
   showSizePicker: true,
   pageSizes: [10, 20, 30, 40],
-  prefix: ({ itemCount }) => `共 ${itemCount} 条数据`,
+  prefix: ({ itemCount }: { itemCount: number }) => `共 ${itemCount} 条数据`,
 })
 
 const loading = ref(false)
@@ -207,7 +207,7 @@ function fetchTableData() {
   }, 300)
 }
 
-function handleChangePageSize(pageSize) {
+function handleChangePageSize(pageSize: number) {
   pagination.value.pageSize = pageSize
   fetchTableData()
 }
@@ -229,7 +229,7 @@ const queryParams = ref({
   age: 18,
 })
 
-async function handleQuery(params) {
+async function handleQuery(params: any) {
   console.error('查询', params)
   fetchTableData()
 }

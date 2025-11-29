@@ -18,7 +18,7 @@ const columns = ref([
 
 // const visible = ref(false)
 const message = useMessage()
-function handleSubmit(v) {
+function handleSubmit(v: any) {
   message.success(JSON.stringify(v))
 }
 </script>

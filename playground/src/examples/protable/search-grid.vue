@@ -1,29 +1,28 @@
 <script setup lang="tsx">
 import { ProTable } from '@banmao/procomponent'
-import { NButton, NSpace } from 'naive-ui'
 import { computed, ref, watchEffect } from 'vue'
 import { useElementSize } from '@vueuse/core'
 
-async function fetchCityList() {
-  return new Promise<any[]>((resolve) => {
-    setTimeout(() => {
-      resolve([
-        { label: '北京', value: 110000 },
-        { label: '上海', value: 310000 },
-        {
-          label: '山东',
-          value: 370000,
-          children: [
-            { label: '济南', value: 370100 },
-            { label: '青岛', value: 370200 },
-            { label: '临沂', value: 371300 },
-          ],
-        },
+// async function fetchCityList() {
+//   return new Promise<any[]>((resolve) => {
+//     setTimeout(() => {
+//       resolve([
+//         { label: '北京', value: 110000 },
+//         { label: '上海', value: 310000 },
+//         {
+//           label: '山东',
+//           value: 370000,
+//           children: [
+//             { label: '济南', value: 370100 },
+//             { label: '青岛', value: 370200 },
+//             { label: '临沂', value: 371300 },
+//           ],
+//         },
 
-      ])
-    }, 3000)
-  })
-}
+//       ])
+//     }, 3000)
+//   })
+// }
 
 const columns = ref([
   { type: 'selection' },

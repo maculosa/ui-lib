@@ -20,7 +20,7 @@ const columns = ref([
 ])
 const modalRef = ref()
 
-function handleSubmit(values) {
+function handleSubmit(values: any) {
   console.error(values)
   modalRef.value.close()
 }

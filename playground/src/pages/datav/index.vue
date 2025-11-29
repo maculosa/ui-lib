@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { Chart } from 'datav';
+import { Chart } from '@banmao/datav';
 import { NColorPicker, NForm, NFormItemGi, NInput, NSpin, NSlider, NSwitch, NRadioGroup, NRadioButton } from 'naive-ui';
 
 const data = ref<any[]>([])

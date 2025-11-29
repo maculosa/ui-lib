@@ -23,11 +23,11 @@ const loginProps: LoginProps = {
     ]
 }
 
-const handleLogin = (data) => {
+const handleLogin = (data: any) => {
     console.log(data)
 }
 
-const handleError = (errors) => {
+const handleError = (errors: any) => {
     console.log(errors)
 }
 

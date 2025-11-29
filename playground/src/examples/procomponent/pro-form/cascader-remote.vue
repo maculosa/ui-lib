@@ -53,7 +53,7 @@ const columns = ref([
   },
 ])
 
-function handleSubmit(e) {
+function handleSubmit(e: any) {
   console.error(e)
 }
 
