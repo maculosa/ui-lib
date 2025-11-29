@@ -25,9 +25,14 @@ ProForm 是一个基于 Form 的高级表单组件，提供了表单布局、表
 
 
 <NGrid :cols="1" :x-gap="16">
-  <NGridItem class="flex flex-col">
+  <NGridItem class="flex flex-col justify-center">
     <Demo title="基本用法" :raw="BaseRaw">
         <Base />
+    </Demo>
+  </NGridItem>
+  <NGridItem class="flex flex-col">
+    <Demo title="请求级联选择器" :raw="RequestCascaderFormRaw">
+        <RequestCascaderForm />
     </Demo>
   </NGridItem>
 </NGrid>
