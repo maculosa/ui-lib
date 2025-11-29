@@ -1,5 +1,16 @@
 # @banmao/procomponent
 
+## 0.7.21
+
+### Patch Changes
+
+- perf(ProForm): 优化表单性能，减少不必要的渲染和请求
+
+  - 使用 shallowRef 替代 reactive 减少响应式开销
+  - 添加 columns 哈希缓存避免重复创建 formData
+  - 记录已请求的 key 避免重复请求远程选项
+  - 重构 renderFormItem 提高代码可读性
+
 ## 0.7.20
 
 ### Patch Changes
