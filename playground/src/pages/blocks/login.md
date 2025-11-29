@@ -19,15 +19,10 @@ Login Blocks 是基于 Naive UI 而开发的登录页面组件，提供了登录
 
 ## 快速开始
 
-<script setup lang="ts">
-    import SimpleLogin from '@/examples/blocks/login/simple-login.vue'
-    import SimpleBgLogin from '@/examples/blocks/login/simple-bg-login.vue'
-</script>
-
 <Demo title="简单登录页" url="/examples/blocks/login/simple-login" :raw="SimpleLoginRaw">
     <SimpleLogin />
 </Demo>
 
 <Demo title="带背景的登录页" url="/examples/blocks/login/simple-bg-login" :raw="SimpleBgLoginRaw">
-<SimpleBgLogin />
+    <SimpleBgLogin />
 </Demo>
