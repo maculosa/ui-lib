@@ -46,12 +46,12 @@ export const proFormProps = {
     resetText: {
         type: String,
         default: '重置',
-    }
+    },
 }
 
 export const proFormEmits = {
     submit: (values: Record<string, any>) => values,
-    reset: () => undefined
+    reset: () => undefined,
 }
 
 export type ProFormProps = ExtractPropTypes<typeof proFormProps>
