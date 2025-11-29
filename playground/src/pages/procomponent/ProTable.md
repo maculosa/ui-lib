@@ -138,6 +138,7 @@ ProTable 是一个基于 Table 的高级表格组件，提供了搜索、筛选�
 | tooltip | 会在 title 之后展示一个 icon，hover 之后提示一些信息 | string | - |
 | order | 查询表单中的权重，权重大排序靠前 | number | - |
 | request | 从服务器请求枚举，一般用于选择类组件 | (params: any, prop: string) => Promise<SelectOption[]> | - |
+| formItemProps | 表单项属性，参考 [FormItemProps](/procomponent/ProForm/#FormItemProps) | `object` | - |
 
 
 ### ValueType
