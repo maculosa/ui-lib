@@ -1,5 +1,14 @@
 # @banmao/hooks
 
+## 0.0.6
+
+### Patch Changes
+
+- refactor(hooks): 优化 useAsyncData 类型定义和参数处理
+
+  移除函数参数的多余类型约束，使类型更简洁
+  添加 options 参数的可选标记并提供默认值处理
+
 ## 0.0.5
 
 ### Patch Changes
