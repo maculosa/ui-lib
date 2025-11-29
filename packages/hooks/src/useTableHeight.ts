@@ -28,7 +28,7 @@ export function useTableHeight(tableRef: any, options?: Options) {
 
     // 获取窗口高度和搜索栏高度
     const { height: winHeight } = useWindowSize()
-    const { height: searchHeight } = useElementSize(searchRef as MaybeComputedElementRef)
+    const { height: searchHeight } = useElementSize(searchRef as unknown as MaybeComputedElementRef)
 
     // 获取表格高度和最小高度
     const { height = 0, minHeight = 600} = options || {}
