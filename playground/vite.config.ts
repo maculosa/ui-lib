@@ -67,7 +67,6 @@ export default defineConfig({
       ],
       markdownItSetup(md) {
         md.use(markdownItAnchor, {
-          permalink: true,
           permalinkBefore: true,
           permalinkSymbol: '', // TOC 开头的图标
           permalinkAttrs: () => ({ 'aria-hidden': true })
