@@ -8,8 +8,8 @@ import type { OptionsType } from './types'
  * @param options.immediate - 是否立即执行，默认为 true
  * @returns 
  */
-export function useAsyncData<T extends (...args: any) => Promise<any>>(requestFn: () => Promise<T>, options: OptionsType = {}) {
-    const { immediate = true } = options
+export function useAsyncData<T>(requestFn: () => Promise<T>, options?: OptionsType): any {
+    const { immediate = true } = options || {}
     const data = ref<T | null>(null)
     const loading = ref<boolean>(false)
     const error = ref<any>(null)
