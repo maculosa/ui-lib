@@ -64,6 +64,46 @@ ProTable 是一个基于 Table 的高级表格组件，提供了搜索、筛选�
 <SearchGrid />
 </Demo>
 
+<Demo
+    title="Create Form Demo"
+    desc="Create form is a mode that displays the data with a create form."
+    :raw="CreateDemoRaw"
+>
+<CreateDemo />
+</Demo>
+<Demo
+    title="Create Modal Demo"
+    desc="Create modal is a mode that displays the data with a create modal."
+    :raw="CreateModalDemoRaw"
+>
+<CreateModalDemo />
+</Demo>
+
+<Demo
+    title="Query Table Demo"
+    desc="Query table is a mode that displays the data with a query table."
+    :raw="QueryTableRaw"
+>
+<QueryTable />
+</Demo>
+
+<Demo
+    title="Search Ref Demo"
+    desc="Search ref is a mode that displays the data with a search ref."
+    :raw="SearchRefDemoRaw"
+>
+<SearchRefDemo />
+</Demo>
+
+<Demo
+    title="Toolbar Slot Demo"
+    desc="Toolbar slot is a mode that displays the data with a toolbar slot."
+    :raw="ToolbarSlotDemoRaw"
+>
+<ToolbarSlotDemo />
+</Demo>
+
+
 <div class="table-responsive">
 
 ## API
