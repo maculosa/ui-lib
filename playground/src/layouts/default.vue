@@ -50,16 +50,16 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
     left: 0;
     width: 100%;
     height: var(--layout-header-height);
-    padding: 0 16px;
-    padding-right: 32px;
+    /* padding: 0 16px; */
+    /* padding-right: 32px; */
     box-sizing: border-box;
     background: transparent;
-    backdrop-filter: blur(5px);
+    /* backdrop-filter: blur(5px); */
     /* border-bottom: 1px solid #ddd; */
-    display: flex;
+    /* display: flex;
     justify-content: space-between;
-    align-items: center;
-    z-index: 99;
+    align-items: center; */
+    z-index: 999;
     @apply shadow-[0_2px_8px_rgba(0,0,0,0.08)];
 }
 
