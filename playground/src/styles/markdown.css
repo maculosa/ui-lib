@@ -1,81 +1,234 @@
-.prose pre:not(.shiki) {
+/* 代码块样式优化 */
+.prose pre {
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    border: 1px solid #333;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.prose pre code {
+    background-color: transparent;
     padding: 0;
+    color: #d4d4d4;
 }
-h1,h2,h3 {
+
+.prose code {
+    background-color: rgba(255, 235, 235, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #ff6b6b;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* 标题样式优化 */
+h1, h2, h3, h4, h5, h6 {
     font-weight: bold!important;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    color: #ffffff;
 }
+
 h1 {
     position: relative;
-    font-size: 1.75rem!important;
-    padding-left: 24px;
-    @apply text-primary;
-    &::after {
-        content: "#";
-        position: absolute;
-        top: -8px;
-        left: 0;
-        display: block;
-        /* width: 4px; */
-        /* height: 20px; */
-        /* background: #1d77ff; */
-        margin-top: 0.5rem;
-    }
+    font-size: 2rem!important;
+    padding-left: 32px;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    color: #1d77ff;
+    border-bottom: 2px solid #1d77ff;
+    padding-bottom: 0.5rem;
+}
+
+h1::before {
+    content: "#";
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 1.5rem;
+    color: #1d77ff;
+    font-weight: bold;
 }
 
 h2 {
-    font-size: 1.5rem!important;
-    margin-top: 2rem;
-}
-h3 {
-    font-size: 1.25rem!important;
+    font-size: 1.75rem!important;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    color: #ffffff;
+    border-left: 4px solid #1d77ff;
+    padding-left: 1rem;
+    background-color: rgba(29, 119, 255, 0.1);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-radius: 0 4px 4px 0;
 }
 
-p {
+h3 {
+    font-size: 1.5rem!important;
+    margin-top: 2rem;
     margin-bottom: 1rem;
-    font-size: 1.14rem;
+    color: #ffffff;
+}
+
+/* 段落样式优化 */
+p {
+    margin-bottom: 1.25rem;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #e0e0e0;
+}
+
+/* 列表样式优化 */
+.markdown-body ul,
+.markdown-body ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    color: #e0e0e0;
 }
 
 .markdown-body ul {
-    list-style: disc!important;
-    padding-left: 20px;
-    margin-left: 1rem;
+    list-style: disc;
 }
 
-li {
-    margin-bottom: 0.5rem;
+.markdown-body ol {
+    list-style: decimal;
+}
+
+.markdown-body li {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+.markdown-body li::marker {
+    color: #1d77ff;
+    font-weight: bold;
+}
+
+/* 表格样式优化 */
+.table-responsive {
+    overflow-x: auto;
+    margin: 1.5rem 0;
 }
 
 .table-responsive table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
+
 .table-responsive table thead {
-    background-color: #f5f5f5;
+    background-color: rgba(29, 119, 255, 0.2);
+    border-bottom: 2px solid #1d77ff;
 }
+
 .table-responsive table th,
 .table-responsive table td {
-    padding: 0.75rem;
+    padding: 1rem;
     text-align: left;
-    border: 1px solid #ddd;
+    border: 1px solid #333;
+    color: #e0e0e0;
+}
+
+.table-responsive table th {
+    font-weight: bold;
+    color: #ffffff;
+    background-color: rgba(29, 119, 255, 0.3);
+}
+
+.table-responsive table tr:hover {
+    background-color: rgba(29, 119, 255, 0.1);
 }
 
 .table-responsive table td code {
-    font-size: 0.9rem;
-    background-color: #ffebeb;
-    padding: 2px 4px;
+    font-size: 0.85rem;
+    background-color: rgba(255, 235, 235, 0.2);
+    padding: 2px 6px;
     border-radius: 4px;
-    color: #ff4d4d;
+    color: #ff6b6b;
+}
+
+/* 链接样式优化 */
+.markdown-body a {
+    color: #1d77ff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.markdown-body a:hover {
+    color: #4096ff;
+    text-decoration: underline;
 }
 
 .table-responsive table a {
     color: #1d77ff;
     text-decoration: none;
 }
+
 .table-responsive table a::before {
     content: "🔗";
     margin-right: 4px;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
+    vertical-align: middle;
+}
+
+/* 整体样式优化 */
+.markdown-body {
+    color: #e0e0e0;
+    background-color: #1a1a1a;
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+/* 特性列表样式优化 */
+.markdown-body ul.feature-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.markdown-body ul.feature-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.markdown-body ul.feature-list li::before {
+    content: "✨";
+    position: absolute;
+    left: 0;
+    color: #1d77ff;
+}
+
+/* 快速上手部分样式优化 */
+.quick-start {
+    background-color: rgba(29, 119, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(29, 119, 255, 0.3);
+    margin: 1.5rem 0;
+}
+
+/* 安装命令样式优化 */
+.install-commands {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.install-commands code {
+    display: block;
+    padding: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    border: 1px solid #333;
 }
