@@ -25,6 +25,7 @@ h1 {
 
 h2 {
     font-size: 1.5rem!important;
+    margin-top: 2rem;
 }
 h3 {
     font-size: 1.25rem!important;
@@ -33,6 +34,16 @@ h3 {
 p {
     margin-bottom: 1rem;
     font-size: 1.14rem;
+}
+
+.markdown-body ul {
+    list-style: disc!important;
+    padding-left: 20px;
+    margin-left: 1rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
 }
 
 .table-responsive table {
