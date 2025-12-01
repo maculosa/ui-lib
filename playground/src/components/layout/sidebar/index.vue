@@ -111,7 +111,7 @@ watchEffect(() => {
     transform: translate(0);
     @apply backdrop-blur-1 rounded-2 shadow;
     transition: all 0.5s cubic-bezier(.19, 1, .22, 1);
-    z-index: 999;
+    z-index: 99;
     &:hover {
         box-shadow: 0px 6px 4px 0 rgba(0, 0, 0, 0.3);
     }
