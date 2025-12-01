@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
 
 const headers = ref<HTMLElement[]>([])
 const activeId = ref('')
+const route = useRoute()
 
-onMounted(() => {
+// 初始化目录
+function initTOC() {
+  // 清除旧的标题和观察器
+  headers.value = []
+  
+  // 获取新的标题元素
   headers.value = Array.from(document.querySelectorAll('h2, h3, h4'))
-
+  
+  // 创建新的观察器
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -14,8 +22,47 @@ onMounted(() => {
       }
     })
   }, { threshold: 0.5 })
-
+  
+  // 观察所有标题
   headers.value.forEach((header) => observer.observe(header))
+}
+
+// 监听路由变化，重新初始化目录
+watchEffect(() => {
+  // 使用route.path来触发监听
+  route.path
+  // 路由变化时，等待DOM更新后再初始化TOC
+  setTimeout(() => {
+    initTOC()
+  }, 100)
+})
+
+// 组件挂载时初始化目录
+onMounted(() => {
+  initTOC()
+  
+  // 监听页面内容变化，使用MutationObserver
+  const contentObserver = new MutationObserver((mutations) => {
+    // 检查是否有标题元素变化
+    const hasHeaderChanges = mutations.some(mutation => {
+      return Array.from(mutation.addedNodes).some(node => {
+        return node instanceof HTMLElement && (node.tagName.match(/H[2-4]/) || node.querySelector('h2, h3, h4'))
+      }) || Array.from(mutation.removedNodes).some(node => {
+        return node instanceof HTMLElement && (node.tagName.match(/H[2-4]/) || node.querySelector('h2, h3, h4'))
+      })
+    })
+    
+    if (hasHeaderChanges) {
+      initTOC()
+    }
+  })
+  
+  // 观察主内容区域
+  const mainContent = document.querySelector('.main-content') || document.body
+  contentObserver.observe(mainContent, {
+    childList: true,
+    subtree: true
+  })
 })
 
 function getLevel(tag: string): number {
