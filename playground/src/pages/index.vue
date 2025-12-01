@@ -82,7 +82,7 @@ function initParticles() {
       
       <!-- CTA 按钮 -->
       <div class="cta-buttons">
-        <a href="/procomponent/" class="btn primary">
+        <a href="/procomponent" class="btn primary">
           <IconCode class="btn-icon" /> 开始使用
         </a>
         <a href="/docs/overview" class="btn secondary">
@@ -91,7 +91,7 @@ function initParticles() {
       </div>
       
       <!-- 核心特性 -->
-      <div class="grid grid-cols-3 gap-10">
+      <div class="grid grid-cols-3 gap-10 max-lg:grid-cols-1">
         <div class="feature-card">
           <div class="feature-icon-wrapper">
             <IconCopy class="feature-icon" />
