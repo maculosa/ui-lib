@@ -18,25 +18,20 @@ ProForm 是一个基于 Form 的高级表单组件，提供了表单布局、表
 - 当你需要更加可配置化的表单
 
 ## 代码示例
+以下是 ProForm 的代码示例：
 
-<script setup>
-    import { NGrid, NGridItem } from 'naive-ui'
-</script>
+<Demo title="基本用法"
+  desc="基本用法"
+ :raw="BaseRaw"
+>
+<Base />
+</Demo>
 
-
-<NGrid :cols="1" :x-gap="16">
-  <NGridItem class="flex flex-col justify-center">
-    <Demo title="基本用法" :raw="BaseRaw">
-        <Base />
-    </Demo>
-  </NGridItem>
-  <NGridItem class="flex flex-col">
-    <Demo title="请求级联选择器" :raw="RequestCascaderFormRaw">
-        <RequestCascaderForm />
-    </Demo>
-  </NGridItem>
-</NGrid>
+<Demo title="请求级联选择器"
+  desc="请求级联选择器"
+ :raw="RequestCascaderFormRaw"
+>
+<RequestCascaderForm />
+</Demo>
 
 ## ProForm API
-
-<!-- <API-Table name="ProForm" /> -->
