@@ -1,8 +1,7 @@
 <script setup lang="tsx">
 import { ProTable } from '@banmao/procomponent'
 import { NButton, NSpace } from 'naive-ui'
-import { computed, ref, watchEffect } from 'vue'
-import { useElementSize } from '@vueuse/core'
+import { computed, ref } from 'vue'
 
 async function fetchCityList() {
   return new Promise<any[]>((resolve) => {
@@ -26,8 +25,6 @@ async function fetchCityList() {
 }
 
 const columns = ref([
-  { type: 'selection' },
-  { type: 'index' },
   {
     title: '姓名',
     key: 'name',
@@ -75,11 +72,29 @@ const columns = ref([
     valueType: 'cascader',
     width: 200,
     request: fetchCityList,
+    // async () => {
+    //   return new Promise(resolve => {
+    //     setTimeout(() => {
+    //       resolve([
+    //         { label: '北京', value: 110000 },
+    //         { label: '上海', value: 310000 },
+    //         {
+    //           label: '山东', value: 370000,
+    //           children: [
+    //             { label: '济南', value: 370100 },
+    //             { label: '青岛', value: 370200 },
+    //             { label: '临沂', value: 371300 },
+    //           ]
+    //         },
+    //       ])
+    //     }, 300)
+    //   })
+    // }
   },
   {
     title: '地址',
     key: 'address',
-    minWidth: 400,
+    minWidth: 200,
     hideInSearch: true,
     hideInForm: true,
     valueType: 'text',
@@ -93,7 +108,7 @@ const columns = ref([
     key: 'actions',
     width: 120,
     fixed: 'right',
-    render() {
+    render(_row: any) {
       return (
         <NSpace justify="center">
           <NButton size="tiny" ghost type="primary">
@@ -104,6 +119,46 @@ const columns = ref([
           </NButton>
         </NSpace>
       )
+      // return h(
+      //   NSpace,
+      //   {
+      //     wrap: false
+      //   },
+      //   () => [
+      //     h(
+      //       ModalForm,
+      //       {
+      //         columns: columns.value,
+      //         model: row,
+      //         title: '编辑'
+      //       },
+      //       {
+      //         default: () =>
+      //           h(
+      //             NButton,
+      //             {
+      //               size: 'small',
+      //               type: 'primary',
+      //               text: true
+      //             },
+      //             { default: () => '编辑' }
+      //           )
+      //       }
+      //     ),
+      //     h(
+      //       NButton,
+      //       {
+      //         size: 'small',
+      //         type: 'error',
+      //         text: true,
+      //         onClick: () => {
+      //           console.log('删除', row)
+      //         }
+      //       },
+      //       { default: () => '删除' }
+      //     )
+      //   ]
+      // )
     },
   },
 ])
@@ -118,18 +173,6 @@ const dataSource = ref([
     address: 'asdasdasdasdasd',
   },
   { id: 2, name: '李四', age: 20 },
-  { id: 3, name: '王五', age: 22 },
-  { id: 4, name: '赵六', age: 24 },
-  { id: 5, name: '孙七', age: 26 },
-  { id: 6, name: '周八', age: 28 },
-  { id: 7, name: '吴九', age: 30 },
-  { id: 8, name: '郑十', age: 32 },
-  { id: 9, name: '刘一', age: 34 },
-  { id: 10, name: '陈二', age: 36 },
-  { id: 11, name: '杨三', age: 38 },
-  { id: 12, name: '吴四', age: 40 },
-  { id: 13, name: '郑五', age: 42 },
-  { id: 14, name: '刘六', age: 44 },
 ])
 
 const pagination = ref({
@@ -156,6 +199,14 @@ function handleChangePageSize(pageSize: number) {
   fetchTableData()
 }
 
+// function handleEdit(row) {
+//   console.log('编辑', row)
+// }
+
+// function handleDelete(row) {
+//   console.log('删除', row)
+// }
+
 const rowKey = computed(() => {
   return (row: any) => row.id
 })
@@ -166,55 +217,18 @@ const queryParams = ref({
 })
 
 async function handleQuery(params: any) {
-  console.error('查询', params)
+  console.log('查询', params)
   fetchTableData()
 }
-
-const tableRef = ref<InstanceType<typeof ProTable> | null>(null)
-const searchHeight = ref<number>(0)
-const searchRef = computed(() => tableRef.value?.searchRef)
-
-const { height } = useElementSize(searchRef)
-
-const tableHeight = ref(300)
-watchEffect(() => {
-  if (height.value > 0) {
-    searchHeight.value = height.value
-  }
-  if (height.value === 124) {
-    tableHeight.value = 300
-  } else {
-    tableHeight.value = 300 + 50
-  }
-})
-
-const handleExportData = () => {
-  console.log('导出数据')
-}
-
 </script>
 
 <template>
-  <div>
-    当前搜索栏高度为：
-    <span style="color: #10b981;font-weight: bold;">{{ searchHeight }}px</span>
-  </div>
-  <n-divider />
   <ProTable
-    ref="tableRef"
     title="数据表格" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading"
     :params="queryParams" :on-query="handleQuery" :search="{
       searchText: '查询',
       gridCols: 2,
-    }"
-    :toolbarConfig="{
-      export: true
-    }"
-    :scroll-x="800"
-    :max-height="tableHeight"
-    :min-height="tableHeight"
-    @update:page-size="handleChangePageSize"
+    }" @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"
-    @export-data="handleExportData"
   />
 </template>
