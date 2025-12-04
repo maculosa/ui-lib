@@ -28,6 +28,16 @@ ProForm 是一个基于 Form 的高级表单组件，提供了表单布局、表
 <FilterReset />
 </Demo>
 
+
+
+<Demo title="筛选重置默认值"
+  desc="筛选重置默认值"
+ :raw="FilterResetWithDefaultRaw"
+>
+<FilterResetWithDefault />
+</Demo>
+
+
 <Demo title="基本用法"
   desc="基本用法"
  :raw="BaseRaw"
