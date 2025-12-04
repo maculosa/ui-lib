@@ -192,7 +192,7 @@ export default defineComponent({
     // 通用表单项属性
     const getCommonFieldProps = (item: any, oc: string = '输入') => {
       return {
-        placeholder: `请${oc}${item.title}`,
+        placeholder: `请${oc}${item.formTitle || item.title}`,
         clearable: true,
         ...item?.formItemProps,
       }

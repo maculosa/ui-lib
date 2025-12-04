@@ -84,6 +84,7 @@ export function useTableColumns(columns: any[], options?: { searchSort?: 'asc' |
         if (column?.copyable) return renderCopyableCell(column)
         if (column?.tooltip && typeof column.title === 'string') {
           if (typeof column.tooltip === 'string') {
+            column.formTitle = column.title
             column.title = renderTitle(column)
           }
         }
