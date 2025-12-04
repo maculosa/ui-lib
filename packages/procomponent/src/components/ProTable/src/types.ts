@@ -143,7 +143,7 @@ export const proTableProps = {
     }),
   },
   /** 
-   * 额外的查询参数
+   * 用于 request 查询的额外参数，一旦变化会触发重新加载
    * @type {Record<string, any>}
    */
   params: {
@@ -153,10 +153,15 @@ export const proTableProps = {
    * 查询回调函数
    * @param {Record<string, any>} params - 查询参数
    * @returns {Promise<void>}
+   * @deprecated 该配置项将在 v0.8.0 移除，请使用 request 代替
    */
   onQuery: {
     type: Function as PropType<(params: Record<string, any>) => Promise<void>>,
   },
+  request: {
+    type: Function as PropType<(params: { pageSize: number, current: number }, sort: Record<string, any>, filter: Record<string, any>) => Promise<void>>,
+  },
+
   // TODO 1.该配置不生效
   /** 
    * 表格高度
