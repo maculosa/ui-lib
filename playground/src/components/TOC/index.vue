@@ -11,7 +11,7 @@ function initTOC() {
   // 清除旧的标题和观察器
   headers.value = []
   
-  // 获取新的标题元素
+  // 获取新的标题元素，包括嵌套在组件内部的
   headers.value = Array.from(document.querySelectorAll('h2, h3, h4'))
   
   // 创建新的观察器
@@ -31,37 +31,66 @@ function initTOC() {
 watchEffect(() => {
   // 使用route.path来触发监听
   route.path
-  // 路由变化时，等待DOM更新后再初始化TOC
+  // 路由变化时，等待DOM更新后再初始化TOC，增加延迟确保组件完全渲染
   setTimeout(() => {
     initTOC()
-  }, 100)
+    // 检查URL中是否有锚点，如果有则滚动到对应位置
+    const hash = window.location.hash
+    if (hash) {
+      const target = document.querySelector(hash)
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+  }, 500) // 增加延迟到500ms，确保Demo组件完全渲染
 })
 
 // 组件挂载时初始化目录
 onMounted(() => {
-  initTOC()
+  // 初始加载时增加延迟，确保所有组件完全渲染
+  setTimeout(() => {
+    initTOC()
+    // 检查URL中是否有锚点
+    const hash = window.location.hash
+    if (hash) {
+      const target = document.querySelector(hash)
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+  }, 500)
   
   // 监听页面内容变化，使用MutationObserver
   const contentObserver = new MutationObserver((mutations) => {
-    // 检查是否有标题元素变化
-    const hasHeaderChanges = mutations.some(mutation => {
-      return Array.from(mutation.addedNodes).some(node => {
-        return node instanceof HTMLElement && (node.tagName.match(/H[2-4]/) || node.querySelector('h2, h3, h4'))
-      }) || Array.from(mutation.removedNodes).some(node => {
-        return node instanceof HTMLElement && (node.tagName.match(/H[2-4]/) || node.querySelector('h2, h3, h4'))
-      })
-    })
-    
-    if (hasHeaderChanges) {
-      initTOC()
-    }
+    // 只要内容发生变化，就重新初始化TOC
+    initTOC()
   })
   
   // 观察主内容区域
   const mainContent = document.querySelector('.main-content') || document.body
   contentObserver.observe(mainContent, {
     childList: true,
-    subtree: true
+    subtree: true,
+    attributes: true,
+    characterData: true
+  })
+  
+  // 监听点击事件，处理锚点导航
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement
+    if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('#')) {
+      const href = target.getAttribute('href')
+      if (href) {
+        const id = href.slice(1)
+        const element = document.getElementById(id)
+        if (element) {
+          // 延迟一下，确保TOC已经更新
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }, 100)
+        }
+      }
+    }
   })
 })
 

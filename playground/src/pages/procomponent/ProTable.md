@@ -147,6 +147,14 @@ const handleQuery = (params) => {
 </Demo>
 
 <Demo
+    title="重置搜索模式"
+    desc="重置搜索功能，点击重置按钮时会清空搜索表单并触发查询。"
+    :raw="ResetSearchRaw"
+>
+<ResetSearch />
+</Demo>
+
+<Demo
     title="搜索引用模式"
     desc="使用搜索引用功能，可以通过 ref 控制搜索表单，适合需要外部控制搜索的场景。"
     :raw="SearchRefDemoRaw"

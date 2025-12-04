@@ -159,6 +159,7 @@ function handleExportData() {
     title="新增、导出" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading"
     :search-config="{
       defaultValue: {
+        name: '',
         age: 16,
       },
     }" :toolbar-config="{
