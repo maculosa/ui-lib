@@ -20,6 +20,14 @@ ProForm 是一个基于 Form 的高级表单组件，提供了表单布局、表
 ## 代码示例
 以下是 ProForm 的代码示例：
 
+
+<Demo title="筛选重置"
+  desc="筛选重置"
+ :raw="FilterResetRaw"
+>
+<FilterReset />
+</Demo>
+
 <Demo title="基本用法"
   desc="基本用法"
  :raw="BaseRaw"
@@ -33,5 +41,8 @@ ProForm 是一个基于 Form 的高级表单组件，提供了表单布局、表
 >
 <RequestCascaderForm />
 </Demo>
+
+
+
 
 ## ProForm API
