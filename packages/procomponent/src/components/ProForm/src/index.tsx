@@ -42,6 +42,14 @@ export default defineComponent({
 
     // 存储初始默认值，用于重置表单数据
     const defaultValue = { ...props.defaultValue }
+    // 表单项的options，使用shallowRef减少响应式开销
+    const options = ref<{ [key: string]: SelectOption[] }>({})
+    // 记录已请求过的key，避免重复请求
+    const requestedKeys = ref<Set<string>>(new Set())
+    // 缓存columns哈希值，用于判断columns是否变化
+    const columnsHash = ref<string>('')
+    // 缓存formData结构
+    const cachedFormDataStructure = ref<any>({})
 
     /**
      * 创建表单数据
@@ -51,19 +59,22 @@ export default defineComponent({
       const currentHash = getColumnsHash(props.columns)
       
       // 如果columns结构未变化，直接返回缓存的结构
-      if (currentHash === columnsHash.value && Object.keys(cachedFormDataStructure.value).length > 0) {
-        const result = { ...cachedFormDataStructure.value }
-        if (
-          typeof props.model === 'object'
-          && Object.keys(props.model).length > 0
-        ) {
-          return {
-            ...result,
-            ...props.model,
-          }
-        }
-        return result
-      }
+      // if (currentHash === columnsHash.value && Object.keys(cachedFormDataStructure.value).length > 0) {
+      //   console.log('cachedFormDataStructure.value', cachedFormDataStructure.value)
+      //   const result = { ...cachedFormDataStructure.value }
+      //   if (
+      //     typeof props.model === 'object'
+      //     && Object.keys(props.model).length > 0
+      //   ) {
+      //     console.log('props.model', props.model)
+      //     return {
+      //       ...result,
+      //       ...props.model,
+      //     }
+      //   }
+      //   console.log('result', result)
+      //   return result
+      // }
       
       // columns结构变化，重新创建formData
       const formData: any = {}
@@ -117,14 +128,7 @@ export default defineComponent({
       }
     })
 
-    // 表单项的options，使用shallowRef减少响应式开销
-    const options = ref<{ [key: string]: SelectOption[] }>({})
-    // 记录已请求过的key，避免重复请求
-    const requestedKeys = ref<Set<string>>(new Set())
-    // 缓存columns哈希值，用于判断columns是否变化
-    const columnsHash = ref<string>('')
-    // 缓存formData结构
-    const cachedFormDataStructure = ref<any>({})
+
 
     // 获取columns的哈希值
     const getColumnsHash = (cols: any[]) => {
@@ -432,12 +436,12 @@ export default defineComponent({
 
     // 重置表单
     const handleReset = () => {
-      if (props.defaultValue && Object.keys(props.defaultValue).length > 0) {
-        formData.value = { ...defaultValue }
-      }
-      else {
+      // if (props.defaultValue && Object.keys(props.defaultValue).length > 0) {
+      //   formData.value = { ...defaultValue }
+      // }
+      // else {
         formData.value = createFormData()
-      }
+      // }
 
       ctx.emit('reset')
     }
