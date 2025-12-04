@@ -1,5 +1,14 @@
 # @banmao/procomponent
 
+## 0.7.22
+
+### Patch Changes
+
+- feat(docs/ProForm): 添加筛选重置示例并修复 grid-cols 绑定问题
+
+  添加新的筛选重置示例组件 FilterReset.vue，并在文档中展示
+  修复 RequestCascaderForm.vue 中 grid-cols 属性未绑定的问题
+
 ## 0.7.21
 
 ### Patch Changes
