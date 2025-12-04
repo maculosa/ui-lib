@@ -53,30 +53,28 @@ export default defineComponent({
 
     /**
      * 创建表单数据
+     * @param forceCreate 是否强制创建新的表单结构，不使用缓存
      * @returns 表单数据
      */
-    const createFormData = () => {
+    const createFormData = (forceCreate: boolean = false) => {
       const currentHash = getColumnsHash(props.columns)
       
-      // 如果columns结构未变化，直接返回缓存的结构
-      // if (currentHash === columnsHash.value && Object.keys(cachedFormDataStructure.value).length > 0) {
-      //   console.log('cachedFormDataStructure.value', cachedFormDataStructure.value)
-      //   const result = { ...cachedFormDataStructure.value }
-      //   if (
-      //     typeof props.model === 'object'
-      //     && Object.keys(props.model).length > 0
-      //   ) {
-      //     console.log('props.model', props.model)
-      //     return {
-      //       ...result,
-      //       ...props.model,
-      //     }
-      //   }
-      //   console.log('result', result)
-      //   return result
-      // }
+      // 如果columns结构未变化且不强制创建，直接返回缓存的结构的深拷贝
+      if (!forceCreate && currentHash === columnsHash.value && Object.keys(cachedFormDataStructure.value).length > 0) {
+        const result = JSON.parse(JSON.stringify(cachedFormDataStructure.value))
+        if (
+          typeof props.model === 'object'
+          && Object.keys(props.model).length > 0
+        ) {
+          return {
+            ...result,
+            ...props.model,
+          }
+        }
+        return result
+      }
       
-      // columns结构变化，重新创建formData
+      // columns结构变化或强制创建，重新创建formData
       const formData: any = {}
       props.columns.forEach((item: any) => {
         switch (item.valueType) {
@@ -103,9 +101,9 @@ export default defineComponent({
         }
       })
       
-      // 更新缓存
+      // 更新缓存，使用深拷贝避免引用共享
       columnsHash.value = currentHash
-      cachedFormDataStructure.value = formData
+      cachedFormDataStructure.value = JSON.parse(JSON.stringify(formData))
       
       if (
         typeof props.model === 'object'
@@ -436,12 +434,12 @@ export default defineComponent({
 
     // 重置表单
     const handleReset = () => {
-      // if (props.defaultValue && Object.keys(props.defaultValue).length > 0) {
-      //   formData.value = { ...defaultValue }
-      // }
-      // else {
-        formData.value = createFormData()
-      // }
+      if (props.defaultValue && Object.keys(props.defaultValue).length > 0) {
+        formData.value = { ...defaultValue }
+      }
+      else {
+        formData.value = createFormData(true) // 强制创建新表单结构
+      }
 
       ctx.emit('reset')
     }
