@@ -1,5 +1,12 @@
 # site
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies
+  - @banmao/procomponent@0.7.23
+
 ## 0.0.11
 
 ### Patch Changes
