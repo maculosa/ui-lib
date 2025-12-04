@@ -1,5 +1,13 @@
 # @banmao/procomponent
 
+## 0.7.23
+
+### Patch Changes
+
+- fix(ProForm): 修复表单重置时未使用默认值的问题
+
+  强制创建新表单结构时使用深拷贝避免引用共享问题，并在重置表单时正确处理默认值
+
 ## 0.7.22
 
 ### Patch Changes
