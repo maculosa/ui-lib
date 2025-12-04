@@ -4,7 +4,7 @@ import { dataTableProps } from 'naive-ui'
 
 
 export const proTableEmits = {
-    loadData: ( page: number) => typeof page === 'number',
+    loadData: (page: number) => typeof page === 'number',
     create: () => true,
     exportData: () => true,
     submit: () => true,
