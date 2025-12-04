@@ -4,7 +4,7 @@ import { dataTableProps } from 'naive-ui'
 
 
 export const proTableEmits = {
-    loadData: (page: number) => typeof page === 'number',
+    loadData: ( page: number) => typeof page === 'number',
     create: () => true,
     exportData: () => true,
     submit: () => true,
@@ -124,8 +124,19 @@ export const proTableProps = {
   /** 
    * 工具栏配置
    * @type {ToolbarConfig}
+   * @deprecated 该配置项将在 v0.8.0 移除，请使用 toolbar 代替
    */
   toolbarConfig: {
+    type: Object as PropType<ToolbarConfig>,
+    default: () => ({
+      createMode: 'button',
+    }),
+  },
+  /**
+   * 工具栏配置
+   * @type {ToolbarConfig}
+   */
+  toolbar: {
     type: Object as PropType<ToolbarConfig>,
     default: () => ({
       createMode: 'button',
@@ -146,6 +157,7 @@ export const proTableProps = {
   onQuery: {
     type: Function as PropType<(params: Record<string, any>) => Promise<void>>,
   },
+  // TODO 1.该配置不生效
   /** 
    * 表格高度
    * @type {number}
