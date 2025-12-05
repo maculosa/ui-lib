@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.7.26
+
+### Patch Changes
+
+- fix(ProTable): 修复重置按钮点击导致的 bug
+
 ## 0.7.25
 
 ### Patch Changes
