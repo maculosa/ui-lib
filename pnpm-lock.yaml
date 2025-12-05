@@ -14,6 +14,9 @@ importers:
       '@banmao/datav':
         specifier: workspace:^
         version: link:packages/datav
+      '@banmao/hooks':
+        specifier: workspace:^
+        version: link:packages/hooks
       '@banmao/procomponent':
         specifier: workspace:^
         version: link:packages/procomponent

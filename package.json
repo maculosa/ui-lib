@@ -36,6 +36,7 @@
     "@banmao/blocks": "workspace:^",
     "@banmao/datav": "workspace:^",
     "@banmao/procomponent": "workspace:^",
+    "@banmao/hooks": "workspace:^",
     "@highlightjs/vue-plugin": "^2.1.0",
     "@types/lodash-es": "^4.17.12",
     "@vueuse/core": "^13.2.0",
