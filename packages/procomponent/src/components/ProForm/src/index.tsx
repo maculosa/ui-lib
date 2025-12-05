@@ -444,6 +444,19 @@ export default defineComponent({
       ctx.emit('reset')
     }
 
+    // 重置搜索模型
+    const handleResetWithSearchMode = () => {
+      if (props.defaultValue && Object.keys(props.defaultValue).length > 0) {
+        console.info('有默认值', props.defaultValue)
+        formData.value = { ...createFormData(), ...props.defaultValue }
+      } else {
+        console.info('没有默认值')
+        formData.value = createFormData(true) // 强制创建新表单结构
+      }
+
+      ctx.emit('reset', formData.value)
+    }
+
     ctx.expose({
       reset: handleReset,
       submit: handleSubmit,
@@ -476,7 +489,7 @@ export default defineComponent({
           {props.mode === 'search' && (
             <NGi suffix>
               <NSpace justify="end" wrap={false}>
-                <NButton onClick={() => handleReset()}>
+                <NButton onClick={() => handleResetWithSearchMode()}>
                   {{
                     icon: () => <BmIconRefresh />,
                     default: () => props.resetText,
