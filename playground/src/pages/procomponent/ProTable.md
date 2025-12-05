@@ -261,13 +261,13 @@ const handleQuery = (params) => {
 
 ### Events
 
-| 事件名称 | 说明 | 回调参数 |
-| --- | --- | --- |
-| loadData | 加载数据事件，用于自定义数据加载逻辑 | `(page: number) => void` |
-| create | 新增按钮点击事件 | `() => void` |
-| exportData | 导出按钮点击事件 | `(params?: Record<string, any>) => void` |
-| submit | 搜索表单提交事件 | `(params: Record<string, any>) => void` |
-| reset | 搜索表单重置事件 | `(params?: Record<string, any>) => void` |
+| 事件名称 | 说明 | 回调参数 | 版本 |
+| --- | --- | --- | --- |
+| loadData | 加载数据事件，用于自定义数据加载逻辑 | `(page: number) => void` | |
+| create | 新增按钮点击事件 | `() => void` | |
+| exportData | 导出按钮点击事件 | `(params?: Record<string, any>) => void` | 0.7.24 |
+| submit | 搜索表单提交事件 | `(params: Record<string, any>) => void` | |
+| reset | 搜索表单重置事件 | `(params?: Record<string, any>) => void` | 0.7.24 |
 
 ### Slots
 
