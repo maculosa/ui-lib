@@ -78,7 +78,7 @@ export default defineComponent({
       emit('loadData', page)
     }
 
-    const searchParams = ref<Record<string, any>>(props.params || {})
+    const filterData = ref<Record<string, any>>(props.params || {})
     /**
      * 刷新数据
      */
@@ -106,7 +106,7 @@ export default defineComponent({
         return
       }
 
-      searchParams.value = formModel
+      filterData.value = formModel
 
       try {
         searchLoading.value = true
@@ -126,11 +126,11 @@ export default defineComponent({
     async function handleReset(searchParams?: Record<string, any>) {
       try {
         searchLoading.value = true
-        emit('reset')
         if (searchFormRef.value && searchParams) {
           // await loadData(1)
           await props.onQuery?.(searchParams)
-          searchParams.value = searchParams
+          filterData.value = searchParams
+          // emit('reset', searchParams.value)
         }
       } catch (error) {
         console.error('Reset failed:', error)
@@ -146,7 +146,7 @@ export default defineComponent({
      * 导出数据
      */
     function handleExportData() {
-      emit('exportData', searchParams.value)
+      emit('exportData', filterData.value)
     }
 
     expose({
@@ -184,7 +184,7 @@ export default defineComponent({
                 loading={searchLoading.value}
                 {...props.search}
                 onSubmit={handleSearch}
-                onReset={(params) => handleReset(params)}
+                onReset={handleReset}
               />
             </NCard>
           )}
