@@ -6,9 +6,10 @@ import { dataTableProps } from 'naive-ui'
 export const proTableEmits = {
     loadData: (page: number) => typeof page === 'number',
     create: () => true,
-    exportData: () => true,
+    exportData: (params: Record<string, any>) => typeof params === 'object' && params !== null,
     submit: () => true,
-    reset: () => true
+    reset: () => true,
+    'update:searchModel': (val: Record<string, any>) => typeof val === 'object' && val !== null,
 }
 
 export type ProTableEmits = ExtractPropTypes<typeof proTableEmits>
@@ -150,10 +151,17 @@ export const proTableProps = {
     type: Object as PropType<Record<string, any>>,
   },
   /** 
+   * 搜索模型
+   * @type {Record<string, any>}
+   */
+  searchModel: {
+    type: Object as PropType<Record<string, any>>,
+    default: () => ({}),
+  },
+  /** 
    * 查询回调函数
    * @param {Record<string, any>} params - 查询参数
    * @returns {Promise<void>}
-   * @deprecated 该配置项将在 v0.8.0 移除，请使用 request 代替
    */
   onQuery: {
     type: Function as PropType<(params: Record<string, any>) => Promise<void>>,

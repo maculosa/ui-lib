@@ -38,6 +38,13 @@ export default defineComponent({
       return p
     })
 
+    // const searchModel = computed({
+    //   get: () => props.searchModel || {},
+    //   set: (val) => {
+    //     emit('update:searchModel', val)
+    //   }
+    // })
+
     const isRefreshing = ref(false)
     const searchLoading = ref(false)
 
@@ -56,11 +63,11 @@ export default defineComponent({
 
     provide('settingColumns', settingColumns)
 
-    const toolbarConfig = computed(() => props.toolbarConfig)
+    const toolbarConfig = computed(() => props.toolbar || props.toolbarConfig)
 
     type TableSize = 'small' | 'medium' | 'large'
     const size = ref<TableSize>('large')
-    const searchFormRef = ref(null)
+    const searchFormRef = ref<InstanceType<typeof ProForm> | null>(null)
     const searchRef = ref(null)
 
     /**
@@ -71,6 +78,7 @@ export default defineComponent({
       emit('loadData', page)
     }
 
+    const searchParams = ref<Record<string, any>>(props.params || {})
     /**
      * 刷新数据
      */
@@ -98,6 +106,8 @@ export default defineComponent({
         return
       }
 
+      searchParams.value = formModel
+
       try {
         searchLoading.value = true
         await props.onQuery(formModel)
@@ -113,12 +123,14 @@ export default defineComponent({
     /**
      * 重置搜索表单
      */
-    async function handleReset() {
+    async function handleReset(searchParams?: Record<string, any>) {
       try {
         searchLoading.value = true
         emit('reset')
-        if (searchFormRef.value) {
-          await loadData(1)
+        if (searchFormRef.value && searchParams) {
+          // await loadData(1)
+          await props.onQuery?.(searchParams)
+          searchParams.value = searchParams
         }
       } catch (error) {
         console.error('Reset failed:', error)
@@ -134,7 +146,7 @@ export default defineComponent({
      * 导出数据
      */
     function handleExportData() {
-      emit('exportData')
+      emit('exportData', searchParams.value)
     }
 
     expose({
@@ -172,7 +184,7 @@ export default defineComponent({
                 loading={searchLoading.value}
                 {...props.search}
                 onSubmit={handleSearch}
-                onReset={handleReset}
+                onReset={(params) => handleReset(params)}
               />
             </NCard>
           )}
