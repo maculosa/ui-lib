@@ -26,7 +26,12 @@ async function fetchCityList() {
   })
 }
 
-function fakeDataList() {
+function fakeDataList(data: Record<string, any>) {
+  console.log('request data: ', data)
+  fetch('/api/fake/data', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
   return new Promise<any>((resolve) => {
     setTimeout(() => {
       resolve({
@@ -68,7 +73,6 @@ const columns = ref([
     title: '性别',
     key: 'gender',
     minWidth: 100,
-    hideInSearch: true,
     valueType: 'select',
     options: [
       { label: '男', value: 'male' },
@@ -133,6 +137,7 @@ const rowKey = computed(() => {
 
 async function handleQuery(params: any) {
   console.info('查询', params)
+  searchModel.value = params
   loadData()
 }
 
@@ -158,9 +163,6 @@ const handleExportData = (params: any) => {
     :search="{
       searchText: '查询',
       gridCols: 2,
-    }"
-    :params="{
-      name: '张三',
     }"
     :toolbar="{
       export: true
