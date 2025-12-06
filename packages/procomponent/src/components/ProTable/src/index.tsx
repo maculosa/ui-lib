@@ -21,7 +21,7 @@ export default defineComponent({
     const message = useMessage()
     const tableProps = computed(() => {
       const p = { ...props }
-      const excludeKeys = ['title', 'columns', 'searchConfig', 'toolbarConfig', 'search']
+      const excludeKeys = ['title', 'columns', 'searchConfig', 'toolbarConfig', 'toolbar', 'search']
       excludeKeys.forEach(key => {
         if (key in p) {
           delete (p as Record<string, unknown>)[key]
@@ -63,7 +63,12 @@ export default defineComponent({
 
     provide('settingColumns', settingColumns)
 
-    const toolbarConfig = computed(() => props.toolbar || props.toolbarConfig)
+    const toolbarCfg = computed(() => {
+      return {
+        ...props.toolbarConfig,
+        ...props.toolbar,
+      }
+    })
 
     type TableSize = 'small' | 'medium' | 'large'
     const size = ref<TableSize>('large')
@@ -197,7 +202,7 @@ export default defineComponent({
                 <Toolbar
                   v-model:size={size.value}
                   title={props.title}
-                  config={toolbarConfig.value}
+                  config={toolbarCfg.value}
                   loading={props.loading}
                   formColumns={formColumns.value}
                   onExport={handleExportData}
