@@ -75,6 +75,8 @@ const handleQuery = (params) => {
 
 以下是 ProTable 的一些常用示例，展示了不同功能和配置的使用方式：
 
+> 当使用搜索栏时，查询参数中的默认值应设为 `null`，而不是空字符串 `''` 或 `undefined`。
+
 <Demo title="简单模式"
     desc="简单模式下仅显示数据，不包含任何额外功能，适合快速展示基础表格数据。"
     :raw="SimpleDemoRaw"
