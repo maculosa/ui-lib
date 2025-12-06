@@ -228,7 +228,12 @@ async function handleQuery(params: any) {
     :params="queryParams" :on-query="handleQuery" :search="{
       searchText: '查询',
       gridCols: 2,
-    }" @update:page-size="handleChangePageSize"
+    }"
+    :toolbar-config="{
+      export: true,
+      create: true
+    }"
+    @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"
   />
 </template>
