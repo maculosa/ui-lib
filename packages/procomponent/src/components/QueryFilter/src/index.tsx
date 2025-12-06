@@ -1,5 +1,5 @@
 import type { SelectOption } from 'naive-ui'
-import type { QueryFilterProps, QueryFilterColumn } from './types'
+import type { QueryFilterProps } from './types'
 import {
   NAutoComplete,
   NButton,
@@ -65,140 +65,73 @@ const placeholderMaps = {
 export default defineComponent({
   name: 'QueryFilter',
   props: {
-    columns: {
-      type: Array as PropType<QueryFilterColumn[]>,
-      default: () => [],
-    },
-    defaultValue: {
-      type: Object as PropType<Record<string, any>>,
-      default: () => ({}),
-    },
     gridCols: {
       type: Number,
-      default: 3,
+      default: 3
     },
-    formConfig: {
-      type: Object as PropType<QueryFilterProps['formConfig']>,
-      default: () => ({
-        gridCollapsed: true,
-        gridCollapsedRows: 1,
-      }),
+    collapsed: {
+      type: Boolean,
+      default: false
+    },
+    gridCollapsedRows: {
+      type: Number,
+      default: 0
+    },
+    initialValues: {
+      type: Object,
+      default: () => ({})
+    },
+    fields: {
+      type: Array,
+      default: () => []
+    },
+    showFeedback: {
+      type: Boolean,
+      default: false
+    },
+    showRequireMark: {
+      type: Boolean,
+      default: false
     },
   },
   emits: ['search', 'reset'],
   setup(props, { emit }) {
-    /**
-     * 获取默认占位符
-     * @param type 字段类型
-     * @param title 字段标题
-     */
-    function getDefaultPlaceholder(type: keyof typeof placeholderMaps, title?: string) {
-      if (type === 'date' || type === 'time')
-        return placeholderMaps[type]
 
-      return placeholderMaps[type] + title
-    }
+    // 初始化表单数据
+    const searchFormData = ref<Record<string, any>>({})
+    searchFormData.value = props.initialValues
 
-    const transformColumns = computed(() => {
-      return props.columns
-        .filter(i => !i.hideInSearch)
-        .sort((a, b) => {
-          if (a?.order && b?.order)
-            return a.order - b.order
-          return 0
-        })
-    })
-
+    // 初始化网格布局
     const gridRef = shallowRef()
-    const gridCollapsed = ref(props.formConfig?.gridCollapsed)
-    const gridCollapsedRows = ref(props.formConfig?.gridCollapsedRows)
+    const gridCollapsed = ref(props.collapsed)
+    const gridCollapsedRows = ref(props.gridCollapsedRows)
     const { showSuffix } = useShowSuffix(gridRef, props.gridCols)
-
+    // 切换网格布局折叠状态
     function handleToggleCollapsed() {
       gridCollapsed.value = !gridCollapsed.value
     }
 
-    const options = reactive<Record<string, SelectOption[]>>({})
-
-    /**
-     * 获取远程服务器枚举
-     * @param fn 请求函数
-     * @param prop 字段标识
-     */
-    async function getRemoteServerEnum(fn: () => Promise<any[]>, prop: string) {
-      if (!fn || !prop) return
-
-      const column = props.columns.find(item => item.key === prop)
-      if (!column) return
-
-      try {
-        options[column.key] = await fn()
-      } catch (error) {
-        console.error('Failed to fetch remote options:', error)
-      }
-    }
-
-    watch(
-      () => props.columns,
-      (columns) => {
-        columns.forEach((item) => {
-          if (item.request)
-            getRemoteServerEnum(item.request, item.key)
-        })
-      },
-      { deep: true, immediate: true }
-    )
-
-    const searchFormData = ref<Record<string, any>>({})
-
-    /**
-     * 创建搜索表单数据
-     */
-    function createSearchFormData() {
-      const formData: Record<string, any> = {}
-
-      props.columns.forEach((column) => {
-        if (column.valueType === 'select' || column.valueType === 'date')
-          formData[column.key] = null
-        else
-          formData[column.key] = ''
-      })
-
-      if (typeof props.defaultValue === 'object' && Object.keys(props.defaultValue).length > 0)
-        return { ...formData, ...props.defaultValue }
-
-      return formData
-    }
-
-    onMounted(() => {
-      searchFormData.value = createSearchFormData()
-    })
-
-    watch(
-      () => props.defaultValue,
-      (val) => {
-        searchFormData.value = { ...searchFormData.value, ...val }
-      },
-      { deep: true, immediate: true }
-    )
-
-    function handleReset() {
-      searchFormData.value = createSearchFormData()
-      emit('reset', searchFormData.value)
-    }
-
+    // 提交查询
     function handleSearch() {
       emit('search', searchFormData.value)
     }
 
+    // 重置查询
+    function handleReset() {
+      if (props.initialValues) {
+        searchFormData.value = props.initialValues
+      } else {
+        searchFormData.value = {}
+      }
+      emit('reset')
+    }
+
     return () => (
-      <NCard hoverable>
         <NForm
           labelPlacement="left"
           labelWidth="auto"
-          showFeedback={false}
-          showRequireMark={false}
-          v-bind={props.formConfig}
+          showFeedback={props.showFeedback}
+          showRequireMark={props.showRequireMark}
           model={searchFormData.value}
         >
           <NGrid
@@ -210,7 +143,7 @@ export default defineComponent({
             collapsed={gridCollapsed.value}
             collapsedRows={gridCollapsedRows.value}
           >
-            {transformColumns.value.map(item => (
+            {/* {transformColumns.value.map(item => (
               <NFormItemGi key={item.key} label={item.title} path={item.key}>
                 {item.tooltip
                   ? {
@@ -258,7 +191,9 @@ export default defineComponent({
                     />
                 }
               </NFormItemGi>
-            ))}
+            ))} */}
+
+            <slot />
 
             <NGi suffix>
               <NSpace justify="end" wrap={false}>
@@ -286,7 +221,6 @@ export default defineComponent({
             </NGi>
           </NGrid>
         </NForm>
-      </NCard>
     )
   },
 })
