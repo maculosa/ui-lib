@@ -63,6 +63,7 @@ declare global {
   const onUpdated: typeof import('vue')['onUpdated']
   const onWatcherCleanup: typeof import('vue')['onWatcherCleanup']
   const provide: typeof import('vue')['provide']
+  const queryFilter: typeof import('./components/QueryFilter/src/types')['queryFilter']
   const reactive: typeof import('vue')['reactive']
   const readonly: typeof import('vue')['readonly']
   const ref: typeof import('vue')['ref']
@@ -104,7 +105,7 @@ declare global {
   export type { ProTextProps } from './components/ProText/src/types'
   import('./components/ProText/src/types')
   // @ts-ignore
-  export type { FormConfig, QueryFilterColumn, QueryFilterProps } from './components/QueryFilter/src/types'
+  export type { QueryFilterProps, LiteFilterProps } from './components/QueryFilter/src/types'
   import('./components/QueryFilter/src/types')
   // @ts-ignore
   export type { WatermarkProps } from './components/Watermark/src/types'
@@ -173,6 +174,7 @@ declare module 'vue' {
     readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
     readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
+    readonly queryFilter: UnwrapRef<typeof import('./components/QueryFilter/src/types')['queryFilter']>
     readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
     readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
     readonly ref: UnwrapRef<typeof import('vue')['ref']>
