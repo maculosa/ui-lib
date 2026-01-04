@@ -93,6 +93,15 @@ const columns = ref([
     },
   },
   {
+    title: '生日',
+    key: 'birthday',
+    minWidth: 100,
+    valueType: 'date',
+    formItemProps: {
+      type: 'monthrange'
+    }
+  },
+  {
     title: '城市',
     key: 'city',
     valueType: 'cascader',
@@ -160,6 +169,8 @@ const handleExportData = (params: any) => {
     ref="tableRef"
     title="默认搜索条件" :columns="columns" :data="dataSource" :pagination :row-key :loading="loading"
     :on-query="handleQuery"
+    :params="{
+    }"
     :search="{
       searchText: '查询',
       gridCols: 2,

@@ -36,6 +36,7 @@ declare module 'vue-router/auto-routes' {
     '/procomponent/overview': RouteRecordInfo<'/procomponent/overview', '/procomponent/overview', Record<never, never>, Record<never, never>>,
     '/procomponent/ProDescriptions': RouteRecordInfo<'/procomponent/ProDescriptions', '/procomponent/ProDescriptions', Record<never, never>, Record<never, never>>,
     '/procomponent/ProForm': RouteRecordInfo<'/procomponent/ProForm', '/procomponent/ProForm', Record<never, never>, Record<never, never>>,
+    '/procomponent/ProLayout': RouteRecordInfo<'/procomponent/ProLayout', '/procomponent/ProLayout', Record<never, never>, Record<never, never>>,
     '/procomponent/ProTable': RouteRecordInfo<'/procomponent/ProTable', '/procomponent/ProTable', Record<never, never>, Record<never, never>>,
     '/procomponent/ProText': RouteRecordInfo<'/procomponent/ProText', '/procomponent/ProText', Record<never, never>, Record<never, never>>,
     '/procomponent/ProTree': RouteRecordInfo<'/procomponent/ProTree', '/procomponent/ProTree', Record<never, never>, Record<never, never>>,
