@@ -36,9 +36,17 @@ export const proLayoutProps = {
     type: Boolean,
     default: false,
   },
+  collapsedTriggerPosition: {
+    type: String as PropType<'top' | 'bottom'>,
+    default: 'bottom',
+  },
   layout: {
     type: String as PropType<'side' | 'top' | 'mix'>,
     default: 'side',
+  },
+  footer: {
+    type: Boolean,
+    default: false,
   },
   menu: {
     type: Object as PropType<MenuConfig>,

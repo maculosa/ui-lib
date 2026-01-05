@@ -46,6 +46,7 @@ pnpm install @banmao/procomponent
 <Demo title="基础布局"
     desc="基础布局包含标题和内容区域，适用于大多数页面布局场景。"
     :raw="BaseLayoutRaw"
+    style="height: 600px;"
 >
 <BaseLayout />
 </Demo>
