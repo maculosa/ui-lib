@@ -12,3 +12,4 @@ export * from "./ProText";
 export * from "./QueryFilter";
 export * from "./Watermark";
 export * from "./ProLayout";
+export * from './Actions';

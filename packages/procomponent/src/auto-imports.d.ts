@@ -6,6 +6,8 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const Actions: typeof import('./components/Actions/index')['Actions']
+  const ActionsPlugin: typeof import('./components/Actions/index')['ActionsPlugin']
   const DrawerForm: typeof import('./components/DrawerForm/index')['DrawerForm']
   const DrawerFormPlugin: typeof import('./components/DrawerForm/index')['DrawerFormPlugin']
   const EffectScope: typeof import('vue')['EffectScope']
@@ -118,6 +120,8 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
+    readonly Actions: UnwrapRef<typeof import('./components/Actions/index')['Actions']>
+    readonly ActionsPlugin: UnwrapRef<typeof import('./components/Actions/index')['ActionsPlugin']>
     readonly DrawerForm: UnwrapRef<typeof import('./components/DrawerForm/index')['DrawerForm']>
     readonly DrawerFormPlugin: UnwrapRef<typeof import('./components/DrawerForm/index')['DrawerFormPlugin']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>

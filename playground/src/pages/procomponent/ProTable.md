@@ -172,6 +172,14 @@ const handleQuery = (params) => {
 <ToolbarSlotDemo />
 </Demo>
 
+<Demo
+    title="操作按钮模式"
+    desc="在表格行中添加操作按钮，如编辑、删除等，点击按钮时触发相应事件。"
+    :raw="ActionsDemoRaw"
+>
+<ActionsDemo />
+</Demo>
+
 
 <div class="table-responsive">
 
