@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@import './markdown.css';
+@import 'highlight.js/styles/atom-one-dark.css';
+
+html {
+    scroll-behavior: smooth;
+}
+
+html,
+body,
+#app {
+    min-height: 100svh;
+    margin: 0;
+    padding: 0;
+}
+
+html.dark {
+    background: #121212;
+    color-scheme: dark;
+}

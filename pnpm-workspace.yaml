@@ -4,5 +4,5 @@ packages:
   - packages/hooks
   - packages/draw
   - packages/blocks
-  - playground
-  - docs
+  - apps/playground
+  - apps/docs
