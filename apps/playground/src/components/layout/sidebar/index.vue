@@ -34,7 +34,7 @@ watchEffect(() => {
           <RouterLink
             v-for="(child, childIndex) in item.children"
             :key="childIndex"
-            class="link text-zinc-200! block py-2"
+            class="link text-zinc-800 dark:text-zinc-200 block py-2"
             :class="{ active: activePath === child.url }"
             :to="child.url"
           >
@@ -199,10 +199,9 @@ watchEffect(() => {
   display: block;
 }
 
-a {
+/* a {
   font-weight: 500;
   text-decoration: inherit;
-  /* @apply text-dark dark:text-white/60; */
   color: #333;
-}
+} */
 </style>
