@@ -2,7 +2,15 @@
 import { ProList } from '@banmao/procomponent'
 import { computed, ref } from 'vue'
 
-const dataSource = ref([
+interface RowType {
+  id: number
+  name: string
+  age: number
+  gender: string
+  address: string
+}
+
+const dataSource = ref<RowType[]>([
   {
     id: 1,
     name: '张三',
@@ -45,10 +53,10 @@ function handleChangePageSize(pageSize: number) {
 // }
 
 const rowKey = computed(() => {
-  return (row: any) => row.id
+  return (row: RowType) => row.id
 })
 
-function renderCell(row: any) {
+function renderCell(row: RowType) {
   return (
     <div class="flex gap-4">
       <div>{row.id}</div>

@@ -13,7 +13,13 @@ import {
   NRadioButton,
 } from 'naive-ui'
 
-const data = ref<any[]>([])
+interface DataItem {
+  name: string
+  value: number
+  phone: number
+}
+
+const data = ref<DataItem[]>([])
 const loading = ref<boolean>(false)
 
 const originData = [
@@ -54,7 +60,7 @@ const originData = [
   },
 ].sort((a, b) => a.value - b.value)
 
-function fetchData(): Promise<any[]> {
+function fetchData(): Promise<DataItem[]> {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve(originData)
