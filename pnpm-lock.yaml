@@ -142,7 +142,7 @@ importers:
         specifier: ^2.41.0
         version: 2.43.2(vue@3.5.26(typescript@5.9.3))
       tailwind-merge:
-        specifier: ^3.3.0
+        specifier: ^3.4.0
         version: 3.4.0
       vue:
         specifier: ^3.5.14
@@ -160,9 +160,6 @@ importers:
       '@shikijs/markdown-it':
         specifier: ^3.4.2
         version: 3.21.0(markdown-it-async@2.2.0)
-      '@tailwindcss/postcss':
-        specifier: ^4.1.18
-        version: 4.1.18
       '@tailwindcss/vite':
         specifier: ^4.1.7
         version: 4.1.18(vite@6.4.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.2)(sass@1.97.2)(terser@5.46.0)(yaml@2.8.2))
@@ -250,9 +247,6 @@ importers:
       shiki:
         specifier: ^3.4.2
         version: 3.21.0
-      tailwindcss:
-        specifier: ^4.1.7
-        version: 4.1.18
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
