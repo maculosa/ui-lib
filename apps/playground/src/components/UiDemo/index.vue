@@ -9,7 +9,6 @@ const props = defineProps<{
 }>()
 
 const activeTab = ref('preview')
-// const showCode = ref(false)
 
 const formattedCode = computed(() => {
   return props.raw.trim()
@@ -17,11 +16,11 @@ const formattedCode = computed(() => {
 </script>
 
 <template>
-  <NCard class="demo-card">
+  <NCard class="demo-card my-4">
     <template #header>
       <div class="demo-card-header">
-        <h3>{{ title }}</h3>
-        <p v-if="description">{{ description }}</p>
+        <h3 class="m-0 text-base">{{ title }}</h3>
+        <p v-if="description" class="mt-2 text-sm text-zinc-600">{{ description }}</p>
       </div>
     </template>
 
@@ -39,17 +38,5 @@ const formattedCode = computed(() => {
 <style scoped>
 .demo-card {
   margin: 16px 0;
-}
-
-.demo-card-header {
-  h3 {
-    margin: 0;
-    font-size: 16px;
-  }
-  p {
-    margin: 8px 0 0;
-    font-size: 14px;
-    color: #666;
-  }
 }
 </style>
