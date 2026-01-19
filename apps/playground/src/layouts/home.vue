@@ -3,21 +3,16 @@ import Header from './header/index.vue'
 </script>
 
 <template>
-  <div class="home-layout">
+  <div class="home-layout w-full min-h-screen">
     <Header />
 
-    <main class="home-layout-main">
+    <main class="home-layout-main box-border min-w-[320px]">
       <router-view />
     </main>
   </div>
 </template>
 
 <style scoped>
-.home-layout {
-  width: 100%;
-  min-height: 100vh;
-}
-
 .home-layout-header {
   position: fixed;
   top: 0;
