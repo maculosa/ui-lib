@@ -57,35 +57,27 @@ const navItems = ref([
         </svg>
       </div>
     </div>
-    <Transition name="fade" mode="out-in">
+    <Transition
+      enter-active-class="transition-all duration-300 ease"
+      leave-active-class="transition-all duration-300 ease"
+      enter-from-class="opacity-0 -translate-y-2.5"
+      leave-to-class="opacity-0 -translate-y-2.5"
+    >
       <div
-        class="absolute top-16 left-0 z-999 shadow-zinc-900 w-full bg-transparent backdrop-blur-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] p-4 rounded-md shadow-md hidden max-lg:block"
         v-show="isShowNav"
+        class="absolute top-16 left-0 z-50 w-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-lg shadow-lg rounded-md p-4 hidden max-lg:block"
       >
         <ul class="flex flex-col gap-4">
           <li
             v-for="item in navItems"
             :key="item.title"
-            class="hover:bg-zinc-600 p-2 rounded-md"
+            class="hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-md cursor-pointer transition-colors"
             @click="handleNavClick(item)"
           >
-            <span>{{ item.title }}</span>
+            <span class="text-zinc-700 dark:text-zinc-300">{{ item.title }}</span>
           </li>
         </ul>
       </div>
     </Transition>
   </header>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-</style>
