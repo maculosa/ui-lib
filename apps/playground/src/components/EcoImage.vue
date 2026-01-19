@@ -7,11 +7,10 @@ const props = defineProps<{
   alt?: string
 }>()
 
-const imgRef = ref<HTMLImageElement>()
+const imgRef = ref<HTMLElement | null>(null)
 const isLoaded = ref(false)
 const isInView = ref(false)
 
-// 使用 Intersection Observer 实现懒加载
 onMounted(() => {
   if (!imgRef.value) return
 
@@ -20,9 +19,8 @@ onMounted(() => {
     ([{ isIntersecting }]) => {
       if (isIntersecting) {
         isInView.value = true
-        if (imgRef.value) {
-          imgRef.value.src = props.src
-        }
+        const target = imgRef.value as unknown as { src: string }
+        target.src = props.src
         stop()
       }
     },
@@ -35,19 +33,10 @@ onMounted(() => {
   <img
     ref="imgRef"
     :alt="alt"
-    class="eco-image"
-    :class="{ loaded: isLoaded }"
+    class="eco-image opacity-0 transition-opacity duration-300"
+    :class="{ 'opacity-100': isLoaded }"
     @load="isLoaded = true"
   />
 </template>
 
-<style scoped>
-.eco-image {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
 
-.eco-image.loaded {
-  opacity: 1;
-}
-</style>
