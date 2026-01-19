@@ -137,6 +137,9 @@ export default defineConfig({
           // add any other imports you were relying on
           "vue-router/auto": ["useLink"],
         },
+        {
+          "@/utils/cn": ["cn"],
+        },
       ],
       dts: "types/auto-imports.d.ts",
     }),
