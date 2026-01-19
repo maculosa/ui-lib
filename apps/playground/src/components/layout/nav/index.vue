@@ -1,12 +1,11 @@
 <template>
-  <nav class="nav">
+  <nav class="nav flex justify-end items-center gap-8">
     <router-link
       v-for="item in navItems"
       :key="item.url"
       :to="item.url"
-      :class="{
-        active: isActive(item.url),
-      }"
+      class="text-zinc-700 dark:text-zinc-300 no-underline cursor-pointer transition-all duration-300 hover:shadow-[0px_0px_2px_rgba(51,51,51,0.2)]"
+      :class="{ 'text-primary font-medium': isActive(item.url) }"
     >
       {{ item.name }}
     </router-link>
@@ -29,36 +28,13 @@ function isActive(path: string) {
   }
 }
 </script>
-<style lang="scss" scoped>
-.nav {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 32px;
 
-  a {
-    color: #333;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s;
-
-    &:hover {
-      text-shadow: 0px 0px 2px #33333333;
-    }
-
-    &.active {
-      color: #409eff;
-    }
-  }
+<style scoped>
+.dark .nav a {
+  color: #eee;
 }
 
-.dark .nav {
-  a {
-    color: #eee;
-
-    &.active {
-      color: #409eff;
-    }
-  }
+.dark .nav a.active {
+  color: #409eff;
 }
 </style>
