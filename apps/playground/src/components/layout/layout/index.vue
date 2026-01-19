@@ -5,7 +5,7 @@ const isDark = inject('isDark', ref(false))
 </script>
 
 <template>
-  <div class="layout-container" :class="{ dark: isDark }">
+  <div class="relative w-full min-h-screen overflow-hidden" :class="{ dark: isDark }">
     <div class="fluid-background">
       <div class="fluid-blob"></div>
       <div class="fluid-blob"></div>
@@ -19,14 +19,6 @@ const isDark = inject('isDark', ref(false))
 </template>
 
 <style scoped>
-.layout-container {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  overflow: hidden;
-  /* background: #ffffff; */
-}
-
 .fluid-background {
   position: fixed;
   width: 100%;
