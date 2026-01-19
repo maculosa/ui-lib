@@ -1,11 +1,11 @@
 <template>
   <div
-    class="my-[40px] rounded-[8px] overflow-hidden bg-transparent backdrop-blur-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] b-zinc-300/40 dark:b-gray/40 b-[1px] b-solid"
+    class="my-10 rounded-lg overflow-hidden bg-transparent backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] border border-zinc-300/40 dark:border-gray/40 border-solid"
   >
-    <div class="demo-header dark:b-b-primary/20 bg-white/60 dark:bg-zinc-900/40">
+    <div class="demo-header flex justify-between items-center p-3 px-6 box-border dark:border-b-primary/20 bg-white/60 dark:bg-zinc-900/40">
       <div class="flex flex-col gap-1">
         <h3 class="text-[20px]! font-bold dark:text-zinc-100" :id="title">{{ title }}</h3>
-        <span v-if="desc" class="text-[16px] text-zinc-600 dark:text-zinc-300">{{ desc }}</span>
+        <span v-if="desc" class="text-base text-zinc-600 dark:text-zinc-300">{{ desc }}</span>
       </div>
       <div class="demo-header-right">
         <n-tooltip trigger="hover">
@@ -53,13 +53,3 @@ const props = defineProps<DemoProps>()
 const { title, desc, raw, url } = toRefs(props)
 const [visible, toggle] = useToggle(false)
 </script>
-
-<style scoped lang="scss">
-.demo-header {
-  padding: 12px 24px;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-</style>
