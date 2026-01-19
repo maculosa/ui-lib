@@ -3,6 +3,47 @@
 @import './markdown.css';
 @import 'highlight.js/styles/atom-one-dark.css';
 
+@custom-variant dark (&:is(.dark *));
+
+:root {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.4;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    /* background-color: rgba(255, 255, 255, 0.87);
+    color: #3a3a3c; */
+
+    /* iOS 风格系统颜色定义 - 亮色模式 */
+    --color-background: #f7faf7;
+    --color-background-secondary: #ffffff;
+    --color-background-tertiary: #edf7ed;
+    --color-foreground: #1d3d1d;
+    --color-foreground-secondary: #446644;
+    --color-foreground-tertiary: #6b8b6b;
+    --color-accent: #84cc16; /* lime-500 */
+    --color-accent-secondary: #a3d84d; /* lighter lime */
+    --color-success: #22c55e;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+    --color-overlay: #00000020;
+    --color-shadow: #00000014;
+    --color-card: #ffffff;
+    --color-card-secondary: #f5fdf5;
+    --color-input: #ffffff;
+    --color-input-border: #c7e5c7;
+    --color-divider: #c7e5c7;
+    --color-selected: #84cc1614;
+    --color-hover: #84cc1608;
+    --color-active: #84cc1614;
+    --color-surface: #ffffff;
+    --color-surface-secondary: #f5fdf5;
+    --color-surface-tertiary: #edf7ed;
+    --color-fill: #e0f0e0;
+    --color-fill-secondary: #d1e8d1;
+    --color-fill-tertiary: #c2e0c2;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -15,7 +56,83 @@ body,
     padding: 0;
 }
 
-html.dark {
-    background: #121212;
-    color-scheme: dark;
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+}
+
+.dark {
+    /* iOS 风格系统颜色定义 - 暗色模式 */
+    --color-background: #27272a;
+    --color-background-secondary: #112811;
+    --color-background-tertiary: #1a351a;
+    --color-foreground: #f0fdf4;
+    --color-foreground-secondary: #dcfce7;
+    --color-foreground-tertiary: #86efac;
+    --color-accent: #a3f74d; /* lighter lime for dark mode */
+    --color-accent-secondary: #bef264; /* even lighter lime */
+    --color-success: #4ade80;
+    --color-warning: #fbbf24;
+    --color-danger: #f87171;
+    --color-overlay: #00000060;
+    --color-shadow: #00000030;
+    --color-card: #112811;
+    --color-card-secondary: #1a351a;
+    --color-input: #1a351a;
+    --color-input-border: #3a6a3a;
+    --color-divider: #2d5a2d;
+    --color-selected: #a3f74d20;
+    --color-hover: #a3f74d10;
+    --color-active: #a3f74d20;
+    --color-surface: #112811;
+    --color-surface-secondary: #1a351a;
+    --color-surface-tertiary: #24432420;
+    --color-fill: #244324;
+    --color-fill-secondary: #2d5a2d;
+    --color-fill-tertiary: #1a351a20;
+}
+
+@theme inline {
+    /* iOS 风格系统颜色 - 暗色模式 */
+    --color-background: #0a1f0a;
+    --color-background-secondary: #112811;
+    --color-background-tertiary: #1a351a;
+    --color-foreground: #f0fdf4;
+    --color-foreground-secondary: #dcfce7;
+    --color-foreground-tertiary: #86efac;
+    --color-accent: #a3f74d; /* lighter lime for dark mode */
+    --color-accent-secondary: #bef264; /* even lighter lime */
+    --color-success: #4ade80;
+    --color-warning: #fbbf24;
+    --color-danger: #f87171;
+    --color-overlay: #00000060;
+    --color-shadow: #00000030;
+    --color-card: #112811;
+    --color-card-secondary: #1a351a;
+    --color-input: #1a351a;
+    --color-input-border: #3a6a3a;
+    --color-divider: #2d5a2d;
+    --color-selected: #a3f74d20;
+    --color-hover: #a3f74d10;
+    --color-active: #a3f74d20;
+    --color-surface: #112811;
+    --color-surface-secondary: #1a351a;
+    --color-surface-tertiary: #244324;
+    --color-fill: #244324;
+    --color-fill-secondary: #2d5a2d;
+    --color-fill-tertiary: #1a351a;
+    
+    /* 映射到标准颜色名称 */
+    --primary: var(--color-accent);
+    --primary-foreground: #ffffff;
+    --secondary: var(--color-foreground-secondary);
+    --secondary-foreground: #ffffff;
+    --muted: var(--color-background-tertiary);
+    --muted-foreground: var(--color-foreground-tertiary);
+    --accent: var(--color-accent);
+    --accent-foreground: #ffffff;
+    --destructive: var(--color-danger);
+    --destructive-foreground: #ffffff;
 }

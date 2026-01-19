@@ -41,14 +41,10 @@ export default defineConfig({
       markdownItOptions: {
         highlight: (str, lang) => {
           if (lang && hljs.getLanguage(lang)) {
-            try {
               return `<pre><code class="hljs">${
                 hljs.highlight(str, { language: lang, ignoreIllegals: true })
                   .value
               }</code></pre>`;
-            } catch (_e) {
-              // 忽略高亮失败的情况
-            }
           } else if (lang === "vue") {
             return `<pre><code class="hljs">${
               hljs.highlight(str, { language: "xml", ignoreIllegals: true })
@@ -136,9 +132,6 @@ export default defineConfig({
         {
           // add any other imports you were relying on
           "vue-router/auto": ["useLink"],
-        },
-        {
-          "@/utils/cn": ["cn"],
         },
       ],
       dts: "types/auto-imports.d.ts",

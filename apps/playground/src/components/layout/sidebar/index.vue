@@ -27,7 +27,7 @@ watchEffect(() => {
     <div class="sidebar-groups p-0">
       <template v-for="(item, index) in sidebarItems" :key="index">
         <section v-if="item.children" class="sidebar-group mb-6">
-          <p class="font-semibold text-zinc-600 dark:text-zinc-400 text-sm mb-2 leading-6">
+          <p class="font-semibold text-foreground text-sm mb-2 leading-6">
             {{ item.name }}
           </p>
           <RouterLink
@@ -36,12 +36,12 @@ watchEffect(() => {
             class="relative block my-2 py-2.5 px-4 text-sm leading-6 rounded-lg transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"
             :class="[
               activePath === child.url
-                ? 'text-primary bg-blue-50 dark:bg-blue-900/20 translate-x-0'
-                : 'text-zinc-800 dark:text-zinc-200 hover:translate-x-1'
+                ? 'text-primary bg-accent translate-x-0'
+                : 'text-foreground hover:translate-x-1'
             ]"
             :to="child.url"
           >
-            <span class="transition-colors duration-300" :class="activePath === child.url ? 'text-primary' : ''">
+            <span class="transition-colors duration-300" >
               {{ child.name }}
             </span>
           </RouterLink>
@@ -51,12 +51,12 @@ watchEffect(() => {
           class="relative block my-2 py-2.5 px-4 text-sm leading-6 rounded-lg transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"
           :class="[
             activePath === item.url
-              ? 'text-primary bg-blue-50 dark:bg-blue-900/20 translate-x-0'
+              ? 'text-primary bg-blue-500 dark:bg-blue-500/40 translate-x-0'
               : 'text-zinc-800 dark:text-zinc-200 hover:translate-x-1'
           ]"
           :to="item.url as string"
         >
-          <span class="transition-colors duration-300" :class="activePath === item.url ? 'text-primary' : ''">
+          <span class="transition-colors duration-300" >
             {{ item.name }}
           </span>
         </RouterLink>

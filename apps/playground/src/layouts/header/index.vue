@@ -30,7 +30,7 @@ const navItems = ref([
 ])
 </script>
 <template>
-  <header class="layout-header">
+  <header class="fixed top-0 left-0 right-0 z-50">
     <div class="flex items-center justify-between w-full p-4 backdrop-blur-lg">
       <Logo />
       <div class="flex items-center gap-4 max-lg:hidden">

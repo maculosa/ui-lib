@@ -10,45 +10,45 @@
 
 /* 暗色模式 */
 html.dark .prose pre {
-    background-color: #1e1e1e;
-    border: 1px solid #333;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-divider);
+    box-shadow: 0 2px 8px var(--color-shadow);
 }
 
 html.dark .prose pre code {
     background-color: transparent;
     padding: 0;
-    color: #d4d4d4;
+    color: var(--color-foreground);
 }
 
 html.dark .prose code {
-    background-color: rgba(255, 235, 235, 0.2);
+    background-color: var(--color-fill);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.9em;
-    color: #ff6b6b;
+    color: var(--color-accent);
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
 /* 亮色模式 */
 html:not(.dark) .prose pre {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-divider);
+    box-shadow: 0 2px 8px var(--color-shadow);
 }
 
 html:not(.dark) .prose pre code {
     background-color: transparent;
     padding: 0;
-    color: #2d3748;
+    color: var(--color-foreground);
 }
 
 html:not(.dark) .prose code {
-    background-color: rgba(255, 235, 235, 0.5);
+    background-color: var(--color-fill);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.9em;
-    color: #e53e3e;
+    color: var(--color-accent);
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
@@ -61,7 +61,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* 暗色模式标题 */
 html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark h6 {
-    color: #ffffff;
+    color: var(--color-foreground);
 }
 
 html.dark h1 {
@@ -70,8 +70,8 @@ html.dark h1 {
     padding-left: 32px;
     margin-top: 2rem;
     margin-bottom: 1.5rem;
-    color: #1d77ff;
-    border-bottom: 2px solid #1d77ff;
+    color: var(--color-accent);
+    border-bottom: 2px solid var(--color-accent);
     padding-bottom: 0.5rem;
 }
 
@@ -81,7 +81,7 @@ html.dark h1::before {
     top: 0;
     left: 0;
     font-size: 1.5rem;
-    color: #1d77ff;
+    color: var(--color-accent);
     font-weight: bold;
 }
 
@@ -89,10 +89,10 @@ html.dark h2 {
     font-size: 1.75rem !important;
     margin-top: 2.5rem;
     margin-bottom: 1.25rem;
-    color: #ffffff;
-    border-left: 4px solid #1d77ff;
+    color: var(--color-foreground);
+    border-left: 4px solid var(--color-accent);
     padding-left: 1rem;
-    background-color: rgba(29, 119, 255, 0.1);
+    background-color: var(--color-surface-secondary);
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     border-radius: 0 4px 4px 0;
@@ -102,12 +102,12 @@ html.dark h3 {
     font-size: 1.5rem !important;
     margin-top: 2rem;
     margin-bottom: 1rem;
-    color: #ffffff;
+    color: var(--color-foreground);
 }
 
 /* 亮色模式标题 */
 html:not(.dark) h1, html:not(.dark) h2, html:not(.dark) h3, html:not(.dark) h4, html:not(.dark) h5, html:not(.dark) h6 {
-    color: #1a202c;
+    color: var(--color-foreground);
 }
 
 html:not(.dark) h1 {
@@ -116,8 +116,8 @@ html:not(.dark) h1 {
     padding-left: 32px;
     margin-top: 2rem;
     margin-bottom: 1.5rem;
-    color: #2b6cb0;
-    border-bottom: 2px solid #2b6cb0;
+    color: var(--color-accent);
+    border-bottom: 2px solid var(--color-accent);
     padding-bottom: 0.5rem;
 }
 
@@ -127,7 +127,7 @@ html:not(.dark) h1::before {
     top: 0;
     left: 0;
     font-size: 1.5rem;
-    color: #2b6cb0;
+    color: var(--color-accent);
     font-weight: bold;
 }
 
@@ -135,10 +135,10 @@ html:not(.dark) h2 {
     font-size: 1.75rem !important;
     margin-top: 2.5rem;
     margin-bottom: 1.25rem;
-    color: #1a202c;
-    border-left: 4px solid #2b6cb0;
+    color: var(--color-foreground);
+    border-left: 4px solid var(--color-accent);
     padding-left: 1rem;
-    background-color: rgba(43, 108, 176, 0.1);
+    background-color: var(--color-surface-secondary);
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     border-radius: 0 4px 4px 0;
@@ -148,7 +148,7 @@ html:not(.dark) h3 {
     font-size: 1.5rem !important;
     margin-top: 2rem;
     margin-bottom: 1rem;
-    color: #1a202c;
+    color: var(--color-foreground);
 }
 
 /* 段落样式优化 */
@@ -160,12 +160,12 @@ p {
 
 /* 暗色模式段落 */
 html.dark p {
-    color: #e0e0e0;
+    color: var(--color-foreground-secondary);
 }
 
 /* 亮色模式段落 */
 html:not(.dark) p {
-    color: #4a5568;
+    color: var(--color-foreground-secondary);
 }
 
 /* 列表样式优化 */
@@ -178,13 +178,13 @@ html:not(.dark) p {
 /* 暗色模式列表 */
 html.dark .markdown-body ul,
 html.dark .markdown-body ol {
-    color: #e0e0e0;
+    color: var(--color-foreground-secondary);
 }
 
 /* 亮色模式列表 */
 html:not(.dark) .markdown-body ul,
 html:not(.dark) .markdown-body ol {
-    color: #4a5568;
+    color: var(--color-foreground-secondary);
 }
 
 .markdown-body li {
@@ -194,13 +194,13 @@ html:not(.dark) .markdown-body ol {
 
 /* 暗色模式列表标记 */
 html.dark .markdown-body li::marker {
-    color: #1d77ff;
+    color: var(--color-accent);
     font-weight: bold;
 }
 
 /* 亮色模式列表标记 */
 html:not(.dark) .markdown-body li::marker {
-    color: #2b6cb0;
+    color: var(--color-accent);
     font-weight: bold;
 }
 
@@ -220,70 +220,72 @@ html:not(.dark) .markdown-body li::marker {
 
 /* 暗色模式表格 */
 html.dark .table-responsive table {
-    border: 1px solid #333;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--color-divider);
+    box-shadow: 0 2px 8px var(--color-shadow);
 }
 
 html.dark .table-responsive table thead {
-    background-color: rgba(29, 119, 255, 0.2);
-    border-bottom: 2px solid #1d77ff;
+    /* background-color: var(--color-surface-secondary); */
+    border-bottom: 2px solid var(--color-accent);
 }
 
 html.dark .table-responsive table th,
 html.dark .table-responsive table td {
-    border: 1px solid #333;
-    color: #e0e0e0;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-divider);
+    color: var(--color-foreground-secondary);
 }
 
 html.dark .table-responsive table th {
-    color: #ffffff;
-    background-color: rgba(29, 119, 255, 0.3);
+    color: var(--color-foreground);
+    /* background-color: var(--color-surface-tertiary); */
 }
 
 html.dark .table-responsive table tr:hover {
-    background-color: rgba(29, 119, 255, 0.1);
+    background-color: var(--color-hover);
 }
 
 html.dark .table-responsive table td code {
     font-size: 0.85rem;
-    background-color: rgba(255, 235, 235, 0.2);
+    background-color: var(--color-fill);
     padding: 2px 6px;
     border-radius: 4px;
-    color: #ff6b6b;
+    color: var(--color-accent);
 }
 
 /* 亮色模式表格 */
 html:not(.dark) .table-responsive table {
-    border: 1px solid #cbd5e0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--color-divider);
+    box-shadow: 0 2px 8px var(--color-shadow);
 }
 
 html:not(.dark) .table-responsive table thead {
-    background-color: rgba(43, 108, 176, 0.2);
-    border-bottom: 2px solid #2b6cb0;
+    background-color: var(--color-surface-secondary);
+    border-bottom: 2px solid var(--color-accent);
 }
 
 html:not(.dark) .table-responsive table th,
 html:not(.dark) .table-responsive table td {
-    border: 1px solid #e2e8f0;
-    color: #4a5568;
+    padding: 1rem 2rem;
+    border: 1px solid var(--color-divider);
+    color: var(--color-foreground-secondary);
 }
 
 html:not(.dark) .table-responsive table th {
-    color: #1a202c;
-    background-color: rgba(43, 108, 176, 0.1);
+    color: var(--color-foreground);
+    /* background-color: var(--color-surface-tertiary); */
 }
 
 html:not(.dark) .table-responsive table tr:hover {
-    background-color: rgba(43, 108, 176, 0.05);
+    background-color: var(--color-hover);
 }
 
 html:not(.dark) .table-responsive table td code {
     font-size: 0.85rem;
-    background-color: rgba(255, 235, 235, 0.5);
+    background-color: var(--color-fill);
     padding: 2px 6px;
     border-radius: 4px;
-    color: #e53e3e;
+    color: var(--color-accent);
 }
 
 /* 链接样式优化 */
@@ -295,16 +297,16 @@ html:not(.dark) .table-responsive table td code {
 
 /* 暗色模式链接 */
 html.dark .markdown-body a {
-    color: #1d77ff;
+    color: var(--color-accent);
 }
 
 html.dark .markdown-body a:hover {
-    color: #4096ff;
+    color: var(--color-accent-secondary);
     text-decoration: underline;
 }
 
 html.dark .table-responsive table a {
-    color: #1d77ff;
+    color: var(--color-accent);
     text-decoration: none;
 }
 
@@ -317,16 +319,16 @@ html.dark .table-responsive table a::before {
 
 /* 亮色模式链接 */
 html:not(.dark) .markdown-body a {
-    color: #2b6cb0;
+    color: var(--color-accent);
 }
 
 html:not(.dark) .markdown-body a:hover {
-    color: #2c5282;
+    color: var(--color-accent-secondary);
     text-decoration: underline;
 }
 
 html:not(.dark) .table-responsive table a {
-    color: #2b6cb0;
+    color: var(--color-accent);
     text-decoration: none;
 }
 
@@ -345,14 +347,15 @@ html:not(.dark) .table-responsive table a::before {
 
 /* 暗色模式整体 */
 html.dark .markdown-body {
-    color: #e0e0e0;
-    background-color: #1a1a1a;
+    color: var(--color-foreground-secondary);
+    /* background-color: var(--color-background-secondary); */
+    background-color: var(--color-background);
 }
 
 /* 亮色模式整体 */
 html:not(.dark) .markdown-body {
-    color: #4a5568;
-    background-color: #ffffff;
+    color: var(--color-foreground-secondary);
+    background-color: var(--color-background-secondary);
 }
 
 /* 特性列表样式优化 */
@@ -372,7 +375,7 @@ html.dark .markdown-body ul.feature-list li::before {
     content: "✨";
     position: absolute;
     left: 0;
-    color: #1d77ff;
+    color: var(--color-accent);
 }
 
 /* 亮色模式特性列表 */
@@ -380,7 +383,7 @@ html:not(.dark) .markdown-body ul.feature-list li::before {
     content: "✨";
     position: absolute;
     left: 0;
-    color: #2b6cb0;
+    color: var(--color-accent);
 }
 
 /* 引用块样式优化 */
@@ -395,9 +398,9 @@ html:not(.dark) .markdown-body ul.feature-list li::before {
 
 /* 暗色模式引用块 */
 html.dark .markdown-body blockquote {
-    background-color: rgba(209, 227, 255, 0.1);
-    border-left-color: #ff771d;
-    color: #e0e0e0;
+    background-color: var(--color-surface-secondary);
+    border-left-color: var(--color-warning);
+    color: var(--color-foreground-secondary);
 }
 
 html.dark .markdown-body blockquote p {
@@ -405,19 +408,19 @@ html.dark .markdown-body blockquote p {
 }
 
 html.dark .markdown-body p code {
-    background-color: rgba(255, 235, 235, 0.2);
+    background-color: var(--color-fill);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.9em;
-    color: #ff6b6b;
+    color: var(--color-accent);
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
 /* 亮色模式引用块 */
 html:not(.dark) .markdown-body blockquote {
-    background-color: rgba(209, 227, 255, 0.2);
-    border-left-color: #d69e2e;
-    color: #4a5568;
+    background-color: var(--color-surface-secondary);
+    border-left-color: var(--color-warning);
+    color: var(--color-foreground-secondary);
 }
 
 html:not(.dark) .markdown-body blockquote p {
@@ -425,11 +428,11 @@ html:not(.dark) .markdown-body blockquote p {
 }
 
 html:not(.dark) .markdown-body p code {
-    background-color: rgba(255, 235, 235, 0.5);
+    background-color: var(--color-fill-tertiary);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.9em;
-    color: #e53e3e;
+    color: var(--color-accent);
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
@@ -442,14 +445,14 @@ html:not(.dark) .markdown-body p code {
 
 /* 暗色模式快速上手 */
 html.dark .quick-start {
-    background-color: rgba(29, 119, 255, 0.1);
-    border: 1px solid rgba(29, 119, 255, 0.3);
+    background-color: var(--color-surface-secondary);
+    border: 1px solid var(--color-divider);
 }
 
 /* 亮色模式快速上手 */
 html:not(.dark) .quick-start {
-    background-color: rgba(43, 108, 176, 0.1);
-    border: 1px solid rgba(43, 108, 176, 0.2);
+    background-color: var(--color-surface-secondary);
+    border: 1px solid var(--color-divider);
 }
 
 /* 安装命令样式优化 */
@@ -468,12 +471,12 @@ html:not(.dark) .quick-start {
 
 /* 暗色模式安装命令 */
 html.dark .install-commands code {
-    background-color: rgba(0, 0, 0, 0.3);
-    border: 1px solid #333;
+    background-color: var(--color-surface-tertiary);
+    border: 1px solid var(--color-divider);
 }
 
 /* 亮色模式安装命令 */
 html:not(.dark) .install-commands code {
-    background-color: rgba(226, 232, 240, 0.5);
-    border: 1px solid #cbd5e0;
+    background-color: var(--color-surface-tertiary);
+    border: 1px solid var(--color-divider);
 }

@@ -6,12 +6,12 @@ const isDark = inject('isDark', ref(false))
 
 <template>
   <div class="relative w-full min-h-screen overflow-hidden" :class="{ dark: isDark }">
-    <div class="fluid-background">
+    <!-- <div class="fluid-background">
       <div class="fluid-blob"></div>
       <div class="fluid-blob"></div>
       <div class="fluid-blob"></div>
       <div class="fluid-blob"></div>
-    </div>
+    </div> -->
     <div class="content">
       <slot />
     </div>

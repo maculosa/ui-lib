@@ -4,7 +4,7 @@
       v-for="item in navItems"
       :key="item.url"
       :to="item.url"
-      class="text-zinc-700 dark:text-zinc-300 no-underline cursor-pointer transition-all duration-300 hover:shadow-[0px_0px_2px_rgba(51,51,51,0.2)]"
+      class="text-foreground no-underline cursor-pointer transition-all duration-300 hover:shadow-[0px_0px_2px_rgba(51,51,51,0.2)]"
       :class="{ 'text-primary font-medium': isActive(item.url) }"
     >
       {{ item.name }}
@@ -28,13 +28,3 @@ function isActive(path: string) {
   }
 }
 </script>
-
-<style scoped>
-.dark .nav a {
-  color: #eee;
-}
-
-.dark .nav a.active {
-  color: #409eff;
-}
-</style>
