@@ -4,5 +4,6 @@ packages:
   - packages/hooks
   - packages/draw
   - packages/blocks
+  - packages/ui
   - apps/playground
   - apps/docs

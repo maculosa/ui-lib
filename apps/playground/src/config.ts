@@ -200,6 +200,31 @@ function getBlocksSidebar() {
   ]
 }
 
+function getUISidebar() {
+  return [
+    {
+      name: 'Overview',
+      url: '/ui/overview',
+    },
+    {
+      name: 'Components',
+      url: '/ui/components',
+      children: [
+        {
+          name: 'Button',
+          url: '/ui/button',
+        },
+        {
+          name: 'Input',
+          url: '/ui/input',
+        },
+      ],
+    },
+  ]
+}
+
+
+
 export const config: Config = {
   navItems: [
     {
@@ -214,6 +239,10 @@ export const config: Config = {
       name: 'Component',
       url: '/procomponent',
       mode: 'dev',
+    },
+    {
+      name: 'UI',
+      url: '/ui',
     },
     {
       name: 'Blocks',
@@ -234,6 +263,10 @@ export const config: Config = {
       items: getComponentSidebar(),
     },
     {
+      name: 'UI',
+      items: getUISidebar(),
+    },
+    {
       name: 'Data V',
       items: getDataVSidebar(),
     },
@@ -248,6 +281,7 @@ function getSidebars(): Record<string, SidebarItem[]> {
   return {
     '/docs/': getDocsSidebar(),
     '/procomponent/': getComponentSidebar(),
+    '/ui/': getUISidebar(),
     '/datav/': getDataVSidebar(),
     '/blocks/': getBlocksSidebar(),
   }

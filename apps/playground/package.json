@@ -15,6 +15,7 @@
   "dependencies": {
     "@banmao/datav": "workspace:^",
     "@banmao/procomponent": "workspace:^",
+    "@banmao/ui": "workspace:^",
     "@highlightjs/vue-plugin": "^2.1.0",
     "@iconify/vue": "^5.0.0",
     "@unhead/vue": "^2.0.9",

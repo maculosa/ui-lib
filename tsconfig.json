@@ -8,6 +8,7 @@
             "@banmao/datav": ["packages/datav/*"],
             "@banmao/draw": ["packages/draw/*"],
             "@banmao/hooks": ["packages/hooks/*"],
+            "@banmao/ui": ["packages/ui/*"],
             "@banmao/procomponent": ["packages/procomponent/*"],
         },
         "types": ["naive-ui/volar"]
