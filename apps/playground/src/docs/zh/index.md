@@ -1,3 +1,7 @@
+---
+name: 文档
+---
+
 <route lang="yaml">
   meta:
     layout: docs

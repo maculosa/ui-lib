@@ -22,7 +22,15 @@ watchEffect(() => {
 
 <template>
   <aside
-    class="sidebar fixed top-20 bottom-4 left-4 w-80 bg-transparent px-8 py-12 overflow-y-auto -translate-0 transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-40 hover:shadow-[0px_6px_4px_0_rgba(0,0,0,0.3)] dark:text-white/80"
+    class="
+    sidebar fixed top-20 bottom-4 left-4 w-80
+    bg-white/10
+      backdrop-blur-sm
+    px-8 py-12 overflow-auto
+    translate-0 transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-40 
+      shadow-lg shadow-lime-300
+      rounded-lg
+    "
   >
     <div class="sidebar-groups p-0">
       <template v-for="(item, index) in sidebarItems" :key="index">
@@ -36,8 +44,8 @@ watchEffect(() => {
             class="relative block my-2 py-2.5 px-4 text-sm leading-6 rounded-lg transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"
             :class="[
               activePath === child.url
-                ? 'text-primary bg-accent translate-x-0'
-                : 'text-foreground hover:translate-x-1'
+                ? 'text-primary bg-accent/30 translate-x-0'
+                : 'text-primary hover:translate-x-1'
             ]"
             :to="child.url"
           >
@@ -51,8 +59,8 @@ watchEffect(() => {
           class="relative block my-2 py-2.5 px-4 text-sm leading-6 rounded-lg transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)]"
           :class="[
             activePath === item.url
-              ? 'text-primary bg-blue-500 dark:bg-blue-500/40 translate-x-0'
-              : 'text-zinc-800 dark:text-zinc-200 hover:translate-x-1'
+              ? 'text-primary bg-accent/30 translate-x-0'
+              : 'text-primary hover:translate-x-1'
           ]"
           :to="item.url as string"
         >

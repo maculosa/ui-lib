@@ -82,10 +82,6 @@ function getComponentSidebar(): SidebarItem[] {
           url: '/procomponent/LightFilter',
         },
         {
-          name: 'ProText',
-          url: '/procomponent/ProText',
-        },
-        {
           name: 'LoginFormPage',
           url: '/procomponent/LoginFormPage',
         },
