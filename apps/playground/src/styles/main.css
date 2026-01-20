@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import './markdown.css';
+@import './typography.css';
 @import 'highlight.js/styles/atom-one-dark.css';
 
 @custom-variant dark (&:is(.dark *));
@@ -64,6 +65,8 @@ body,
 
 @theme inline {
     --color-accent: var(--color-primary);
+    --color-secondary: var(--color-foreground-secondary);
+    --color-background: var(--color-background);
 
     /* 映射到标准颜色名称 */
     --primary: var(--color-accent);

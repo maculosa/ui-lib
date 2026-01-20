@@ -18,7 +18,7 @@ const showTOC = computed(() => route.path.includes('/procomponent/'))
       <div class="w-84 flex relative">
         <Sidebar />
       </div>
-      <main class="layout-main flex-1">
+      <main class="layout-main flex-1 medium-content">
         <router-view />
       </main>
       <div class="w-84 flex relative">

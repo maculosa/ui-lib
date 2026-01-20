@@ -6,7 +6,7 @@ import Header from './header/index.vue'
   <div class="home-layout w-full min-h-screen">
     <Header />
 
-    <main class="home-layout-main box-border min-w-[320px]">
+    <main class="home-layout-main box-border min-w-[320px] medium-content">
       <router-view />
     </main>
   </div>

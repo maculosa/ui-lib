@@ -2,12 +2,11 @@
   <div
     class="my-10 rounded-lg overflow-hidden bg-transparent backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] border border-zinc-300/40 dark:border-gray/40 border-solid"
   >
-    <div class="demo-header flex justify-between items-center p-3 px-6 box-border dark:border-b-primary/20 bg-white/60 dark:bg-zinc-900/40">
+    <div class="flex justify-between items-center p-3 box-border dark:border-b-primary/20 bg-white/60 dark:bg-zinc-900/40">
       <div class="flex flex-col gap-1">
-        <h3 class="text-[20px]! font-bold dark:text-zinc-100" :id="title">{{ title }}</h3>
-        <span v-if="desc" class="text-base text-zinc-600 dark:text-zinc-300">{{ desc }}</span>
+        <h4 class="my-0!" :id="title">{{ title }}</h4>
+        <span v-if="desc" class="text-base text-secondary/20">{{ desc }}</span>
       </div>
-      <div class="demo-header-right">
         <n-tooltip trigger="hover">
           <template #trigger>
             <Icon
@@ -21,10 +20,9 @@
           </template>
           查看代码
         </n-tooltip>
-      </div>
     </div>
 
-    <div v-if="!url" class="p-2 bg-gray/10 dark:bg-dark/10">
+    <div v-if="!url" class="p-2 bg-background">
       <slot />
     </div>
 
