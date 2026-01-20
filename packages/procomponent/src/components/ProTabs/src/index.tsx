@@ -15,7 +15,7 @@ export default defineComponent({
         return () => (
             <div class="relative flex w-full">
                 <div ref="tabsContainerRef" class={tabsContainerClass.value}>
-
+                    {slots.default?.()}
                 </div>
             </div>
         )
