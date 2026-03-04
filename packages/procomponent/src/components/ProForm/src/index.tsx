@@ -447,10 +447,10 @@ export default defineComponent({
     // 重置搜索模型
     const handleResetWithSearchMode = () => {
       if (props.defaultValue && Object.keys(props.defaultValue).length > 0) {
-        console.info('有默认值', props.defaultValue)
+        // console.info('有默认值', props.defaultValue)
         formData.value = { ...createFormData(), ...props.defaultValue }
       } else {
-        console.info('没有默认值')
+        // console.info('没有默认值')
         formData.value = createFormData(true) // 强制创建新表单结构
       }
 
