@@ -135,7 +135,7 @@ export default defineComponent({
           // await loadData(1)
           await props.onQuery?.(searchParams)
           filterData.value = searchParams
-          // emit('reset', searchParams.value)
+          emit('reset')
         }
       } catch (error) {
         console.error('Reset failed:', error)
