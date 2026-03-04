@@ -221,7 +221,6 @@ const queryParams = ref({
 })
 
 async function handleQuery(params: any) {
-  console.error('查询', params)
   fetchTableData()
 }
 
@@ -245,6 +244,10 @@ watchEffect(() => {
 
 const handleExportData = () => {
   console.log('导出数据')
+}
+
+const handleResetSearch = () => {
+  console.log('重置查询')
 }
 </script>
 
@@ -271,5 +274,6 @@ const handleExportData = () => {
     @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"
     @export-data="handleExportData"
+    @reset="handleResetSearch"
   />
 </template>
