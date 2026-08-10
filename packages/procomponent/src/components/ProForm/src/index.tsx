@@ -173,6 +173,7 @@ export default defineComponent({
             getRemoteServerOptions(item.request, item.key)
           }
         })
+        console.log('columns变化', newVal)
       },
       {
         immediate: true,
@@ -180,16 +181,19 @@ export default defineComponent({
       },
     )
 
-    // watch(
-    //   () => props.model,
-    //   (val) => {
-    //     formData.value = createFormData()
-    //   },
-    //   {
-    //     deep: true,
-    //     immediate: true
-    //   }
-    // )
+    watch(
+      () => props.model,
+      (newModel) => {
+        if (!newModel || typeof newModel !== 'object') return
+        
+        Object.keys(newModel).forEach(key => {
+          if (key in formData.value) {
+            formData.value[key] = newModel[key]
+          }
+        })
+      },
+      { deep: true, immediate: true }
+    )
 
     // 通用表单项属性
     const getCommonFieldProps = (item: any, oc: string = '输入') => {
@@ -460,6 +464,9 @@ export default defineComponent({
     ctx.expose({
       reset: handleReset,
       submit: handleSubmit,
+      setFieldValue: (key: string, value: any) => {
+        formData.value[key] = value
+      },
     })
 
     const gridRef = ref()

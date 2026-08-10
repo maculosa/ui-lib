@@ -1,4 +1,4 @@
-import { NButton, NMenu } from "naive-ui";
+import { NButton, NMenu, NScrollbar } from "naive-ui";
 import { proLayoutEmits, proLayoutProps } from "./types";
 import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
@@ -35,9 +35,11 @@ export default defineComponent({
             currentCollapsed.value ? 'w-[64px] bg-zinc-800' : 'w-64 bg-zinc-800',
             'transition-all duration-300 ease-in-out flex flex-col gap-2 min-h-0 overflow-hidden'
           ]}>
-            <div class={[
+            {/* <div class={[
               'flex-1 overflow-auto min-h-0'
-            ]}>
+            ]}> */}
+            <NScrollbar>
+
 
             <NMenu
               collapsed={currentCollapsed.value}
@@ -45,7 +47,8 @@ export default defineComponent({
               collapsedIconSize={22}
               options={props.menus}
             />
-            </div>
+            </NScrollbar>
+            {/* </div> */}
 
             <div class="mt-auto! p-4">
               <NButton
