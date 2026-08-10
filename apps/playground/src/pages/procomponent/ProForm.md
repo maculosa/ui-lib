@@ -21,6 +21,12 @@ ProForm 是一个基于 Form 的高级表单组件，提供了表单布局、表
 
 以下是 ProForm 的代码示例：
 
+<Demo title="级联表单" desc="测试级联表单"
+ :raw="UniLinkChange"
+>
+  <UniLinkChange />
+</Demo>
+
 <Demo title="筛选重置"
 desc="筛选重置"
 :raw="FilterResetRaw">

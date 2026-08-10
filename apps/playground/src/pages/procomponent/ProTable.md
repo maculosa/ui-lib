@@ -192,6 +192,23 @@ desc="在表格行中添加操作按钮，如编辑、删除等，点击按钮�
 
 </Demo>
 
+<Demo
+title="外部交互赋值表格搜索框"
+desc="xxx"
+:raw="StatisticToSearch" >
+<StatisticToSearch />
+</Demo>
+
+
+<Demo
+title="选择组模式"
+desc="xxx"
+:raw="SelectGroupDemoRaw">
+
+<SelectGroupDemo />
+
+</Demo>
+
 <div class="table-responsive">
 
 ## API
@@ -201,7 +218,7 @@ desc="在表格行中添加操作按钮，如编辑、删除等，点击按钮�
 | 属性          | 说明                                           | 类型                                    | 默认值                     | 版本 |
 | ------------- | ---------------------------------------------- | --------------------------------------- | -------------------------- | ---- |
 | simple        | 是否启用简单模式，简单模式下仅显示基础表格     | `boolean`                               | `false`                    |
-| title         | 表格标题，显示在表格顶部                       | `string`                                | 数据列表                 |
+| title         | 表格标题，显示在表格顶部                       | `string`                                | 数据列表                   |
 | columns       | 表格列的配置描述数组                           | [ProTableColumn[]](#columns)            | -                          |
 | dataSource    | 表格数据源                                     | `any[]`                                 | -                          |
 | loading       | 是否显示加载中动画                             | `boolean`                               | `false`                    |
@@ -225,9 +242,9 @@ desc="在表格行中添加操作按钮，如编辑、删除等，点击按钮�
 | size               | 搜索表单的尺寸                   | `large` \| `middle` \| `small` | `middle` |
 | showAdvancedButton | 是否显示高级搜索按钮             | `boolean`                      | `true`   |
 | showResetButton    | 是否显示重置按钮                 | `boolean`                      | `true`   |
-| resetText          | 重置按钮的文字                   | `string`                       | 重置   |
-| submitText         | 提交按钮的文字                   | `string`                       | 提交   |
-| searchText         | 搜索按钮的文字                   | `string`                       | 搜索   |
+| resetText          | 重置按钮的文字                   | `string`                       | 重置     |
+| submitText         | 提交按钮的文字                   | `string`                       | 提交     |
+| searchText         | 搜索按钮的文字                   | `string`                       | 搜索     |
 | sort               | 排序方向                         | `asc` \| `desc`                | -        |
 
 ### ToolbarConfig
@@ -235,20 +252,20 @@ desc="在表格行中添加操作按钮，如编辑、删除等，点击按钮�
 | 属性               | 说明                 | 类型                            | 默认值   |
 | ------------------ | -------------------- | ------------------------------- | -------- |
 | create             | 是否显示新增按钮     | `boolean`                       | `true`   |
-| createLabel        | 新增按钮的文字       | `string`                        | 新增   |
+| createLabel        | 新增按钮的文字       | `string`                        | 新增     |
 | createMode         | 新增按钮的触发模式   | `button` \| `modal` \| `drawer` | `button` |
 | delete             | 是否显示删除按钮     | `boolean`                       | `false`  |
-| deleteLabel        | 删除按钮的文字       | `string`                        | 删除   |
+| deleteLabel        | 删除按钮的文字       | `string`                        | 删除     |
 | export             | 是否显示导出按钮     | `boolean`                       | `false`  |
-| exportLabel        | 导出按钮的文字       | `string`                        | 导出   |
+| exportLabel        | 导出按钮的文字       | `string`                        | 导出     |
 | print              | 是否显示打印按钮     | `boolean`                       | `false`  |
-| printLabel         | 打印按钮的文字       | `string`                        | 打印   |
+| printLabel         | 打印按钮的文字       | `string`                        | 打印     |
 | import             | 是否显示导入按钮     | `boolean`                       | `false`  |
-| importLabel        | 导入按钮的文字       | `string`                        | 导入   |
+| importLabel        | 导入按钮的文字       | `string`                        | 导入     |
 | reload             | 是否显示刷新按钮     | `boolean`                       | `false`  |
-| reloadLabel        | 刷新按钮的文字       | `string`                        | 刷新   |
+| reloadLabel        | 刷新按钮的文字       | `string`                        | 刷新     |
 | density            | 是否显示密度切换按钮 | `boolean`                       | `false`  |
-| densityLabel       | 密度切换按钮的文字   | `string`                        | 密度   |
+| densityLabel       | 密度切换按钮的文字   | `string`                        | 密度     |
 | columnSetting      | 是否显示列设置按钮   | `boolean`                       | `false`  |
 | columnSettingLabel | 列设置按钮的文字     | `string`                        | 列设置   |
 
