@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.7.27
+
+### Patch Changes
+
+- fix: Add setFieldValue and model sync to ProForm
+
 ## 0.7.26
 
 ### Patch Changes
@@ -21,7 +27,6 @@
     在搜索模式下重置表单时，现在会正确传递当前表单值作为 emit 参数。同时优化了默认值的处理逻辑，确保表单结构正确重建。
 
   - feat(ProTable): 添加搜索模型支持并优化导出参数
-
     - 新增 searchModel 属性支持双向绑定
     - 导出数据时传递搜索参数
     - 优化重置功能支持传入参数
@@ -49,7 +54,6 @@
 ### Patch Changes
 
 - perf(ProForm): 优化表单性能，减少不必要的渲染和请求
-
   - 使用 shallowRef 替代 reactive 减少响应式开销
   - 添加 columns 哈希缓存避免重复创建 formData
   - 记录已请求的 key 避免重复请求远程选项
@@ -88,13 +92,11 @@
 
 - update to v0.7.16 release version
 - a72f62f: - fix(procomponent): 修正表格列排序顺序错误
-
   - 将排序逻辑修改为按 order 降序排列
   - 修复了 order 未定义时的排序返回值问题
   - 确保列根据 order 属性正确排序展示
 
   - feat(naiveProvider): 添加 NConfigProvider 支持并定义组件 Props
-
     - 在 NaiveProvider 组件中引入并使用 NConfigProvider 包裹子组件
     - 将组件结构调整为支持 props 传递
     - 新增 types.ts 文件定义 NaiveProviderProps，继承 naive-ui 的 configProviderProps
@@ -108,13 +110,11 @@
 ### Patch Changes
 
 - - fix(procomponent): 修正表格列排序顺序错误
-
     - 将排序逻辑修改为按 order 降序排列
     - 修复了 order 未定义时的排序返回值问题
     - 确保列根据 order 属性正确排序展示
 
   - feat(naiveProvider): 添加 NConfigProvider 支持并定义组件 Props
-
     - 在 NaiveProvider 组件中引入并使用 NConfigProvider 包裹子组件
     - 将组件结构调整为支持 props 传递
     - 新增 types.ts 文件定义 NaiveProviderProps，继承 naive-ui 的 configProviderProps
@@ -285,7 +285,6 @@
 ### Patch Changes
 
 - - Protable:
-
     1. 内置导出和添加按钮
     2. 添加按钮支持 createButtonMode: button, modal, drawer 三种模式
 
