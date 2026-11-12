@@ -74,7 +74,32 @@ export default defineComponent({
     const size = ref<TableSize>('large')
     const searchFormRef = ref<InstanceType<typeof ProForm> | null>(null)
     const searchRef = ref(null)
+    const dataTableCardRef = ref<InstanceType<typeof NCard> | null>(null)
+    // let ro:ResizeObserver | null = null
 
+    const dataTableCardSize = ref({ width: 0, height: 0 })
+
+    watch(() => dataTableCardRef.value, (val) => {
+      const root = val?.$el as HTMLElement | undefined
+      if (!root) return
+
+      dataTableCardSize.value = {
+        width: root.offsetWidth,
+        height: root.offsetHeight
+      }
+    }, {
+      immediate: true
+    })
+
+    const flexHeightStyles = computed(() => {
+      if (props.autoFlex) {
+        return {
+          flex: 1
+        }
+      } else {
+        return ''
+      }
+    })
     /**
      * 加载数据
      * @param page 页码
@@ -169,13 +194,18 @@ export default defineComponent({
           loading={props.loading}
           pagination={props.pagination}
           renderCell={renderEmptyCell}
+          flexHeight={props.autoFlex}
+          style={{
+            // height: `${dataTableHeight}px`
+            height: `${dataTableCardSize.value.height - 90}px`
+          }}
         />
       )
 
       if (props.simple !== false) return OriginDataTable
 
       return (
-        <NFlex vertical>
+        <NFlex vertical style={flexHeightStyles.value}>
           {props.search !== false && (
             <NCard ref={searchRef}>
               <ProForm
@@ -196,7 +226,11 @@ export default defineComponent({
 
           {slots['summary']?.()}
 
-          <NCard title={props.title}>
+          <NCard
+              title={props.title}
+              style={flexHeightStyles.value}
+              ref={dataTableCardRef}
+          >
             {{
               'header-extra': () => (
                 <Toolbar

@@ -169,7 +169,13 @@ export const proTableProps = {
   request: {
     type: Function as PropType<(params: { pageSize: number, current: number }, sort: Record<string, any>, filter: Record<string, any>) => Promise<void>>,
   },
-
+  /** 适配 Flex 布局中的高度填充 */
+  autoFlex: {
+    type: Boolean
+  },
+  dataTableStyle: {
+    type: String || Object as PropType<HtmlHTMLAttributes['style']>
+  },
   // TODO 1.该配置不生效
   /** 
    * 表格高度
