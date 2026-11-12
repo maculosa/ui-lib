@@ -9,3 +9,21 @@
     background-color: #f0f0f0;
   }
 }
+
+.column-setting-panel {
+  min-width: 180px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 8px 8px;
+    border-bottom: 1px solid var(--n-border-color, #efeff5);
+  }
+
+  &__body {
+    max-height: 360px;
+    overflow-y: auto;
+    padding-top: 4px;
+  }
+}

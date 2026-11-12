@@ -16,6 +16,7 @@ export default defineComponent({
 
     const {
       columnSetting,
+      columnSettingKey,
       columnSettingLabel,
       create,
       createLabel,
@@ -189,6 +190,7 @@ export default defineComponent({
             (columnSetting !== false) && (
               <ColumnSetting
                 label={columnSettingLabel || false}
+                storageKey={columnSettingKey}
                 v-model:columns={settingColumns.value}
               />
             )

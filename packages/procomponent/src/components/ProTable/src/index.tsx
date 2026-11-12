@@ -19,9 +19,9 @@ export default defineComponent({
   emits: proTableEmits,
   setup(props, { emit, expose, slots }) {
     const message = useMessage()
+    const excludeKeys = ['title', 'columns', 'searchConfig', 'toolbarConfig', 'toolbar', 'search', 'columnStorageKey']
     const tableProps = computed(() => {
       const p = { ...props }
-      const excludeKeys = ['title', 'columns', 'searchConfig', 'toolbarConfig', 'toolbar', 'search']
       excludeKeys.forEach(key => {
         if (key in p) {
           delete (p as Record<string, unknown>)[key]
@@ -63,10 +63,20 @@ export default defineComponent({
 
     provide('settingColumns', settingColumns)
 
+    // 未配置 columnStorageKey 时的托底 key:每个组件实例生成一次并保持稳定,
+    // 保证列设置仍可缓存;注意随机 key 刷新后会变化,偏好无法跨刷新复用,仅作兜底
+    const fallbackColumnSettingKey = `auto-${Math.random().toString(36).slice(2, 10)}`
+    if (Boolean((import.meta as any).env?.DEV) && !props.columnStorageKey) {
+      console.warn(
+        `[ProTable] 未配置 columnStorageKey,列设置将使用随机 key "${fallbackColumnSettingKey}" 缓存,刷新后偏好不会保留。`,
+      )
+    }
+
     const toolbarCfg = computed(() => {
       return {
         ...props.toolbarConfig,
         ...props.toolbar,
+        columnSettingKey: props.columnStorageKey || fallbackColumnSettingKey
       }
     })
 
@@ -114,7 +124,7 @@ export default defineComponent({
      */
     async function handleRefresh() {
       if (isRefreshing.value) return
-      
+
       isRefreshing.value = true
       try {
         await loadData(1)

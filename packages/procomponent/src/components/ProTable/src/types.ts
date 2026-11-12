@@ -1,4 +1,4 @@
-import type { PropType, ExtractPropTypes } from 'vue'
+import type { PropType, ExtractPropTypes, HtmlHTMLAttributes } from 'vue'
 import type { ProTableColumn } from 'naive-ui'
 import { dataTableProps } from 'naive-ui'
 
@@ -14,7 +14,7 @@ export const proTableEmits = {
 
 export type ProTableEmits = ExtractPropTypes<typeof proTableEmits>
 
-/** 
+/**
  * 表格搜索配置
  * @interface SearchConfig
  */
@@ -51,7 +51,7 @@ export interface SearchConfig {
   searchText?: string
 }
 
-/** 
+/**
  * 表格工具栏配置
  * @interface ToolbarConfig
  */
@@ -88,9 +88,10 @@ export interface ToolbarConfig {
   columnSetting?: boolean
   /** 表格列设置按钮文本 */
   columnSettingLabel?: string
+  columnSettingKey?: string
 }
 
-/** 
+/**
  * ProTable 组件 Props 定义
  * @const proTableProps
  */
@@ -101,7 +102,7 @@ export const proTableProps = {
     type: String,
     default: '数据列表',
   },
-  /** 
+  /**
    * 表格列配置
    * @type {ProTableColumn[]}
    */
@@ -114,7 +115,7 @@ export const proTableProps = {
     type: Boolean,
     default: false,
   },
-  /** 
+  /**
    * 搜索表单配置
    * @type {false | undefined | SearchConfig}
    */
@@ -122,7 +123,11 @@ export const proTableProps = {
     type: [Boolean, Object] as PropType<false | undefined | SearchConfig>,
     default: undefined,
   },
-  /** 
+  columnStorageKey: {
+    type: String as PropType<string>,
+    default: ''
+  },
+  /**
    * 工具栏配置
    * @type {ToolbarConfig}
    * @deprecated 该配置项将在 v0.8.0 移除，请使用 toolbar 代替
@@ -143,14 +148,14 @@ export const proTableProps = {
       createMode: 'button',
     }),
   },
-  /** 
+  /**
    * 用于 request 查询的额外参数，一旦变化会触发重新加载
    * @type {Record<string, any>}
    */
   params: {
     type: Object as PropType<Record<string, any>>,
   },
-  /** 
+  /**
    * 搜索模型
    * @type {Record<string, any>}
    */
@@ -158,7 +163,7 @@ export const proTableProps = {
     type: Object as PropType<Record<string, any>>,
     default: () => ({}),
   },
-  /** 
+  /**
    * 查询回调函数
    * @param {Record<string, any>} params - 查询参数
    * @returns {Promise<void>}
@@ -177,14 +182,14 @@ export const proTableProps = {
     type: String || Object as PropType<HtmlHTMLAttributes['style']>
   },
   // TODO 1.该配置不生效
-  /** 
+  /**
    * 表格高度
    * @type {number}
    */
   height: {
     type: Number,
   },
-  /** 
+  /**
    * 是否为简单模式
    * @type {boolean}
    */
