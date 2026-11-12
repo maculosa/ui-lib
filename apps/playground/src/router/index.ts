@@ -21,6 +21,11 @@ export const router = createRouter({
         },
       ],
     },
+    {
+      path: '/examples',
+      name: 'examples',
+      component: () => import('@/pages/examples/index.vue'),
+    },
     ...setupLayouts(routes),
   ],
 })

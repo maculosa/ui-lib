@@ -227,6 +227,7 @@ desc="xxx"
 | params        | 额外的查询参数，会与搜索表单参数合并           | `object`                                | -                          |
 | onQuery       | 查询回调函数，当搜索或分页变化时触发           | `(params: Record<string, any>) => void` | -                          |
 | height        | 表格高度，设置后表格内容超出高度时会显示滚动条 | `string`                                | -                          |
+| autoFlex      | 弹性表格高度，根据表格容器的高度自动计算 | `string` | - |
 
 ### SearchConfig
 

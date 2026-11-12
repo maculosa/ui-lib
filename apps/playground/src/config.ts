@@ -252,6 +252,10 @@ export const config: Config = {
       name: 'Data V',
       url: '/datav',
     },
+    {
+      name: 'Examples',
+      url: '/examples'
+    },
   ],
   sidebars: [
     {
