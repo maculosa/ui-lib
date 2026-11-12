@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.7.29
+
+### Patch Changes
+
+- 修复 autoFlex 自适应高度与自动计算 scrollX
+
 ## 0.7.28
 
 ### Patch Changes
