@@ -1,3 +1,5 @@
+import type { PropType, VNode } from "vue"
+
 export interface TabOption {
     label: string
     key: string
