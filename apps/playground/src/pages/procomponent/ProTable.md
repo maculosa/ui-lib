@@ -199,7 +199,6 @@ desc="xxx"
 <StatisticToSearch />
 </Demo>
 
-
 <Demo
 title="选择组模式"
 desc="xxx"
@@ -215,19 +214,20 @@ desc="xxx"
 
 ### Props
 
-| 属性          | 说明                                           | 类型                                    | 默认值                     | 版本 |
-| ------------- | ---------------------------------------------- | --------------------------------------- | -------------------------- | ---- |
-| simple        | 是否启用简单模式，简单模式下仅显示基础表格     | `boolean`                               | `false`                    |
-| title         | 表格标题，显示在表格顶部                       | `string`                                | 数据列表                   |
-| columns       | 表格列的配置描述数组                           | [ProTableColumn[]](#columns)            | -                          |
-| dataSource    | 表格数据源                                     | `any[]`                                 | -                          |
-| loading       | 是否显示加载中动画                             | `boolean`                               | `false`                    |
-| search        | 搜索配置，设置为 `false` 时不显示搜索栏        | [SearchConfig](#searchConfig)           | `false`                    |
-| toolbarConfig | 工具栏配置                                     | [ToolbarConfig](#toolbarConfig)         | `{ createMode: 'button' }` |
-| params        | 额外的查询参数，会与搜索表单参数合并           | `object`                                | -                          |
-| onQuery       | 查询回调函数，当搜索或分页变化时触发           | `(params: Record<string, any>) => void` | -                          |
-| height        | 表格高度，设置后表格内容超出高度时会显示滚动条 | `string`                                | -                          |
-| autoFlex      | 弹性表格高度，根据表格容器的高度自动计算 | `string` | - |
+| 属性             | 说明                                               | 类型                                    | 默认值                     | 版本    |
+| ---------------- | -------------------------------------------------- | --------------------------------------- | -------------------------- | ------- |
+| simple           | 是否启用简单模式，简单模式下仅显示基础表格         | `boolean`                               | `false`                    |         |
+| title            | 表格标题，显示在表格顶部                           | `string`                                | 数据列表                   |         |
+| columns          | 表格列的配置描述数组                               | [ProTableColumn[]](#columns)            | -                          |         |
+| dataSource       | 表格数据源                                         | `any[]`                                 | -                          |         |
+| loading          | 是否显示加载中动画                                 | `boolean`                               | `false`                    |         |
+| search           | 搜索配置，设置为 `false` 时不显示搜索栏            | [SearchConfig](#searchConfig)           | `false`                    |         |
+| toolbarConfig    | 工具栏配置                                         | [ToolbarConfig](#toolbarConfig)         | `{ createMode: 'button' }` |         |
+| params           | 额外的查询参数，会与搜索表单参数合并               | `object`                                | -                          |         |
+| onQuery          | 查询回调函数，当搜索或分页变化时触发               | `(params: Record<string, any>) => void` | -                          |         |
+| height           | 表格高度，设置后表格内容超出高度时会显示滚动条     | `string`                                | -                          |         |
+| autoFlex         | 弹性表格高度，根据表格容器的高度自动计算           | `boolean`                               | false                      | 0.7.28  |
+| columnStorageKey | 列设置缓存关键词，要确保唯一，推荐使用 router.name | `string`                                | -                          | v0.7.28 |
 
 ### SearchConfig
 
