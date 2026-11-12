@@ -40,13 +40,13 @@ $shadow-config: (
   $blur: map.get($config, 'blur');
   $spread: map.get($config, 'spread');
   $opacity: map.get($config, 'opacity');
-  
+
   @return 0 #{$y} #{$blur} #{$spread} rgba(0, 0, 0, $opacity);
 }
 
 // 生成阴影类
 @each $size, $config in $shadow-config {
-  $class-name: if($size == 'base', 'shadow', 'shadow-#{$size}');
+  $class-name: if(sass($size == 'base') : 'shadow'; else: 'shadow-#{$size}');
   .#{$class-name} {
     box-shadow: create-shadow($config);
   }
