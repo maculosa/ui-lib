@@ -220,7 +220,7 @@ const queryParams = ref({
   age: 18,
 })
 
-async function handleQuery(params: any) {
+async function handleQuery() {
   fetchTableData()
 }
 

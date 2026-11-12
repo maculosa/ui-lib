@@ -19,7 +19,7 @@ const columns = ref([
       { label: '正常', value: 1 },
       { label: '停用', value: 0 }
     ],
-    render(row) {
+    render() {
       return <NSwitch value="row.state" />
     }
   },
@@ -37,7 +37,7 @@ const columns = ref([
   {
     title: 'Actions',
     key: 'actions',
-    render(row) {
+    render() {
       return (
         <NSpace>
           <NButton>修改</NButton>

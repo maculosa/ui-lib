@@ -287,9 +287,10 @@ const rowKey = computed(() => {
 const queryParams = ref({
   name: '张三',
   age: 18,
+  city: undefined as number | undefined,
 })
 
-async function handleQuery(params: any) {
+async function handleQuery() {
   fetchTableData()
 }
 

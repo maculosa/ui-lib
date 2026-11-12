@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { ProTable } from '@banmao/procomponent'
 import { NButton, NSpace } from 'naive-ui'
-import { computed, reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
 import dayjs from 'dayjs'
 
 async function fetchCityList() {
