@@ -8,7 +8,7 @@ import { computed, defineComponent, provide, ref, watchEffect } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import { ProForm } from '@components/ProForm'
 import { Toolbar } from './components'
-import { renderEmptyCell } from '@/utils/table'
+import { renderEmptyCell, estimateColumnWidth } from '@/utils/table'
 import { useTableColumns } from '@hooks/useTableColumns'
 import { proTableProps, proTableEmits } from './types'
 import './styles/css'
@@ -84,32 +84,70 @@ export default defineComponent({
     const size = ref<TableSize>('large')
     const searchFormRef = ref<InstanceType<typeof ProForm> | null>(null)
     const searchRef = ref(null)
-    const dataTableCardRef = ref<InstanceType<typeof NCard> | null>(null)
-    // let ro:ResizeObserver | null = null
 
-    const dataTableCardSize = ref({ width: 0, height: 0 })
-
-    watch(() => dataTableCardRef.value, (val) => {
-      const root = val?.$el as HTMLElement | undefined
-      if (!root) return
-
-      dataTableCardSize.value = {
-        width: root.offsetWidth,
-        height: root.offsetHeight
-      }
-    }, {
-      immediate: true
-    })
-
+    /**
+     * autoFlex 下表格高度完全交给 flex 布局:
+     * 外层容器定高 -> 卡片 flex:1 且 minHeight:0 -> 内容区撑满 -> 表格 flex:1 填充剩余空间。
+     * 不再用 JS 读取卡片高度回写像素值,避免「表格高度 -> 卡片内容高度 -> 卡片高度」的循环依赖。
+     */
     const flexHeightStyles = computed(() => {
       if (props.autoFlex) {
         return {
-          flex: 1
+          flex: 1,
+          // 不置 0 时会取内容最小高度,导致窗口放大后再缩小无法收缩
+          minHeight: 0
         }
       } else {
         return ''
       }
     })
+
+    /**
+     * autoFlex 时卡片及其内容区共用同一套 flex 布局:
+     * 卡片自身纵向排列,内容区占满表头之外的空间,表格再填充内容区
+     */
+    const cardFlexStyles = computed(() => {
+      if (!props.autoFlex) return undefined
+
+      return {
+        flex: 1,
+        minHeight: 0,
+        display: 'flex',
+        flexDirection: 'column' as const
+      }
+    })
+
+    /** 表格自身样式:autoFlex 时由 flex 撑满卡片内容区 */
+    const dataTableStyle = computed(() => {
+      const baseStyle = (tableProps.value as Record<string, any>).style
+
+      if (!props.autoFlex) return baseStyle
+
+      return {
+        ...baseStyle,
+        flex: 1,
+        minHeight: 0
+      }
+    })
+    /**
+     * 自动计算 scroll-x：
+     * 存在固定列且调用方未显式配置 scrollX 时，按可见列宽度求和自动生成，
+     * 避免列宽总和超出容器宽度时固定列失效，免去手动调试 scroll-x。
+     * 返回 undefined 表示不干预（无固定列或调用方已显式配置）。
+     */
+    const autoScrollX = computed<number | undefined>(() => {
+      // 调用方已显式配置 scrollX 时尊重原值
+      if (props.scrollX !== undefined) return undefined
+      const columns = tableColumns.value as Record<string, any>[]
+      // 无固定列时不存在固定列失效问题，保持 naive-ui 默认行为
+      if (!columns.some(column => column.fixed)) return undefined
+      const totalWidth = columns.reduce(
+        (sum, column) => sum + estimateColumnWidth(column),
+        0,
+      )
+      return totalWidth > 0 ? totalWidth : undefined
+    })
+
     /**
      * 加载数据
      * @param page 页码
@@ -205,10 +243,8 @@ export default defineComponent({
           pagination={props.pagination}
           renderCell={renderEmptyCell}
           flexHeight={props.autoFlex}
-          style={{
-            // height: `${dataTableHeight}px`
-            height: `${dataTableCardSize.value.height - 90}px`
-          }}
+          style={dataTableStyle.value}
+          scrollX={autoScrollX.value ?? props.scrollX}
         />
       )
 
@@ -238,8 +274,8 @@ export default defineComponent({
 
           <NCard
               title={props.title}
-              style={flexHeightStyles.value}
-              ref={dataTableCardRef}
+              style={cardFlexStyles.value ?? flexHeightStyles.value}
+              contentStyle={cardFlexStyles.value}
           >
             {{
               'header-extra': () => (
