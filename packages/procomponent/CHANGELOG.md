@@ -1,5 +1,12 @@
 # @banmao/procomponent
 
+## 0.7.28
+
+### Patch Changes
+
+- 1. 新增列设置持久化存储功能
+  2. 添加自动 Flex 布局高度适配功能
+
 ## 0.7.27
 
 ### Patch Changes
