@@ -189,15 +189,15 @@ export function getPie3D(pieData: Array<any>, internalDiameterRatio: number) {
                 autoRotate: false,
                 // center: [0, 10, 0 ]
             },
-            //后处理特效可以为画面添加高光、景深、环境光遮蔽（SSAO）、调色等效果。可以让整个画面更富有质感。
-            postEffect: {//配置这项会出现锯齿，请自己去查看官方配置有办法解决 
-                enable: true,
+            // 关闭后处理：SSAO/bloom 的渲染目标在容器尺寸变化（含 0 尺寸初始化）时会失效并抛出 WebGL 纹理错误，且自带锯齿；曲面自身光照已足够立体
+            postEffect: {
+                enable: false,
                 bloom: {
-                    enable: true,
+                    enable: false,
                     bloomIntensity: 0.1
                 },
                 SSAO: {
-                    enable: true,
+                    enable: false,
                     quality: 'medium',
                     radius: 2
                 }

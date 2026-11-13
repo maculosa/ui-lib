@@ -27,7 +27,7 @@ export default defineConfig({
       fileName: (format) => format === 'es' ? `index.js` : `index.cjs`
     },
     rollupOptions: {
-      external: ['vue', 'echarts', 'vue-echarts'],
+      external: ['vue', 'vue-echarts', /^echarts/],
       output: {
           globals: {
             vue: 'Vue',
