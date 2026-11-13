@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { Chart } from '@banmao/datav'
+import { t } from '@/locales'
 import {
   NColorPicker,
   NForm,
@@ -63,7 +64,7 @@ type FormType = {
 }
 
 const formData = ref<FormType>({
-  title: '本周销售趋势',
+  title: t('datav.defaultChartTitle'),
   barWidth: 14,
   vertical: false,
   type: 'bar',
@@ -80,10 +81,9 @@ const formData = ref<FormType>({
   <div class="datav-sub">
     <header class="sub-head">
       <p class="bm-mono-label sub-kicker">DATAV · BAR / LINE / SCATTER</p>
-      <h1 class="sub-title">柱状 · 折线 · 散点</h1>
+      <h1 class="sub-title">{{ t('datav.barLineTitle') }}</h1>
       <p class="sub-desc">
-        Chart 是通用直角坐标图表：同一份双系列数据，可在柱状、折线、散点之间切换，支持横向布局、柱宽调节与渐变配色。
-        下方控件即时生效，右侧画布固定亮色纸感底，保证两种站点主题下读数一致。
+        {{ t('datav.barLineDesc') }}
       </p>
     </header>
 
@@ -96,31 +96,31 @@ const formData = ref<FormType>({
 
         <n-form label-placement="top" class="panel-form">
           <n-grid cols="1 s:2" responsive="screen" :x-gap="14" :y-gap="4">
-            <n-form-item-gi label="标题" :span="2">
-              <n-input v-model:value="formData.title" placeholder="图表标题" />
+            <n-form-item-gi :label="t('datav.titleLabel')" :span="2">
+              <n-input v-model:value="formData.title" :placeholder="t('datav.titleInputPlaceholder')" />
             </n-form-item-gi>
 
-            <n-form-item-gi label="图表类型" :span="2">
+            <n-form-item-gi :label="t('datav.chartTypeLabel')" :span="2">
               <n-radio-group v-model:value="formData.type" size="small">
-                <n-radio-button value="bar">柱状</n-radio-button>
-                <n-radio-button value="line">折线</n-radio-button>
-                <n-radio-button value="scatter">散点</n-radio-button>
+                <n-radio-button value="bar">{{ t('datav.typeBar') }}</n-radio-button>
+                <n-radio-button value="line">{{ t('datav.typeLine') }}</n-radio-button>
+                <n-radio-button value="scatter">{{ t('datav.typeScatter') }}</n-radio-button>
               </n-radio-group>
             </n-form-item-gi>
 
-            <n-form-item-gi v-if="formData.type === 'bar'" label="横向布局">
+            <n-form-item-gi v-if="formData.type === 'bar'" :label="t('datav.horizontalLabel')">
               <n-switch v-model:value="formData.vertical" size="small" />
             </n-form-item-gi>
 
-            <n-form-item-gi v-if="formData.type === 'bar'" label="柱宽">
+            <n-form-item-gi v-if="formData.type === 'bar'" :label="t('datav.barWidthShortLabel')">
               <n-slider v-model:value="formData.barWidth" :min="6" :max="48" :step="1" />
             </n-form-item-gi>
 
-            <n-form-item-gi label="渐变配色" :span="2">
+            <n-form-item-gi :label="t('datav.gradientLabel')" :span="2">
               <n-switch v-model:value="formData.isGradient" size="small" />
             </n-form-item-gi>
 
-            <n-form-item-gi v-if="!formData.isGradient" label="系列颜色" :span="2">
+            <n-form-item-gi v-if="!formData.isGradient" :label="t('datav.seriesColorLabel')" :span="2">
               <div class="color-row">
                 <n-color-picker
                   v-model:value="formData.color[0]"
@@ -137,7 +137,7 @@ const formData = ref<FormType>({
               </div>
             </n-form-item-gi>
 
-            <n-form-item-gi v-else label="渐变颜色" :span="2">
+            <n-form-item-gi v-else :label="t('datav.gradientColorLabel')" :span="2">
               <div class="gradient-stack">
                 <div v-for="(_, index) in formData.colors" :key="index" class="color-row">
                   <n-color-picker
@@ -171,7 +171,7 @@ const formData = ref<FormType>({
           <div class="chart-paper">
             <Chart
               :title="{ text: formData.title }"
-              :legend="{ mapData: { value: '销售额', phone: '访问量' } }"
+              :legend="{ mapData: { value: t('datav.seriesSales'), phone: t('datav.seriesVisits') } }"
               triggerType="axis"
               :barWidth="formData.barWidth"
               :xAxis="{ type: formData.vertical && formData.type === 'bar' ? 'value' : 'category' }"
@@ -191,7 +191,7 @@ const formData = ref<FormType>({
           </div>
         </n-spin>
         <p class="stage-note">
-          提示：Chart 内部固定使用 ECharts 亮色主题，画布因此保持纸白底；站点切换暗色时图表读数不受影响。
+          {{ t('datav.barLineStageNote') }}
         </p>
       </section>
     </div>

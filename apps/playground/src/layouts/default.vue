@@ -5,6 +5,7 @@ import Layout from '@/components/layout/layout/index.vue'
 import Header from './header/index.vue'
 import Sidebar from '@/components/layout/sidebar/index.vue'
 import TOC from '@/components/TOC/index.vue'
+import { t } from '@/locales'
 
 const route = useRoute()
 const sidebarOpen = ref(false)
@@ -27,7 +28,7 @@ watch(
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M4 6h16M4 12h10M4 18h14" />
           </svg>
-          本页导航
+          {{ t('common.pageNav') }}
         </button>
       </div>
 
@@ -56,7 +57,7 @@ watch(
 }
 
 .doc-grid {
-  max-width: 1440px;
+  max-width: 1920px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 264px minmax(0, 1fr) 224px;

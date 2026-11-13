@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import Layout from '@/components/layout/layout/index.vue'
 import Header from './header/index.vue'
+import { t } from '@/locales'
 
 const router = useRouter()
 </script>
@@ -29,12 +30,12 @@ const router = useRouter()
         </svg>
         <p class="bm-mono-label notfound-kicker">ROUTE · NOT FOUND</p>
         <h1 class="notfound-code">404<span class="notfound-dot">.</span></h1>
-        <p class="notfound-message">页面不存在或已被移动。检查一下地址，或返回首页继续浏览组件工坊。</p>
+        <p class="notfound-message">{{ t('common.notFoundMessage') }}</p>
         <div class="notfound-actions">
           <button type="button" class="notfound-btn primary" @click="router.push('/')">
-            返回首页
+            {{ t('common.backHome') }}
           </button>
-          <button type="button" class="notfound-btn ghost" @click="router.back()">返回上一页</button>
+          <button type="button" class="notfound-btn ghost" @click="router.back()">{{ t('common.goBack') }}</button>
         </div>
       </div>
       <router-view />

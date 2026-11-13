@@ -1,0 +1,33 @@
+export const zh = {
+  galleryTitle: '区块画廊',
+  galleryDescLead: '开箱即用的页面级区块。每个登录变体都是运行中的真实页面 —— 点击缩略图进入完整交互示例，或阅读',
+  galleryDescLink: 'Login 文档',
+  galleryDescTail: '查看接入方式。',
+  simpleLoginDesc: '极简居中登录卡片，适合工具型产品的第一屏。',
+  backgroundLoginDesc: '全幅背景图 + 居中表单，品牌感更强的登录页。',
+  cardLoginDesc: '左图右卡的分栏布局，支持第三方登录按钮。',
+  slotLoginDesc: '通过默认插槽完全接管表单区域，自由度最高。',
+  twoColumnLoginDesc: '双栏布局：左侧品牌视觉，右侧登录表单。',
+  registerDesc: '注册区块：表单校验、协议勾选与邮箱验证流程。',
+  dashboardDesc: '仪表盘区块：指标卡、图表与列表的组合骨架。',
+  previewTitle: '{name} 预览',
+  openFullExample: '打开完整示例',
+  openFullExampleLabel: '打开 {name} 完整示例',
+}
+
+export const en = {
+  galleryTitle: 'Block gallery',
+  galleryDescLead: 'Ready-to-use page-level blocks. Every login variant is a real running page — click a thumbnail to open the full interactive example, or read the',
+  galleryDescLink: 'Login docs',
+  galleryDescTail: 'to see how to integrate it.',
+  simpleLoginDesc: 'Minimal centered login card, ideal for the first screen of a tool-style product.',
+  backgroundLoginDesc: 'Full-bleed background image with a centered form — a login page with stronger branding.',
+  cardLoginDesc: 'Split layout with artwork on the left and a card on the right, plus third-party login buttons.',
+  slotLoginDesc: 'Take over the entire form area through the default slot for maximum freedom.',
+  twoColumnLoginDesc: 'Two-column layout: brand visuals on the left, login form on the right.',
+  registerDesc: 'Registration block: form validation, terms checkbox and email verification flow.',
+  dashboardDesc: 'Dashboard block: a skeleton combining metric cards, charts and lists.',
+  previewTitle: '{name} preview',
+  openFullExample: 'Open full example',
+  openFullExampleLabel: 'Open the full {name} example',
+}

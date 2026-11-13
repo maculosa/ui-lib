@@ -1,3 +1,6 @@
+import { computed } from 'vue'
+import { locale, t, toLocalePath } from '@/locales'
+
 export interface NavItem {
   name: string
   url: string
@@ -15,124 +18,152 @@ interface Sidebar {
   items: SidebarItem[]
 }
 
-interface Config {
-  navItems: NavItem[]
-  sidebars: Sidebar[]
+interface RawItem {
+  key: string
+  url?: string
+  planned?: boolean
+  /** 由 markdown 承载、存在 /en 镜像译文的页面；Vue 页面同址双语，不镜像。 */
+  mirrored?: boolean
+  children?: RawItem[]
 }
 
-function getDocsSidebar(): SidebarItem[] {
-  return [
-    { name: '概览', url: '/docs/overview' },
-    { name: '中文指南', url: '/docs/zh' },
-    { name: 'English Guide', url: '/docs/en' },
-  ]
-}
+const navRaw: RawItem[] = [
+  { key: 'nav.home', url: '/' },
+  { key: 'nav.docs', url: '/docs/zh', mirrored: true },
+  { key: 'nav.components', url: '/procomponent' },
+  { key: 'nav.charts', url: '/datav' },
+  { key: 'nav.blocks', url: '/blocks' },
+  { key: 'nav.ui', url: '/ui', mirrored: true },
+  { key: 'nav.examples', url: '/examples' },
+]
 
-function getComponentSidebar(): SidebarItem[] {
-  return [
-    { name: '概览', url: '/procomponent/overview' },
-    { name: '组件目录', url: '/procomponent' },
-    {
-      name: '布局',
-      children: [
-        { name: 'ProLayout 布局', url: '/procomponent/ProLayout' },
-        { name: 'ProTabs 选项卡', planned: true },
-        { name: 'Actions 操作组', planned: true },
-      ],
-    },
-    {
-      name: '数据录入',
-      children: [
-        { name: 'ProForm 表单', url: '/procomponent/ProForm' },
-        { name: 'ModalForm 弹窗表单', planned: true },
-        { name: 'DrawerForm 抽屉表单', planned: true },
-        { name: 'StepsForm 分步表单', planned: true },
-        { name: 'QueryFilter 查询过滤', planned: true },
-        { name: 'LiteFilter 轻量筛选', planned: true },
-      ],
-    },
-    {
-      name: '数据展示',
-      children: [
-        { name: 'ProTable 表格', url: '/procomponent/ProTable' },
-        { name: 'ProDescriptions 描述列表', url: '/procomponent/ProDescriptions' },
-        { name: 'ProTree 树形控件', url: '/procomponent/ProTree' },
-        { name: 'ProText 文本', url: '/procomponent/ProText' },
-        { name: 'ProList 列表', planned: true },
-        { name: 'TextClamp 文本截断', planned: true },
-      ],
-    },
-    {
-      name: '通用',
-      children: [
-        { name: 'Watermark 水印', url: '/procomponent/watermark' },
-        { name: 'NaiveProvider 全局配置', url: '/procomponent/naive-provider' },
-        { name: 'Tour 漫游引导', planned: true },
-      ],
-    },
-  ]
-}
+const docsRaw: RawItem[] = [
+  { key: 'sidebar.docsOverview', url: '/docs/overview', mirrored: true },
+  { key: 'sidebar.docsZh', url: '/docs/zh' },
+  { key: 'sidebar.docsEn', url: '/docs/en' },
+]
 
-function getDataVSidebar(): SidebarItem[] {
-  return [
-    { name: '图表工坊', url: '/datav' },
-    {
-      name: '图表组件',
-      children: [
-        { name: 'Chart 通用图表', url: '/datav/bar_line' },
-        { name: 'Pie 饼图', url: '/datav/pie' },
-        { name: 'CircleBar 圆形柱', url: '/datav/circle_bar' },
-        { name: 'CubeBar 立方柱', url: '/datav/cube_bar' },
-      ],
-    },
-  ]
-}
+const proRaw: RawItem[] = [
+  { key: 'sidebar.proOverview', url: '/procomponent/overview', mirrored: true },
+  { key: 'sidebar.proCatalog', url: '/procomponent' },
+  {
+    key: 'sidebar.groupLayout',
+    children: [
+      { key: 'sidebar.proLayout', url: '/procomponent/ProLayout', mirrored: true },
+      { key: 'sidebar.proTabs', planned: true },
+      { key: 'sidebar.actions', planned: true },
+    ],
+  },
+  {
+    key: 'sidebar.groupEntry',
+    children: [
+      { key: 'sidebar.proForm', url: '/procomponent/ProForm', mirrored: true },
+      { key: 'sidebar.modalForm', planned: true },
+      { key: 'sidebar.drawerForm', planned: true },
+      { key: 'sidebar.stepsForm', planned: true },
+      { key: 'sidebar.queryFilter', planned: true },
+      { key: 'sidebar.liteFilter', planned: true },
+    ],
+  },
+  {
+    key: 'sidebar.groupDisplay',
+    children: [
+      { key: 'sidebar.proTable', url: '/procomponent/ProTable', mirrored: true },
+      { key: 'sidebar.proDescriptions', url: '/procomponent/ProDescriptions', mirrored: true },
+      { key: 'sidebar.proTree', url: '/procomponent/ProTree', mirrored: true },
+      { key: 'sidebar.proText', url: '/procomponent/ProText', mirrored: true },
+      { key: 'sidebar.proList', planned: true },
+      { key: 'sidebar.textClamp', planned: true },
+    ],
+  },
+  {
+    key: 'sidebar.groupGeneral',
+    children: [
+      { key: 'sidebar.watermark', url: '/procomponent/watermark', mirrored: true },
+      { key: 'sidebar.naiveProvider', url: '/procomponent/naive-provider', mirrored: true },
+      { key: 'sidebar.tour', planned: true },
+    ],
+  },
+]
 
-function getBlocksSidebar(): SidebarItem[] {
-  return [
-    { name: '概览', url: '/blocks/overview' },
-    { name: '区块画廊', url: '/blocks' },
-    { name: 'Login 登录', url: '/blocks/login' },
-    { name: 'Register 注册', planned: true },
-    { name: 'Dashboard 仪表盘', planned: true },
-  ]
-}
+const datavRaw: RawItem[] = [
+  { key: 'sidebar.datavWorkshop', url: '/datav' },
+  {
+    key: 'sidebar.datavGroup',
+    children: [
+      { key: 'sidebar.datavChart', url: '/datav/bar_line' },
+      { key: 'sidebar.datavPie', url: '/datav/pie' },
+      { key: 'sidebar.datavCircleBar', url: '/datav/circle_bar' },
+      { key: 'sidebar.datavCubeBar', url: '/datav/cube_bar' },
+    ],
+  },
+]
 
-function getUISidebar(): SidebarItem[] {
-  return [
-    { name: 'UI 总览', url: '/ui' },
-  ]
-}
+const blocksRaw: RawItem[] = [
+  { key: 'sidebar.blocksOverview', url: '/blocks/overview', mirrored: true },
+  { key: 'sidebar.blocksGallery', url: '/blocks' },
+  { key: 'sidebar.blocksLogin', url: '/blocks/login', mirrored: true },
+  { key: 'sidebar.blocksRegister', planned: true },
+  { key: 'sidebar.blocksDashboard', planned: true },
+]
 
-export const config: Config = {
-  navItems: [
-    { name: '首页', url: '/' },
-    { name: '文档', url: '/docs/zh' },
-    { name: '组件', url: '/procomponent' },
-    { name: '图表', url: '/datav' },
-    { name: '区块', url: '/blocks' },
-    { name: 'UI', url: '/ui' },
-    { name: '示例', url: '/examples' },
-  ],
-  sidebars: [
-    { name: '文档', items: getDocsSidebar() },
-    { name: 'ProComponent', items: getComponentSidebar() },
-    { name: 'UI', items: getUISidebar() },
-    { name: 'Data V', items: getDataVSidebar() },
-    { name: 'Blocks', items: getBlocksSidebar() },
-  ],
-}
+const uiRaw: RawItem[] = [{ key: 'sidebar.uiOverview', url: '/ui', mirrored: true }]
 
-function getSidebars(): Record<string, SidebarItem[]> {
+function resolveItem(item: RawItem): SidebarItem {
+  const url = item.url
+    ? item.mirrored
+      ? toLocalePath(item.url, locale.value)
+      : item.url
+    : undefined
   return {
-    '/docs/': getDocsSidebar(),
-    '/procomponent/': getComponentSidebar(),
-    '/ui/': getUISidebar(),
-    '/datav/': getDataVSidebar(),
-    '/blocks/': getBlocksSidebar(),
+    name: t(item.key),
+    url,
+    planned: item.planned,
+    children: item.children?.map(resolveItem),
   }
 }
 
-export const sidebar = getSidebars()
+function resolve(items: RawItem[]): SidebarItem[] {
+  return items.map(resolveItem)
+}
 
-export default config
+function collectMirrored(items: RawItem[], into: Set<string>) {
+  for (const item of items) {
+    if (item.mirrored && item.url) into.add(item.url)
+    if (item.children) collectMirrored(item.children, into)
+  }
+}
+
+/** 存在英文镜像的中文规范路径，供语言切换判断是否需要跳转。 */
+export const mirroredPaths = (() => {
+  const set = new Set<string>()
+  for (const items of [navRaw, docsRaw, proRaw, datavRaw, blocksRaw, uiRaw]) {
+    collectMirrored(items, set)
+  }
+  return set
+})()
+
+export const navItems = computed<NavItem[]>(() =>
+  navRaw.map(item => ({
+    name: t(item.key),
+    url: item.mirrored ? toLocalePath(item.url!, locale.value) : item.url!,
+  })),
+)
+
+export const sidebar = computed<Record<string, SidebarItem[]>>(() => ({
+  '/docs/': resolve(docsRaw),
+  '/procomponent/': resolve(proRaw),
+  '/ui/': resolve(uiRaw),
+  '/datav/': resolve(datavRaw),
+  '/blocks/': resolve(blocksRaw),
+}))
+
+export const sidebars = computed<Sidebar[]>(() => [
+  { name: t('nav.docs'), items: resolve(docsRaw) },
+  { name: 'ProComponent', items: resolve(proRaw) },
+  { name: 'UI', items: resolve(uiRaw) },
+  { name: 'Data V', items: resolve(datavRaw) },
+  { name: 'Blocks', items: resolve(blocksRaw) },
+])
+
+export default { navItems, sidebars, sidebar }

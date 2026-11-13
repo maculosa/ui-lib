@@ -2,111 +2,116 @@
 import { ProTable } from '@banmao/procomponent'
 import dayjs from 'dayjs'
 import { NButton, NSpace, NSwitch, useMessage } from 'naive-ui'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import Layout from '@/components/layout/layout/index.vue'
 import Header from '@/layouts/header/index.vue'
+import { locale, t } from '@/locales'
 
 const message = useMessage()
 const route = useRoute()
 
-const columns = ref([
-  {
-    type: 'selection',
-    fixed: 'left',
-  },
-  {
-    type: 'index',
-    fixed: 'left',
-  },
-  {
-    title: 'Plate No',
-    key: 'plate_no',
-    width: 140,
-    valueType: 'text',
-    fixed: 'left',
-  },
-  {
-    title: 'State',
-    key: 'state',
-    width: 80,
-    valueType: 'select',
-    options: [
-      { label: '正常', value: 1 },
-      { label: '停用', value: 0 },
-    ],
-    render(row: any) {
-      return (
-        <NSwitch
-          value={row.state === 1}
-          onUpdate:value={(v: boolean) => {
-            row.state = v ? 1 : 0
-          }}
-        />
-      )
+function createColumns() {
+  return [
+    {
+      type: 'selection',
+      fixed: 'left',
     },
-  },
-  {
-    title: '车架号',
-    key: 'vin_no',
-    valueType: 'text',
-    copyable: true,
-    width: 360,
-  },
-  {
-    title: '车辆类型',
-    key: 'car_type',
-    valueType: 'text',
-  },
-  {
-    title: '车系',
-    key: 'car_series',
-    valueType: 'text',
-  },
-  {
-    title: '司机',
-    key: 'driver',
-    valueType: 'text',
-  },
-  {
-    title: '司机手机号',
-    key: 'driver_phone',
-    hideInTable: true,
-    valueType: 'text',
-  },
-  {
-    title: 'Remark',
-    key: 'remark',
-    hideInSearch: true,
-  },
-  {
-    title: 'Created At',
-    key: 'created_at',
-    hideInSearch: true,
-    width: 180,
-  },
-  {
-    title: 'Actions',
-    key: 'actions',
-    fixed: 'right',
-    width: 148,
-    render(row: any) {
-      return (
-        <NSpace size={8}>
-          <NButton
-            size="small"
-            onClick={() => message.info(`演示操作：修改 ${row.plate_no}`)}
-          >
-            修改
-          </NButton>
-          <NButton size="small" type="error" ghost onClick={() => handleDelete(row)}>
-            删除
-          </NButton>
-        </NSpace>
-      )
+    {
+      type: 'index',
+      fixed: 'left',
     },
-  },
-])
+    {
+      title: 'Plate No',
+      key: 'plate_no',
+      width: 140,
+      valueType: 'text',
+      fixed: 'left',
+    },
+    {
+      title: 'State',
+      key: 'state',
+      width: 80,
+      valueType: 'select',
+      options: [
+        { label: t('examples.stateActive'), value: 1 },
+        { label: t('examples.stateDisabled'), value: 0 },
+      ],
+      render(row: any) {
+        return (
+          <NSwitch
+            value={row.state === 1}
+            onUpdate:value={(v: boolean) => {
+              row.state = v ? 1 : 0
+            }}
+          />
+        )
+      },
+    },
+    {
+      title: t('examples.colVinNo'),
+      key: 'vin_no',
+      valueType: 'text',
+      copyable: true,
+      width: 360,
+    },
+    {
+      title: t('examples.colCarType'),
+      key: 'car_type',
+      valueType: 'text',
+    },
+    {
+      title: t('examples.colCarSeries'),
+      key: 'car_series',
+      valueType: 'text',
+    },
+    {
+      title: t('examples.colDriver'),
+      key: 'driver',
+      valueType: 'text',
+    },
+    {
+      title: t('examples.colDriverPhone'),
+      key: 'driver_phone',
+      hideInTable: true,
+      valueType: 'text',
+    },
+    {
+      title: 'Remark',
+      key: 'remark',
+      hideInSearch: true,
+    },
+    {
+      title: 'Created At',
+      key: 'created_at',
+      hideInSearch: true,
+      width: 180,
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      fixed: 'right',
+      width: 148,
+      render(row: any) {
+        return (
+          <NSpace size={8}>
+            <NButton
+              size="small"
+              onClick={() => message.info(t('examples.demoEditMessage', { plateNo: row.plate_no }))}
+            >
+              {t('examples.edit')}
+            </NButton>
+            <NButton size="small" type="error" ghost onClick={() => handleDelete(row)}>
+              {t('examples.delete')}
+            </NButton>
+          </NSpace>
+        )
+      },
+    },
+  ]
+}
+
+const columns = ref(createColumns())
 
 const dataSource = ref(generatePlateDataSource())
 
@@ -116,10 +121,27 @@ const pagination = ref({
   itemCount: dataSource.value.length,
 })
 
+// 语言切换时原地更新文案：ProTable 在 setup 时已捕获列数组，整体替换会失效；
+// 行数据原地更新则可保留状态开关与已删除的结果。
+watch(locale, () => {
+  createColumns().forEach((column, index) => Object.assign(columns.value[index], column))
+  dataSource.value.forEach(row => Object.assign(row, sampleText(row.id)))
+})
+
 function handleDelete(row: any) {
   dataSource.value = dataSource.value.filter(item => item.id !== row.id)
   pagination.value.itemCount = dataSource.value.length
-  message.success(`已删除 ${row.plate_no}`)
+  message.success(t('examples.deletedMessage', { plateNo: row.plate_no }))
+}
+
+/** 示例行中需要跟随语言切换的文案 */
+function sampleText(index: number) {
+  return {
+    car_type: t('examples.sampleCarType', { index }),
+    car_series: t('examples.sampleCarSeries', { index }),
+    driver: t('examples.sampleDriver', { index }),
+    remark: t('examples.sampleRemark', { index }),
+  }
 }
 
 function generatePlateDataSource() {
@@ -130,11 +152,8 @@ function generatePlateDataSource() {
       plate_no: `鲁Q·${i}43${i}2`,
       state: 1,
       vin_no: `12345678901234567890123456789012`,
-      car_type: `车辆类型${i}`,
-      car_series: `车系${i}`,
-      driver: `司机${i}`,
+      ...sampleText(i),
       driver_phone: `1380000000${i}`,
-      remark: `第${i}辆车`,
       created_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     })
   }
@@ -148,10 +167,9 @@ function generatePlateDataSource() {
     <main class="examples-main">
       <header class="page-head">
         <p class="bm-mono-label page-kicker">PLAYGROUND · LIVE EXAMPLE</p>
-        <h1 class="page-title">在线示例</h1>
+        <h1 class="page-title">{{ t('examples.pageTitle') }}</h1>
         <p class="page-desc">
-          一个完整的 ProTable 远程数据场景：车队管理。搜索表单、列设置持久化、状态开关、复制车架号与行内操作全部真实可用，
-          删除会即时更新数据与分页计数。
+          {{ t('examples.pageDesc') }}
         </p>
       </header>
 
@@ -165,6 +183,7 @@ function generatePlateDataSource() {
         <div class="table-frame-body">
           <ProTable
             remote
+            auto-flex
             :columns="columns"
             :data="dataSource"
             :pagination="pagination"
@@ -230,7 +249,9 @@ function generatePlateDataSource() {
 }
 
 .table-frame-body {
-  height: 560px;
+  display: flex;
+  flex-direction: column;
+  height: 720px;
   padding: 16px;
 }
 
@@ -244,7 +265,7 @@ function generatePlateDataSource() {
   }
 
   .table-frame-body {
-    height: 480px;
+    height: 560px;
     padding: 10px;
   }
 

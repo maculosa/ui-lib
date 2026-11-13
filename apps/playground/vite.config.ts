@@ -19,6 +19,7 @@ import Icons from "unplugin-icons/vite";
 import { FileSystemIconLoader } from "unplugin-icons/loaders";
 import Layouts from "vite-plugin-vue-layouts-next";
 import { markdownComponentImports } from "./build/plugins/markdown-component-imports";
+import { searchIndex } from "./build/plugins/search-index";
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
@@ -30,6 +31,7 @@ export default defineConfig({
   },
   plugins: [
     markdownComponentImports(),
+    searchIndex(),
     vue({
       include: [/\.vue$/, /\.md$/], // <-- allows Vue to compile markdown files
     }),

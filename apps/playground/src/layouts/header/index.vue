@@ -5,7 +5,10 @@ import { useWindowScroll } from '@vueuse/core'
 import Logo from '@/components/layout/logo/index.vue'
 import Nav from '@/components/layout/nav/index.vue'
 import SwitchTheme from '@/components/SwitchTheme.vue'
-import config from '@/config'
+import SwitchLocale from '@/components/SwitchLocale.vue'
+import SearchTrigger from '@/components/SearchTrigger.vue'
+import { navItems } from '@/config'
+import { t } from '@/locales'
 
 const route = useRoute()
 const router = useRouter()
@@ -28,6 +31,11 @@ function handleNavClick(url: string) {
   router.push(url)
   isShowNav.value = false
 }
+
+function isActive(url: string) {
+  if (url === '/' || url === '/en') return route.path === url
+  return route.path.startsWith(url)
+}
 </script>
 
 <template>
@@ -39,14 +47,18 @@ function handleNavClick(url: string) {
         <div class="bm-header-desktop">
           <Nav />
           <span class="bm-header-divider" aria-hidden="true"></span>
+          <SearchTrigger />
+          <SwitchLocale />
           <SwitchTheme />
         </div>
         <div class="bm-header-mobile">
+          <SearchTrigger compact />
+          <SwitchLocale />
           <SwitchTheme />
           <button
             type="button"
             class="bm-menu-btn"
-            :aria-label="isShowNav ? '关闭菜单' : '打开菜单'"
+            :aria-label="isShowNav ? t('common.closeMenu') : t('common.openMenu')"
             :aria-expanded="isShowNav"
             @click="isShowNav = !isShowNav"
           >
@@ -61,13 +73,13 @@ function handleNavClick(url: string) {
 
     <Transition name="bm-drawer">
       <div v-if="isShowNav" class="bm-drawer">
-        <nav class="bm-drawer-nav" aria-label="移动端导航">
+        <nav class="bm-drawer-nav" :aria-label="t('common.mobileNav')">
           <button
-            v-for="(item, index) in config.navItems"
+            v-for="(item, index) in navItems"
             :key="item.url"
             type="button"
             class="bm-drawer-link"
-            :class="{ active: route.path === item.url || (item.url !== '/' && route.path.startsWith(item.url)) }"
+            :class="{ active: isActive(item.url) }"
             @click="handleNavClick(item.url)"
           >
             <span class="bm-drawer-index">{{ String(index + 1).padStart(2, '0') }}</span>
@@ -101,7 +113,7 @@ function handleNavClick(url: string) {
   box-shadow: 0 4px 24px var(--color-shadow);
 }
 .bm-header-inner {
-  max-width: 1440px;
+  max-width: 1920px;
   height: 100%;
   margin: 0 auto;
   padding: 0 24px;

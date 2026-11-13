@@ -5,154 +5,170 @@ meta:
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { locale, t, toLocalePath } from '@/locales'
+
+const categoryKeys = ['all', 'layout', 'entry', 'display', 'general'] as const
+type CategoryKey = (typeof categoryKeys)[number]
 
 interface CatalogItem {
   name: string
-  desc: string
-  category: string
+  descKey: string
+  category: Exclude<CategoryKey, 'all'>
   url?: string
   tags: string[]
 }
 
-const categories = ['全部', '布局', '数据录入', '数据展示', '通用']
-const activeCategory = ref('全部')
-const keyword = ref('')
-
-const items: CatalogItem[] = [
+const catalog: CatalogItem[] = [
   {
     name: 'ProTable',
-    desc: '配置化数据表格：搜索表单、工具栏、列设置、密度切换与自适应高度一体成型。',
-    category: '数据展示',
+    descKey: 'proTable',
+    category: 'display',
     url: '/procomponent/ProTable',
     tags: ['CRUD', 'Schema'],
   },
   {
     name: 'ProForm',
-    desc: '列配置驱动的表单：校验、远程枚举、级联联动与栅格布局开箱即用。',
-    category: '数据录入',
+    descKey: 'proForm',
+    category: 'entry',
     url: '/procomponent/ProForm',
     tags: ['Schema', 'Validate'],
   },
   {
     name: 'ProLayout',
-    desc: '中后台侧边栏布局：菜单、折叠与内容容器统一管理。',
-    category: '布局',
+    descKey: 'proLayout',
+    category: 'layout',
     url: '/procomponent/ProLayout',
     tags: ['Admin', 'Menu'],
   },
   {
     name: 'ProDescriptions',
-    desc: '描述列表：以配置渲染详情字段，支持自定义渲染与布局控制。',
-    category: '数据展示',
+    descKey: 'proDescriptions',
+    category: 'display',
     url: '/procomponent/ProDescriptions',
     tags: ['Detail'],
   },
   {
     name: 'ProTree',
-    desc: '树形控件：勾选、展开与业务数据结构的快速搭建。',
-    category: '数据展示',
+    descKey: 'proTree',
+    category: 'display',
     url: '/procomponent/ProTree',
     tags: ['Tree'],
   },
   {
     name: 'ProText',
-    desc: '业务文本：复制、省略与格式化一行配置搞定。',
-    category: '数据展示',
+    descKey: 'proText',
+    category: 'display',
     url: '/procomponent/ProText',
     tags: ['Copy', 'Ellipsis'],
   },
   {
     name: 'Watermark',
-    desc: '水印：文本水印覆盖局部或全屏，守护敏感页面。',
-    category: '通用',
+    descKey: 'watermark',
+    category: 'general',
     url: '/procomponent/watermark',
     tags: ['Security'],
   },
   {
     name: 'NaiveProvider',
-    desc: '全局配置聚合：message / dialog / notification / loading-bar 一次注入。',
-    category: '通用',
+    descKey: 'naiveProvider',
+    category: 'general',
     url: '/procomponent/naive-provider',
     tags: ['Provider'],
   },
   {
     name: 'ModalForm',
-    desc: '弹窗表单：ProForm 与 Modal 的组合封装，提交即关闭。',
-    category: '数据录入',
+    descKey: 'modalForm',
+    category: 'entry',
     tags: ['Modal', 'Form'],
   },
   {
     name: 'DrawerForm',
-    desc: '抽屉表单：侧滑面板承载复杂表单，保留页面上下文。',
-    category: '数据录入',
+    descKey: 'drawerForm',
+    category: 'entry',
     tags: ['Drawer', 'Form'],
   },
   {
     name: 'StepsForm',
-    desc: '分步表单：把长流程拆成可校验的步骤。',
-    category: '数据录入',
+    descKey: 'stepsForm',
+    category: 'entry',
     tags: ['Steps'],
   },
   {
     name: 'QueryFilter',
-    desc: '查询过滤：声明式筛选表单，折叠布局与远程枚举。',
-    category: '数据录入',
+    descKey: 'queryFilter',
+    category: 'entry',
     tags: ['Filter'],
   },
   {
     name: 'LiteFilter',
-    desc: '轻量筛选：行内快速过滤，适合紧凑工具栏。',
-    category: '数据录入',
+    descKey: 'liteFilter',
+    category: 'entry',
     tags: ['Filter', 'Lite'],
   },
   {
     name: 'LoginForm',
-    desc: '登录表单：多布局模式与可配置 schema。',
-    category: '数据录入',
+    descKey: 'loginForm',
+    category: 'entry',
     tags: ['Auth'],
   },
   {
     name: 'ProList',
-    desc: '分页列表：卡片式数据流与加载更多。',
-    category: '数据展示',
+    descKey: 'proList',
+    category: 'display',
     tags: ['List'],
   },
   {
     name: 'TextClamp',
-    desc: '多行截断文本：展开/收起与复制。',
-    category: '数据展示',
+    descKey: 'textClamp',
+    category: 'display',
     tags: ['Text'],
   },
   {
     name: 'LinkDiagram',
-    desc: '拓扑图：油罐-加油机关系可视化。',
-    category: '数据展示',
+    descKey: 'linkDiagram',
+    category: 'display',
     tags: ['Diagram'],
   },
   {
     name: 'ProTabs',
-    desc: '选项卡容器：页签缓存与路由联动。',
-    category: '布局',
+    descKey: 'proTabs',
+    category: 'layout',
     tags: ['Tabs'],
   },
   {
     name: 'Actions',
-    desc: '可折叠操作按钮组：超出宽度自动收纳。',
-    category: '布局',
+    descKey: 'actions',
+    category: 'layout',
     tags: ['Actions'],
   },
   {
     name: 'Tour',
-    desc: '漫游引导：分步高亮页面元素。',
-    category: '通用',
+    descKey: 'tour',
+    category: 'general',
     tags: ['Guide'],
   },
 ]
 
+const categories = computed(() =>
+  categoryKeys.map(key => ({ key, label: t(`catalog.cat_${key}`) })),
+)
+const activeCategory = ref<CategoryKey>('all')
+const keyword = ref('')
+
+const items = computed(() =>
+  catalog.map(item => ({
+    ...item,
+    desc: t(`catalog.desc_${item.descKey}`),
+    url: item.url ? toLocalePath(item.url, locale.value) : undefined,
+  })),
+)
+
+const canonicalNo = new Map(catalog.map((item, i) => [item.name, String(i + 1).padStart(2, '0')]))
+
 const filtered = computed(() => {
   const kw = keyword.value.trim().toLowerCase()
-  return items.filter(item => {
-    const inCategory = activeCategory.value === '全部' || item.category === activeCategory.value
+  return items.value.filter(item => {
+    const inCategory = activeCategory.value === 'all' || item.category === activeCategory.value
     const inKeyword =
       !kw ||
       item.name.toLowerCase().includes(kw) ||
@@ -162,22 +178,22 @@ const filtered = computed(() => {
   })
 })
 
-const readyCount = items.filter(item => item.url).length
-const plannedCount = items.length - readyCount
+const readyCount = catalog.filter(item => item.url).length
+const plannedCount = catalog.length - readyCount
 </script>
 
 <template>
   <div class="catalog">
     <header class="catalog-head">
       <p class="bm-mono-label catalog-kicker">PROCOMPONENT · CATALOG</p>
-      <h1 class="catalog-title">组件目录</h1>
+      <h1 class="catalog-title">{{ t('catalog.title') }}</h1>
       <p class="catalog-desc">
-        一份配置驱动的中后台组件集。已就绪的组件附带完整文档与可交互示例，规划中的组件正在打磨。
+        {{ t('catalog.desc') }}
       </p>
       <dl class="catalog-stats">
-        <div><dt>{{ readyCount }}</dt><dd>可用组件</dd></div>
-        <div><dt>{{ plannedCount }}</dt><dd>规划中</dd></div>
-        <div><dt>{{ categories.length - 1 }}</dt><dd>分类</dd></div>
+        <div><dt>{{ readyCount }}</dt><dd>{{ t('catalog.statReady') }}</dd></div>
+        <div><dt>{{ plannedCount }}</dt><dd>{{ t('catalog.statPlanned') }}</dd></div>
+        <div><dt>{{ categories.length - 1 }}</dt><dd>{{ t('catalog.statCategories') }}</dd></div>
       </dl>
     </header>
 
@@ -187,19 +203,18 @@ const plannedCount = items.length - readyCount
           <circle cx="11" cy="11" r="6.5" />
           <path d="M20 20l-3.8-3.8" />
         </svg>
-        <input v-model="keyword" type="text" placeholder="搜索组件、能力或标签…" />
+        <input v-model="keyword" type="text" :aria-label="t('catalog.searchAria')" :placeholder="t('catalog.searchPlaceholder')" />
       </label>
-      <div class="catalog-chips" role="tablist" aria-label="按分类筛选">
+      <div class="catalog-chips" role="group" :aria-label="t('catalog.filterAria')">
         <button
           v-for="cat in categories"
-          :key="cat"
+          :key="cat.key"
           type="button"
-          role="tab"
-          :aria-selected="activeCategory === cat"
-          :class="{ 'is-active': activeCategory === cat }"
-          @click="activeCategory = cat"
+          :aria-pressed="activeCategory === cat.key"
+          :class="{ 'is-active': activeCategory === cat.key }"
+          @click="activeCategory = cat.key"
         >
-          {{ cat }}
+          {{ cat.label }}
         </button>
       </div>
     </div>
@@ -215,9 +230,9 @@ const plannedCount = items.length - readyCount
         :style="{ animationDelay: `${Math.min(index, 12) * 0.04}s` }"
       >
         <div class="catalog-card-top">
-          <span class="catalog-card-index bm-mono-label">{{ String(index + 1).padStart(2, '0') }}</span>
+          <span class="catalog-card-index bm-mono-label">{{ canonicalNo.get(item.name) }}</span>
           <span class="catalog-card-status" :class="item.url ? 'is-ready' : 'is-planned'">
-            {{ item.url ? '可用' : '规划中' }}
+            {{ item.url ? t('catalog.statusReady') : t('catalog.statusPlanned') }}
           </span>
         </div>
         <h2 class="catalog-card-name">{{ item.name }}</h2>
@@ -244,7 +259,7 @@ const plannedCount = items.length - readyCount
 
     <div v-else class="catalog-empty">
       <p class="bm-mono-label">NO MATCH</p>
-      <p>没有匹配「{{ keyword }}」的组件，换个关键词试试。</p>
+      <p>{{ t('catalog.empty', { keyword }) }}</p>
     </div>
   </div>
 </template>
@@ -419,11 +434,11 @@ const plannedCount = items.length - readyCount
 }
 .catalog-card-status.is-ready {
   background: color-mix(in srgb, var(--color-success) 14%, transparent);
-  color: var(--color-success);
+  color: color-mix(in srgb, var(--color-success) 62%, var(--color-foreground));
 }
 .catalog-card-status.is-planned {
   background: color-mix(in srgb, var(--color-warning) 14%, transparent);
-  color: var(--color-warning);
+  color: color-mix(in srgb, var(--color-warning) 46%, var(--color-foreground));
 }
 
 .catalog-card-name {

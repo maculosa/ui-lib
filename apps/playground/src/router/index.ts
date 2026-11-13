@@ -6,6 +6,15 @@ import { logger } from '@/utils/log'
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, _from, savedPosition) {
+    if (savedPosition) return savedPosition
+    if (!to.hash) return { top: 0 }
+    // markdown-it-anchor 的 id 经过 encodeURIComponent，而 to.hash 已被解码
+    const el = document.getElementById(encodeURIComponent(to.hash.slice(1)))
+    if (!el) return { top: 0 }
+    el.scrollIntoView()
+    return false
+  },
   routes: [
     {
       path: '/examples/blocks/login',

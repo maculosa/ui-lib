@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import config from '@/config'
+import { navItems } from '@/config'
+import { t } from '@/locales'
 
 const route = useRoute()
-const navItems = config.navItems
 
 function isActive(path: string) {
-  if (path === '/') return route.path === '/'
+  if (path === '/' || path === '/en') return route.path === path
   return route.path.startsWith(path)
 }
 </script>
 
 <template>
-  <nav class="bm-nav" aria-label="主导航">
+  <nav class="bm-nav" :aria-label="t('common.mainNav')">
     <RouterLink
       v-for="item in navItems"
       :key="item.url"

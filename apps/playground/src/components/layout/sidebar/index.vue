@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { sidebar, type SidebarItem } from '@/config'
+import { t, toLocalePath } from '@/locales'
 
 defineProps<{ open?: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -9,9 +10,12 @@ const emit = defineEmits<{ close: [] }>()
 const route = useRoute()
 const keyword = ref('')
 
-const prefixPath = computed(() => `/${route.path.split('/')[1]}/`)
+const prefixPath = computed(() => {
+  const canonical = toLocalePath(route.path, 'zh')
+  return `/${canonical.split('/')[1]}/`
+})
 
-const items = computed<SidebarItem[]>(() => sidebar[prefixPath.value] ?? [])
+const items = computed<SidebarItem[]>(() => sidebar.value[prefixPath.value] ?? [])
 
 function normalize(path: string) {
   return path.replace(/\/+$/, '') || '/'
@@ -48,8 +52,8 @@ const filtered = computed<SidebarItem[]>(() => {
 <template>
   <aside class="bm-sidebar" :class="{ 'is-open': open }">
     <div class="bm-sidebar-head">
-      <p class="bm-mono-label">导航 / MENU</p>
-      <button type="button" class="bm-sidebar-close" aria-label="关闭导航" @click="emit('close')">
+      <p class="bm-mono-label">{{ t('common.sidebarLabel') }}</p>
+      <button type="button" class="bm-sidebar-close" :aria-label="t('common.sidebarClose')" @click="emit('close')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <path d="M6 6l12 12M18 6L6 18" />
         </svg>
@@ -61,7 +65,7 @@ const filtered = computed<SidebarItem[]>(() => {
         <circle cx="11" cy="11" r="6.5" />
         <path d="M20 20l-3.8-3.8" />
       </svg>
-      <input v-model="keyword" type="text" placeholder="筛选条目…" />
+      <input v-model="keyword" type="text" :placeholder="t('common.sidebarFilter')" />
     </label>
 
     <nav class="bm-sidebar-groups">
@@ -71,7 +75,7 @@ const filtered = computed<SidebarItem[]>(() => {
           <template v-for="child in item.children" :key="child.name">
             <span v-if="child.planned" class="bm-sidebar-link is-planned">
               <span class="bm-sidebar-name">{{ child.name }}</span>
-              <em>规划中</em>
+              <em>{{ t('common.planned') }}</em>
             </span>
             <RouterLink
               v-else
@@ -87,7 +91,7 @@ const filtered = computed<SidebarItem[]>(() => {
         <template v-else>
           <span v-if="item.planned" class="bm-sidebar-link is-planned">
             <span class="bm-sidebar-name">{{ item.name }}</span>
-            <em>规划中</em>
+            <em>{{ t('common.planned') }}</em>
           </span>
           <RouterLink
             v-else
@@ -101,7 +105,7 @@ const filtered = computed<SidebarItem[]>(() => {
       </template>
 
       <p v-if="!filtered.length" class="bm-sidebar-empty">
-        没有匹配「{{ keyword }}」的条目
+        {{ t('common.sidebarEmpty', { keyword }) }}
       </p>
     </nav>
   </aside>

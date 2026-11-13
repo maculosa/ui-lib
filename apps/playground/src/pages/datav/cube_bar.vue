@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import { CubeBar } from '@banmao/datav'
+import { computed } from 'vue'
+import { t } from '@/locales'
 
-const data = [
-  { name: '小米', value: 100 },
-  { name: '华为', value: 200 },
-  { name: '苹果', value: 300 },
+const data = computed(() => [
+  { name: t('datav.brandXiaomi'), value: 100 },
+  { name: t('datav.brandHuawei'), value: 200 },
+  { name: t('datav.brandApple'), value: 300 },
   { name: 'OPPO', value: 400 },
   { name: 'vivo', value: 500 },
-]
+])
 </script>
 
 <template>
   <div class="datav-sub">
     <header class="sub-head">
       <p class="bm-mono-label sub-kicker">DATAV · 3D SERIES</p>
-      <h1 class="sub-title">3D 立方柱状图</h1>
+      <h1 class="sub-title">{{ t('datav.cubeBarTitle') }}</h1>
       <p class="sub-desc">
-        CubeBar 通过自定义系列（custom series）的 renderItem 逐面绘制立方体的顶面与侧棱，在 2D 画布上堆叠出立体体量，
-        适合数据大屏与汇报场景。无需 WebGL，渲染轻量；图表内部固定亮色主题，承载于纸感画布之上。
+        {{ t('datav.cubeBarDesc') }}
       </p>
     </header>
 
@@ -36,7 +37,7 @@ const data = [
         />
       </div>
       <figcaption class="chart-note">
-        提示：立方体由自定义系列在 2D 画布上逐面绘制，不依赖 WebGL，兼容性好；调整数据即重新计算各柱体量与透视面。
+        {{ t('datav.cubeBarNote') }}
       </figcaption>
     </figure>
   </div>

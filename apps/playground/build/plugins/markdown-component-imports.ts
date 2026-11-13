@@ -18,7 +18,8 @@ export function markdownComponentImports(): Plugin {
 
       // 优先使用与文档同结构的嵌套示例目录（如 procomponent/watermark、blocks/login），
       // 不存在时回退到扁平目录，避免两处同名示例产生重复导入
-      const relDir = path.relative(pagesDir, mdDir)
+      // en/ 镜像文档复用同一份示例，因此剥掉语言前缀
+      const relDir = path.relative(pagesDir, mdDir).replace(/^en[\\/]/, '')
       const nestedFiles =
         relDir && relDir !== '.' && !relDir.startsWith('..')
           ? glob.sync(`${examplesDir}/${relDir}/${mdName}/**/*.vue`)

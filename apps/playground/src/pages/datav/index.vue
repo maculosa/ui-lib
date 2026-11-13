@@ -7,6 +7,7 @@ meta:
 import { computed, ref } from 'vue'
 import { Chart } from '@banmao/datav'
 import { NColorPicker, NInput, NSlider, useMessage } from 'naive-ui'
+import { t } from '@/locales'
 
 interface DataItem {
   name: string
@@ -28,7 +29,7 @@ const seedData: DataItem[] = [
 
 function initialState() {
   return {
-    title: '本周销售趋势',
+    title: t('datav.defaultChartTitle'),
     type: 'bar' as 'bar' | 'line' | 'scatter',
     vertical: false,
     barWidth: 14,
@@ -69,7 +70,7 @@ const yAxis = computed(() => ({ type: verticalActive.value ? 'category' : 'value
 
 const legend = computed(() => ({
   show: state.value.legend,
-  mapData: { value: '销售额', phone: '访问量' },
+  mapData: { value: t('datav.seriesSales'), phone: t('datav.seriesVisits') },
   top: 8,
   right: 12,
 }))
@@ -84,7 +85,7 @@ const chartTitle = computed(() => ({
 function reset() {
   state.value = initialState()
   data.value = seedData.map(item => ({ ...item }))
-  message.success('已恢复默认参数')
+  message.success(t('datav.resetSuccess'))
 }
 
 function randomize() {
@@ -98,7 +99,7 @@ function randomize() {
 function exportPng() {
   const source = stageRef.value?.querySelector('canvas')
   if (!source) {
-    message.warning('图表尚未渲染完成，请稍后再试')
+    message.warning(t('datav.exportNotReady'))
     return
   }
   const canvas = document.createElement('canvas')
@@ -113,25 +114,24 @@ function exportPng() {
   link.href = canvas.toDataURL('image/png')
   link.download = `${state.value.title || 'chart'}.png`
   link.click()
-  message.success('已导出 PNG 图片')
+  message.success(t('datav.exportSuccess'))
 }
 
-const gallery = [
-  { name: 'Chart 通用图表', desc: '柱状 / 折线 / 散点', url: '/datav/bar_line' },
-  { name: 'Pie 饼图', desc: '环形 / 玫瑰 / 半圆', url: '/datav/pie' },
-  { name: 'CircleBar 圆形柱', desc: '3D 圆柱柱状图', url: '/datav/circle_bar' },
-  { name: 'CubeBar 立方柱', desc: '3D 立方柱状图', url: '/datav/cube_bar' },
-]
+const gallery = computed(() => [
+  { name: t('datav.galleryChartName'), desc: t('datav.galleryChartDesc'), url: '/datav/bar_line' },
+  { name: t('datav.galleryPieName'), desc: t('datav.galleryPieDesc'), url: '/datav/pie' },
+  { name: t('datav.galleryCircleBarName'), desc: t('datav.galleryCircleBarDesc'), url: '/datav/circle_bar' },
+  { name: t('datav.galleryCubeBarName'), desc: t('datav.galleryCubeBarDesc'), url: '/datav/cube_bar' },
+])
 </script>
 
 <template>
   <div class="workshop">
     <header class="workshop-head">
       <p class="bm-mono-label workshop-kicker">DATA V · CHART WORKSHOP</p>
-      <h1 class="workshop-title">图表工坊</h1>
+      <h1 class="workshop-title">{{ t('datav.workshopTitle') }}</h1>
       <p class="workshop-desc">
-        左侧控制台实时驱动右侧真实 Chart 组件：改类型、调柱宽、换配色，每一次拖动都即时生效。
-        调出满意的组合后，一键导出 PNG。
+        {{ t('datav.workshopDesc') }}
       </p>
     </header>
 
@@ -139,34 +139,34 @@ const gallery = [
       <!-- 常驻控制台 -->
       <aside class="panel bm-corner-marks">
         <div class="panel-head">
-          <p class="bm-mono-label">CONTROL DECK · 控制台</p>
+          <p class="bm-mono-label">{{ t('datav.controlDeck') }}</p>
           <span class="panel-live bm-mono-label"><i class="bm-blink" />LIVE</span>
         </div>
 
         <div class="panel-field">
-          <label class="panel-label" for="chart-title">图表标题</label>
-          <NInput id="chart-title" v-model:value="state.title" size="small" placeholder="输入标题" />
+          <label class="panel-label" for="chart-title">{{ t('datav.chartTitleLabel') }}</label>
+          <NInput id="chart-title" v-model:value="state.title" size="small" :placeholder="t('datav.titlePlaceholder')" />
         </div>
 
         <div class="panel-field">
-          <span class="panel-label">图表类型</span>
-          <div class="segment" role="radiogroup" aria-label="图表类型">
+          <span class="panel-label">{{ t('datav.chartTypeLabel') }}</span>
+          <div class="segment" role="radiogroup" :aria-label="t('datav.chartTypeLabel')">
             <button
-              v-for="t in (['bar', 'line', 'scatter'] as const)"
-              :key="t"
+              v-for="kind in (['bar', 'line', 'scatter'] as const)"
+              :key="kind"
               type="button"
               role="radio"
-              :aria-checked="state.type === t"
-              :class="{ 'is-active': state.type === t }"
-              @click="state.type = t"
+              :aria-checked="state.type === kind"
+              :class="{ 'is-active': state.type === kind }"
+              @click="state.type = kind"
             >
-              {{ t === 'bar' ? '柱状' : t === 'line' ? '折线' : '散点' }}
+              {{ kind === 'bar' ? t('datav.typeBar') : kind === 'line' ? t('datav.typeLine') : t('datav.typeScatter') }}
             </button>
           </div>
         </div>
 
         <div v-if="state.type === 'bar'" class="panel-field panel-row">
-          <span class="panel-label">垂直布局</span>
+          <span class="panel-label">{{ t('datav.verticalLabel') }}</span>
           <button
             type="button"
             class="toggle"
@@ -181,13 +181,13 @@ const gallery = [
 
         <div v-if="state.type === 'bar'" class="panel-field">
           <label class="panel-label" for="chart-bar-width">
-            柱体宽度 <em class="panel-value">{{ state.barWidth }}px</em>
+            {{ t('datav.barWidthLabel') }} <em class="panel-value">{{ state.barWidth }}px</em>
           </label>
           <NSlider id="chart-bar-width" v-model:value="state.barWidth" :min="6" :max="48" :step="1" />
         </div>
 
         <div class="panel-field panel-row">
-          <span class="panel-label">渐变配色</span>
+          <span class="panel-label">{{ t('datav.gradientLabel') }}</span>
           <button
             type="button"
             class="toggle"
@@ -201,7 +201,7 @@ const gallery = [
         </div>
 
         <div class="panel-field panel-row">
-          <span class="panel-label">显示图例</span>
+          <span class="panel-label">{{ t('datav.legendLabel') }}</span>
           <button
             type="button"
             class="toggle"
@@ -215,7 +215,7 @@ const gallery = [
         </div>
 
         <div class="panel-field">
-          <span class="panel-label">系列 A · 销售额</span>
+          <span class="panel-label">{{ t('datav.seriesALabel', { name: t('datav.seriesSales') }) }}</span>
           <div v-if="state.gradient" class="color-pair">
             <NColorPicker v-model:value="state.gradA1" size="small" :show-alpha="false" :modes="['hex']" />
             <NColorPicker v-model:value="state.gradA2" size="small" :show-alpha="false" :modes="['hex']" />
@@ -224,7 +224,7 @@ const gallery = [
         </div>
 
         <div class="panel-field">
-          <span class="panel-label">系列 B · 访问量</span>
+          <span class="panel-label">{{ t('datav.seriesBLabel', { name: t('datav.seriesVisits') }) }}</span>
           <div v-if="state.gradient" class="color-pair">
             <NColorPicker v-model:value="state.gradB1" size="small" :show-alpha="false" :modes="['hex']" />
             <NColorPicker v-model:value="state.gradB2" size="small" :show-alpha="false" :modes="['hex']" />
@@ -237,7 +237,7 @@ const gallery = [
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" />
             </svg>
-            重置
+            {{ t('datav.reset') }}
           </button>
           <button type="button" class="panel-btn" @click="randomize">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -247,13 +247,13 @@ const gallery = [
               <circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" />
               <circle cx="8.5" cy="15.5" r="1.2" fill="currentColor" />
             </svg>
-            随机数据
+            {{ t('datav.randomize') }}
           </button>
           <button type="button" class="panel-btn is-primary" @click="exportPng">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 3v12M7 10l5 5 5-5M4 21h16" />
             </svg>
-            导出 PNG
+            {{ t('datav.exportPng') }}
           </button>
         </div>
       </aside>
@@ -278,13 +278,13 @@ const gallery = [
             :data="data"
           />
         </div>
-        <p class="stage-note bm-mono-label">图表始终以纸面亮色渲染，导出即所得。</p>
+        <p class="stage-note bm-mono-label">{{ t('datav.stageNote') }}</p>
       </div>
     </div>
 
     <!-- 更多图表 -->
     <section class="more">
-      <p class="bm-mono-label more-kicker">MORE CHARTS · 更多图表</p>
+      <p class="bm-mono-label more-kicker">{{ t('datav.moreCharts') }}</p>
       <div class="more-grid">
         <RouterLink v-for="item in gallery" :key="item.url" :to="item.url" class="more-card">
           <div>

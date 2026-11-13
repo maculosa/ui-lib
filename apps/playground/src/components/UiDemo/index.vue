@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import CodePreview from '@/components/CodePreview/index.vue'
+import { t } from '@/locales'
 
 const props = defineProps<{
   title: string
@@ -19,7 +20,7 @@ const code = computed(() => props.raw.trim())
         <h3 class="bm-ui-demo-title">{{ title }}</h3>
         <p v-if="description" class="bm-ui-demo-desc">{{ description }}</p>
       </div>
-      <div class="bm-ui-demo-tabs" role="tablist" aria-label="预览与代码切换">
+      <div class="bm-ui-demo-tabs" role="tablist" :aria-label="t('common.previewCodeTabs')">
         <button
           type="button"
           role="tab"
@@ -27,7 +28,7 @@ const code = computed(() => props.raw.trim())
           :class="{ 'is-active': tab === 'preview' }"
           @click="tab = 'preview'"
         >
-          预览
+          {{ t('common.preview') }}
         </button>
         <button
           type="button"
@@ -36,7 +37,7 @@ const code = computed(() => props.raw.trim())
           :class="{ 'is-active': tab === 'code' }"
           @click="tab = 'code'"
         >
-          代码
+          {{ t('common.code') }}
         </button>
       </div>
     </header>

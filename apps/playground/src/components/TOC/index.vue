@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { t } from '@/locales'
 
 interface TocItem {
   id: string
@@ -100,8 +101,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <nav v-if="items.length" class="bm-toc" aria-label="本页目录">
-    <p class="bm-mono-label bm-toc-title">本页目录 / ON THIS PAGE</p>
+  <nav v-if="items.length" class="bm-toc" :aria-label="t('common.tocTitle')">
+    <p class="bm-mono-label bm-toc-title">{{ t('common.tocHeading') }}</p>
     <ul class="bm-toc-list">
       <li
         v-for="item in items"

@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { t } from '@/locales'
+
 withDefaults(defineProps<{ compact?: boolean }>(), { compact: false })
 </script>
 
 <template>
-  <RouterLink to="/" class="bm-logo" aria-label="Banmao UI 首页">
+  <RouterLink to="/" class="bm-logo" :aria-label="t('common.brandHome')">
     <svg class="bm-logo-mark" viewBox="0 0 64 64" aria-hidden="true">
       <rect width="64" height="64" rx="14" fill="#f04e23" />
       <path
@@ -28,7 +30,7 @@ withDefaults(defineProps<{ compact?: boolean }>(), { compact: false })
     </svg>
     <span class="bm-logo-word">
       <span class="bm-logo-name">Banmao<em>UI</em></span>
-      <span v-if="!compact" class="bm-logo-sub">组件工坊 · ATELIER</span>
+      <span v-if="!compact" class="bm-logo-sub">{{ t('common.brandSub') }}</span>
     </span>
   </RouterLink>
 </template>

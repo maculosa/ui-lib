@@ -4,7 +4,7 @@ meta:
 </route>
 
 <script setup lang="tsx">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { NButton, NInput, NTag, useMessage } from 'naive-ui'
 import { ProTable } from '@banmao/procomponent'
 import { Chart } from '@banmao/datav'
@@ -12,15 +12,19 @@ import LiveSpecimen from '@/components/home/LiveSpecimen.vue'
 import ScriptTabs from '@/components/ScriptTabs/index.vue'
 import CodePreview from '@/components/CodePreview/index.vue'
 import Logo from '@/components/layout/logo/index.vue'
+import { locale, t, toLocalePath } from '@/locales'
 
 const message = useMessage()
 
-const stats = [
-  { value: '19+', label: 'Pro 组件' },
-  { value: '5', label: '图表组件' },
+const docsUrl = computed(() => toLocalePath('/docs/zh', locale.value))
+const guideUrl = computed(() => toLocalePath('/procomponent/overview', locale.value))
+
+const stats = computed(() => [
+  { value: '19+', label: t('home.statPro') },
+  { value: '5', label: t('home.statCharts') },
   { value: '100%', label: 'TypeScript' },
-  { value: 'MIT', label: '开源协议' },
-]
+  { value: 'MIT', label: t('home.statLicense') },
+])
 
 const marqueeItems = [
   'ProTable', 'ProForm', 'ProLayout', 'ProDescriptions', 'ProText', 'ProList',
@@ -29,31 +33,31 @@ const marqueeItems = [
   'CubeBar', 'Login Blocks',
 ]
 
-const previewColumns = [
-  { title: '组件', key: 'name', width: 150 },
-  { title: '分类', key: 'category', width: 110 },
+const previewColumns = computed(() => [
+  { title: t('home.colName'), key: 'name', width: 150 },
+  { title: t('home.colCategory'), key: 'category', width: 110 },
   {
-    title: '状态',
+    title: t('home.colStatus'),
     key: 'status',
     width: 100,
     render(row: any) {
       return (
         <NTag size="small" type={row.status === 'ready' ? 'success' : 'warning'} bordered={false}>
-          {row.status === 'ready' ? '就绪' : '迭代中'}
+          {row.status === 'ready' ? t('home.statusReady') : t('home.statusBeta')}
         </NTag>
       )
     },
   },
-  { title: '版本', key: 'version', width: 90 },
-]
+  { title: t('home.colVersion'), key: 'version', width: 90 },
+])
 
-const previewData = [
-  { name: 'ProTable', category: '数据展示', status: 'ready', version: 'v0.7' },
-  { name: 'ProForm', category: '数据录入', status: 'ready', version: 'v0.7' },
-  { name: 'ProLayout', category: '布局', status: 'ready', version: 'v0.6' },
-  { name: 'ProDescriptions', category: '数据展示', status: 'ready', version: 'v0.5' },
-  { name: 'ProText', category: '数据展示', status: 'beta', version: 'v0.4' },
-]
+const previewData = computed(() => [
+  { name: 'ProTable', category: t('home.catDisplay'), status: 'ready', version: 'v0.7' },
+  { name: 'ProForm', category: t('home.catEntry'), status: 'ready', version: 'v0.7' },
+  { name: 'ProLayout', category: t('home.catLayout'), status: 'ready', version: 'v0.6' },
+  { name: 'ProDescriptions', category: t('home.catDisplay'), status: 'ready', version: 'v0.5' },
+  { name: 'ProText', category: t('home.catDisplay'), status: 'beta', version: 'v0.4' },
+])
 
 const previewPagination = {
   page: 1,
@@ -73,6 +77,19 @@ const chartData = [
   { name: 'Sun', value: 2789, phone: 310 },
 ]
 
+const chartTitle = computed(() => ({
+  text: t('home.chartTitle'),
+  left: 12,
+  top: 8,
+  textStyle: { fontSize: 13, color: '#1c1a15', fontWeight: 600 },
+}))
+
+const chartLegend = computed(() => ({
+  mapData: { value: t('home.chartSales'), phone: t('home.chartVisits') },
+  top: 8,
+  right: 12,
+}))
+
 const loginModel = ref({ username: '', password: '' })
 const loginLoading = ref(false)
 
@@ -80,38 +97,38 @@ function handleDemoLogin() {
   loginLoading.value = true
   setTimeout(() => {
     loginLoading.value = false
-    message.success('登录成功（演示交互，未发送真实请求）')
+    message.success(t('home.loginSuccess'))
   }, 600)
 }
 
-const features = [
+const features = computed(() => [
   {
     index: '01',
-    title: '配置化驱动',
-    desc: '用一份 JSON 描述界面，而非堆砌模板。列配置即搜索表单、即数据表格、即编辑表单，CRUD 页面开箱即用。',
+    title: t('home.feature1Title'),
+    desc: t('home.feature1Desc'),
     tags: ['Schema First', 'CRUD'],
   },
   {
     index: '02',
-    title: '完整类型推导',
-    desc: '全量 TypeScript 编写，配置项、渲染函数与回调参数均有类型提示，大型项目重构安心。',
+    title: t('home.feature2Title'),
+    desc: t('home.feature2Desc'),
     tags: ['TypeScript', 'DX'],
   },
   {
     index: '03',
-    title: '令牌级主题系统',
-    desc: '继承 Naive UI 的主题能力，从主色到圆角皆可定制，明暗双主题一键切换，设计语言全站统一。',
+    title: t('home.feature3Title'),
+    desc: t('home.feature3Desc'),
     tags: ['Design Tokens', 'Dark Mode'],
   },
   {
     index: '04',
-    title: '企业级实践沉淀',
-    desc: '来自真实中后台项目：列设置持久化、批量操作、自适应高度、远程搜索，复杂场景已被验证。',
+    title: t('home.feature4Title'),
+    desc: t('home.feature4Desc'),
     tags: ['Battle-tested', 'Enterprise'],
   },
-]
+])
 
-const quickStartCode = `<template>
+const quickStartCode = computed(() => `<template>
   <ProTable
     :columns="columns"
     :data="dataSource"
@@ -126,16 +143,16 @@ import { ProTable } from '@banmao/procomponent'
 
 const dataSource = ref([])
 const columns = [
-  { title: '姓名', key: 'name' },
-  { title: '年龄', key: 'age', valueType: 'digit' },
-  { title: '城市', key: 'city', valueType: 'select',
-    options: [{ label: '杭州', value: 'hz' }] },
+  { title: '${t('home.sampleName')}', key: 'name' },
+  { title: '${t('home.sampleAge')}', key: 'age', valueType: 'digit' },
+  { title: '${t('home.sampleCity')}', key: 'city', valueType: 'select',
+    options: [{ label: '${t('home.sampleHangzhou')}', value: 'hz' }] },
 ]
 
 async function handleQuery(params) {
   dataSource.value = await api.list(params)
 }
-<\/script>`
+<\/script>`)
 
 let observer: IntersectionObserver | null = null
 
@@ -170,21 +187,20 @@ onBeforeUnmount(() => {
             VUE 3 · CONFIG-DRIVEN · ENTERPRISE READY
           </p>
           <h1 class="hero-title">
-            配置即界面，<br />
-            <span>组件即手艺。</span>
+            {{ t('home.heroTitleLine1') }}<br />
+            <span>{{ t('home.heroTitleLine2') }}</span>
           </h1>
           <p class="hero-sub">
-            Banmao UI 是一套基于 Naive UI 的配置化组件库。用一份配置描述表格、表单与布局，
-            把中后台开发从重复劳动中解放出来。
+            {{ t('home.heroSub') }}
           </p>
           <div class="hero-cta">
             <RouterLink to="/procomponent" class="btn-primary">
-              开始使用
+              {{ t('home.ctaStart') }}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </RouterLink>
-            <RouterLink to="/docs/zh" class="btn-ghost">查看文档</RouterLink>
+            <RouterLink :to="docsUrl" class="btn-ghost">{{ t('home.ctaDocs') }}</RouterLink>
           </div>
           <dl class="hero-stats">
             <div v-for="s in stats" :key="s.label" class="hero-stat">
@@ -196,7 +212,7 @@ onBeforeUnmount(() => {
 
         <div id="specimen" class="hero-specimen bm-reveal" style="scroll-margin-top: 84px">
           <LiveSpecimen />
-          <p class="hero-specimen-note bm-mono-label">FIG.00 — 拖动控件，实时重塑真实组件</p>
+          <p class="hero-specimen-note bm-mono-label">{{ t('home.specimenNote') }}</p>
         </div>
       </div>
     </section>
@@ -213,9 +229,9 @@ onBeforeUnmount(() => {
     <!-- ============ PRODUCTS ============ -->
     <section class="section products">
       <header class="section-head bm-reveal">
-        <p class="bm-mono-label">FIG.01 — 产品系列</p>
-        <h2 class="section-title">三个工坊，一套系统</h2>
-        <p class="section-desc">组件、图表与页面区块共享同一套设计令牌，拼在一起即是完整的中后台。</p>
+        <p class="bm-mono-label">{{ t('home.productsKicker') }}</p>
+        <h2 class="section-title">{{ t('home.productsTitle') }}</h2>
+        <p class="section-desc">{{ t('home.productsDesc') }}</p>
       </header>
 
       <!-- ProComponent -->
@@ -224,8 +240,7 @@ onBeforeUnmount(() => {
           <span class="product-index bm-mono-label">01 / PRO</span>
           <h3 class="product-name">ProComponent</h3>
           <p class="product-desc">
-            企业级中后台解决方案。一份列配置驱动搜索、表格、表单与工具栏，
-            右侧即是运行中的真实 ProTable。
+            {{ t('home.proDesc') }}
           </p>
           <ul class="product-chips">
             <li>ProTable</li>
@@ -234,7 +249,7 @@ onBeforeUnmount(() => {
             <li>ProDescriptions</li>
           </ul>
           <RouterLink to="/procomponent" class="product-link">
-            浏览组件
+            {{ t('home.proLink') }}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
@@ -242,7 +257,8 @@ onBeforeUnmount(() => {
         </div>
         <div class="product-demo product-table">
           <ProTable
-            title="组件清单"
+            :key="locale"
+            :title="t('home.tableTitle')"
             :columns="previewColumns"
             :data="previewData"
             :pagination="previewPagination"
@@ -262,7 +278,7 @@ onBeforeUnmount(() => {
             <span class="product-index bm-mono-label">02 / DATAV</span>
             <h3 class="product-name">Data V</h3>
             <p class="product-desc">
-              基于 ECharts 的声明式图表：渐变柱状、折线、3D 环形与立方柱，传入数据即出图。
+              {{ t('home.datavDesc') }}
             </p>
             <ul class="product-chips">
               <li>Chart</li>
@@ -271,7 +287,7 @@ onBeforeUnmount(() => {
               <li>CubeBar</li>
             </ul>
             <RouterLink to="/datav" class="product-link">
-              进入图表工坊
+              {{ t('home.datavLink') }}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
@@ -280,8 +296,8 @@ onBeforeUnmount(() => {
           <div class="product-demo">
             <div class="chart-paper">
               <Chart
-                :title="{ text: '本周销售趋势', left: 12, top: 8, textStyle: { fontSize: 13, color: '#1c1a15', fontWeight: 600 } }"
-                :legend="{ mapData: { value: '销售额', phone: '访问量' }, top: 8, right: 12 }"
+                :title="chartTitle"
+                :legend="chartLegend"
                 trigger-type="axis"
                 :bar-width="14"
                 :x-axis="{ type: 'category' }"
@@ -302,7 +318,7 @@ onBeforeUnmount(() => {
             <span class="product-index bm-mono-label">03 / BLOCKS</span>
             <h3 class="product-name">Blocks</h3>
             <p class="product-desc">
-              开箱即用的页面区块：登录、注册、仪表盘。下方登录表单可以直接交互，复制即可落地。
+              {{ t('home.blocksDesc') }}
             </p>
             <ul class="product-chips">
               <li>Login</li>
@@ -310,7 +326,7 @@ onBeforeUnmount(() => {
               <li>Dashboard</li>
             </ul>
             <RouterLink to="/blocks" class="product-link">
-              查看区块
+              {{ t('home.blocksLink') }}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
@@ -319,9 +335,9 @@ onBeforeUnmount(() => {
           <div class="product-demo">
             <div class="login-preview bm-dot-grid">
               <div class="login-card">
-                <p class="bm-mono-label login-card-label">LOGIN BLOCK · 交互预览</p>
-                <h4 class="login-card-title">欢迎回来</h4>
-                <NInput v-model:value="loginModel.username" placeholder="用户名" size="large">
+                <p class="bm-mono-label login-card-label">{{ t('home.loginCardLabel') }}</p>
+                <h4 class="login-card-title">{{ t('home.loginCardTitle') }}</h4>
+                <NInput v-model:value="loginModel.username" :placeholder="t('home.loginUsername')" size="large">
                   <template #prefix>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
                       <circle cx="12" cy="8" r="3.6" />
@@ -333,7 +349,7 @@ onBeforeUnmount(() => {
                   v-model:value="loginModel.password"
                   type="password"
                   show-password-on="click"
-                  placeholder="密码"
+                  :placeholder="t('home.loginPassword')"
                   size="large"
                 >
                   <template #prefix>
@@ -344,11 +360,11 @@ onBeforeUnmount(() => {
                   </template>
                 </NInput>
                 <NButton type="primary" block size="large" :loading="loginLoading" @click="handleDemoLogin">
-                  登 录
+                  {{ t('home.loginSubmit') }}
                 </NButton>
                 <p class="login-card-foot">
-                  <span>忘记密码？</span>
-                  <span>注册账号 →</span>
+                  <span>{{ t('home.loginForgot') }}</span>
+                  <span>{{ t('home.loginRegister') }}</span>
                 </p>
               </div>
             </div>
@@ -360,8 +376,8 @@ onBeforeUnmount(() => {
     <!-- ============ FEATURES ============ -->
     <section class="section features">
       <header class="section-head bm-reveal">
-        <p class="bm-mono-label">FIG.02 — 为什么选择 BANMAO</p>
-        <h2 class="section-title">为长期维护而设计</h2>
+        <p class="bm-mono-label">{{ t('home.featuresKicker') }}</p>
+        <h2 class="section-title">{{ t('home.featuresTitle') }}</h2>
       </header>
       <div class="feature-list">
         <article v-for="(f, i) in features" :key="f.index" class="feature-row bm-reveal" :style="{ transitionDelay: `${i * 0.06}s` }">
@@ -371,7 +387,7 @@ onBeforeUnmount(() => {
             <p class="feature-desc">{{ f.desc }}</p>
           </div>
           <ul class="feature-tags">
-            <li v-for="t in f.tags" :key="t">{{ t }}</li>
+            <li v-for="tag in f.tags" :key="tag">{{ tag }}</li>
           </ul>
         </article>
       </div>
@@ -381,14 +397,14 @@ onBeforeUnmount(() => {
     <section class="section install">
       <div class="install-inner bm-reveal bm-corner-marks">
         <div class="install-copy">
-          <p class="bm-mono-label">FIG.03 — 快速开始</p>
-          <h2 class="section-title">三十秒，开始构建</h2>
+          <p class="bm-mono-label">{{ t('home.installKicker') }}</p>
+          <h2 class="section-title">{{ t('home.installTitle') }}</h2>
           <p class="section-desc">
-            安装 ProComponent，引入组件与样式，剩下的交给配置。完整指南见文档。
+            {{ t('home.installDesc') }}
           </p>
           <ScriptTabs pkg="@banmao/procomponent" />
-          <RouterLink to="/procomponent/overview" class="product-link install-link">
-            阅读完整指南
+          <RouterLink :to="guideUrl" class="product-link install-link">
+            {{ t('home.installLink') }}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
@@ -405,20 +421,20 @@ onBeforeUnmount(() => {
       <div class="footer-inner">
         <div class="footer-brand">
           <Logo />
-          <p class="footer-tagline">配置即界面，组件即手艺。</p>
+          <p class="footer-tagline">{{ t('home.footerTagline') }}</p>
         </div>
-        <nav class="footer-col" aria-label="产品">
-          <p class="bm-mono-label">产品</p>
+        <nav class="footer-col" :aria-label="t('home.footerProducts')">
+          <p class="bm-mono-label">{{ t('home.footerProducts') }}</p>
           <RouterLink to="/procomponent">ProComponent</RouterLink>
           <RouterLink to="/datav">Data V</RouterLink>
           <RouterLink to="/blocks">Blocks</RouterLink>
           <RouterLink to="/ui">UI</RouterLink>
         </nav>
-        <nav class="footer-col" aria-label="资源">
-          <p class="bm-mono-label">资源</p>
-          <RouterLink to="/docs/zh">文档</RouterLink>
-          <RouterLink to="/procomponent">组件目录</RouterLink>
-          <RouterLink to="/examples">在线示例</RouterLink>
+        <nav class="footer-col" :aria-label="t('home.footerResources')">
+          <p class="bm-mono-label">{{ t('home.footerResources') }}</p>
+          <RouterLink :to="docsUrl">{{ t('home.footerDocs') }}</RouterLink>
+          <RouterLink to="/procomponent">{{ t('home.footerCatalog') }}</RouterLink>
+          <RouterLink to="/examples">{{ t('home.footerExamples') }}</RouterLink>
         </nav>
       </div>
       <div class="footer-bottom">

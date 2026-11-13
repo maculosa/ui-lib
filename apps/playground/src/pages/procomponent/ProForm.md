@@ -21,42 +21,24 @@ ProForm 是一个基于 Form 的高级表单组件，提供了表单布局、表
 
 以下是 ProForm 的代码示例：
 
-<Demo title="级联表单" desc="测试级联表单"
- :raw="UniLinkChange"
->
+<Demo title="级联表单" desc="测试级联表单" :raw="UniLinkChange">
   <UniLinkChange />
 </Demo>
 
-<Demo title="筛选重置"
-desc="筛选重置"
-:raw="FilterResetRaw">
-
-<FilterReset />
-
+<Demo title="筛选重置" desc="筛选重置" :raw="FilterResetRaw">
+  <FilterReset />
 </Demo>
 
-<Demo title="筛选重置默认值"
-desc="筛选重置默认值"
-:raw="FilterResetWithDefaultRaw">
-
-<FilterResetWithDefault />
-
+<Demo title="筛选重置默认值" desc="筛选重置默认值" :raw="FilterResetWithDefaultRaw">
+  <FilterResetWithDefault />
 </Demo>
 
-<Demo title="基本用法"
-desc="基本用法"
-:raw="BaseRaw">
-
-<Base />
-
+<Demo title="基本用法" desc="基本用法" :raw="BaseRaw">
+  <Base />
 </Demo>
 
-<Demo title="请求级联选择器"
-desc="请求级联选择器"
-:raw="RequestCascaderFormRaw">
-
-<RequestCascaderForm />
-
+<Demo title="请求级联选择器" desc="请求级联选择器" :raw="RequestCascaderFormRaw">
+  <RequestCascaderForm />
 </Demo>
 
 ## ProForm API

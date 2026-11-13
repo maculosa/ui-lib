@@ -1,34 +1,34 @@
 <script setup lang="ts">
 import { Pie, Pie3D } from '@banmao/datav'
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { t } from '@/locales'
 
-const data = ref([
-  { name: '小米', value: 100 },
-  { name: '华为', value: 200 },
-  { name: '苹果', value: 300 },
+const data = computed(() => [
+  { name: t('datav.brandXiaomi'), value: 100 },
+  { name: t('datav.brandHuawei'), value: 200 },
+  { name: t('datav.brandApple'), value: 300 },
   { name: 'OPPO', value: 400 },
   { name: 'vivo', value: 500 },
 ])
 
-const variants = [
-  { key: 'pie', label: '基础饼图', note: 'PIE · INSIDE LABEL' },
-  { key: 'doughnut', label: '环形图', note: 'DOUGHNUT · CENTER LABEL' },
-  { key: 'corner', label: '圆角环形图', note: 'DOUGHNUT · ROUNDED' },
-  { key: 'half', label: '半环形图', note: 'HALF DOUGHNUT' },
-  { key: 'rose-doughnut', label: '玫瑰环形图', note: 'ROSE · PAD ANGLE' },
-  { key: 'rose', label: '玫瑰饼图', note: 'ROSE PIE · OUTSIDE' },
-  { key: '3d', label: '3D 饼图', note: 'PIE 3D · WEBGL' },
-]
+const variants = computed(() => [
+  { key: 'pie', label: t('datav.pieVariantBasic'), note: 'PIE · INSIDE LABEL' },
+  { key: 'doughnut', label: t('datav.pieVariantDoughnut'), note: 'DOUGHNUT · CENTER LABEL' },
+  { key: 'corner', label: t('datav.pieVariantCorner'), note: 'DOUGHNUT · ROUNDED' },
+  { key: 'half', label: t('datav.pieVariantHalf'), note: 'HALF DOUGHNUT' },
+  { key: 'rose-doughnut', label: t('datav.pieVariantRoseDoughnut'), note: 'ROSE · PAD ANGLE' },
+  { key: 'rose', label: t('datav.pieVariantRose'), note: 'ROSE PIE · OUTSIDE' },
+  { key: '3d', label: t('datav.pieVariant3d'), note: 'PIE 3D · WEBGL' },
+])
 </script>
 
 <template>
   <div class="datav-sub">
     <header class="sub-head">
       <p class="bm-mono-label sub-kicker">DATAV · PIE FAMILY</p>
-      <h1 class="sub-title">饼图家族</h1>
+      <h1 class="sub-title">{{ t('datav.pieTitle') }}</h1>
       <p class="sub-desc">
-        同一份数据，七种形态。Pie 覆盖基础饼图、环形、圆角、半环与玫瑰图，Pie3D 以 WebGL
-        渲染立体饼图。所有图表内部固定使用亮色主题，因此统一承载于纸感画布之上。
+        {{ t('datav.pieDesc') }}
       </p>
     </header>
 

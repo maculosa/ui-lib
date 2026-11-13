@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { NCollapseTransition, useMessage } from 'naive-ui'
 import { useClipboard } from '@vueuse/core'
 import CodePreview from '@/components/CodePreview/index.vue'
+import { t } from '@/locales'
 
 export interface DemoProps {
   title?: string
@@ -23,11 +24,11 @@ async function copyRaw() {
   try {
     await copy(props.raw)
     copied.value = true
-    message.success('示例代码已复制')
+    message.success(t('common.demoCopied'))
     window.clearTimeout(copyTimer)
     copyTimer = window.setTimeout(() => (copied.value = false), 1800)
   } catch {
-    message.error('复制失败，请手动选择代码复制')
+    message.error(t('common.copyFailed'))
   }
 }
 
@@ -48,8 +49,8 @@ function openInNewTab() {
           v-if="url"
           type="button"
           class="bm-demo-btn"
-          title="在新窗口打开"
-          aria-label="在新窗口打开"
+          :title="t('common.openNewTab')"
+          :aria-label="t('common.openNewTab')"
           @click="openInNewTab"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -60,8 +61,8 @@ function openInNewTab() {
           v-if="raw"
           type="button"
           class="bm-demo-btn"
-          :title="copied ? '已复制' : '复制代码'"
-          aria-label="复制代码"
+          :title="copied ? t('common.copied') : t('common.copyCode')"
+          :aria-label="t('common.copyCode')"
           @click="copyRaw"
         >
           <svg v-if="!copied" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -83,7 +84,7 @@ function openInNewTab() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M8 6l-6 6 6 6M16 6l6 6-6 6" />
           </svg>
-          <span>{{ visible ? '收起代码' : '代码' }}</span>
+          <span>{{ visible ? t('common.hideCode') : t('common.code') }}</span>
         </button>
       </div>
     </header>
@@ -97,7 +98,7 @@ function openInNewTab() {
         <span class="bm-demo-dots" aria-hidden="true"><i /><i /><i /></span>
         <span class="bm-demo-frame-url">{{ url }}</span>
       </div>
-      <iframe :src="url" :title="title || '示例预览'" loading="lazy" />
+      <iframe :src="url" :title="title || t('common.demoPreview')" loading="lazy" />
     </div>
 
     <NCollapseTransition :show="visible">

@@ -4,6 +4,7 @@ import { useMessage } from 'naive-ui'
 import { useClipboard } from '@vueuse/core'
 import 'highlight.js/lib/common'
 import hljsVuePlugin from '@highlightjs/vue-plugin'
+import { t } from '@/locales'
 
 const highlightjs = hljsVuePlugin.component
 const message = useMessage()
@@ -22,7 +23,7 @@ const copied = ref(false)
 async function copyCode() {
   await copy(codeRaw.value)
   copied.value = true
-  message.success('代码已复制')
+  message.success(t('common.codeCopied'))
   setTimeout(() => {
     copied.value = false
   }, 1800)
@@ -33,7 +34,7 @@ async function copyCode() {
   <div class="code-preview">
     <div class="code-preview-bar">
       <span class="code-preview-lang">{{ langLabel }}</span>
-      <button type="button" class="code-preview-copy" :title="copied ? '已复制' : '复制代码'" @click="copyCode">
+      <button type="button" class="code-preview-copy" :title="copied ? t('common.copied') : t('common.copyCode')" @click="copyCode">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <template v-if="!copied">
             <rect x="9" y="9" width="12" height="12" rx="2" />
@@ -41,7 +42,7 @@ async function copyCode() {
           </template>
           <path v-else d="M4 12.5 9.5 18 20 6.5" />
         </svg>
-        <span>{{ copied ? '已复制' : '复制' }}</span>
+        <span>{{ copied ? t('common.copied') : t('common.copy') }}</span>
       </button>
     </div>
     <div class="code-preview-body">

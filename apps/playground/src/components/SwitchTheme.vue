@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { inject, type Ref } from 'vue'
+import { t } from '@/locales'
 
 defineOptions({ name: 'SwitchTheme' })
 
@@ -11,8 +12,8 @@ const toggleTheme = inject<() => void>('toggleTheme')
   <button
     type="button"
     class="bm-theme-btn"
-    :aria-label="isDark ? '切换到亮色模式' : '切换到暗色模式'"
-    :title="isDark ? '亮色模式' : '暗色模式'"
+    :aria-label="isDark ? t('common.themeToLight') : t('common.themeToDark')"
+    :title="isDark ? t('common.themeLight') : t('common.themeDark')"
     @click="toggleTheme?.()"
   >
     <Transition name="bm-theme-icon" mode="out-in">

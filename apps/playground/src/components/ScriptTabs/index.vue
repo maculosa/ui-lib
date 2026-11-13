@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useClipboard } from '@vueuse/core'
 import { useMessage } from 'naive-ui'
+import { t } from '@/locales'
 
 const props = defineProps<{ pkg: string }>()
 
@@ -22,7 +23,7 @@ const copied = ref(false)
 async function copyCommand() {
   await copy(command.value)
   copied.value = true
-  message.success('安装命令已复制')
+  message.success(t('common.installCopied'))
   setTimeout(() => {
     copied.value = false
   }, 1800)
@@ -31,7 +32,7 @@ async function copyCommand() {
 
 <template>
   <div class="script-tabs">
-    <div class="script-tabs-bar" role="tablist" aria-label="包管理器">
+    <div class="script-tabs-bar" role="tablist" :aria-label="t('common.pkgManager')">
       <button
         v-for="m in managers"
         :key="m.name"
@@ -44,7 +45,7 @@ async function copyCommand() {
       >
         {{ m.name }}
       </button>
-      <button type="button" class="script-copy" :title="copied ? '已复制' : '复制命令'" @click="copyCommand">
+      <button type="button" class="script-copy" :title="copied ? t('common.copied') : t('common.copyCommand')" @click="copyCommand">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <template v-if="!copied">
             <rect x="9" y="9" width="12" height="12" rx="2" />

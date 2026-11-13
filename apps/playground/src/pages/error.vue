@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { t } from '@/locales'
 
 const router = useRouter()
 </script>
@@ -25,10 +26,10 @@ const router = useRouter()
       </svg>
       <p class="bm-mono-label error-kicker">SYSTEM · EXCEPTION</p>
       <h1 class="error-code">Error<span class="error-dot">.</span></h1>
-      <p class="error-message">系统发生错误，请稍后重试，或返回首页继续浏览组件工坊。</p>
+      <p class="error-message">{{ t('common.errorMessage') }}</p>
       <div class="error-actions">
-        <button type="button" class="error-btn primary" @click="router.push('/')">返回首页</button>
-        <button type="button" class="error-btn ghost" @click="router.back()">返回上一页</button>
+        <button type="button" class="error-btn primary" @click="router.push('/')">{{ t('common.backHome') }}</button>
+        <button type="button" class="error-btn ghost" @click="router.back()">{{ t('common.goBack') }}</button>
       </div>
     </div>
   </div>

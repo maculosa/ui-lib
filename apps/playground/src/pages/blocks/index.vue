@@ -4,9 +4,12 @@ meta:
 </route>
 
 <script setup lang="ts">
+import { t } from '@/locales'
+
 interface BlockItem {
   name: string
-  desc: string
+  /** 描述文案的 i18n key，在模板中解析，保证切换语言时同步更新 */
+  descKey: string
   url?: string
   tag: string
 }
@@ -14,42 +17,42 @@ interface BlockItem {
 const blocks: BlockItem[] = [
   {
     name: 'Simple Login',
-    desc: '极简居中登录卡片，适合工具型产品的第一屏。',
+    descKey: 'blocks.simpleLoginDesc',
     url: '/examples/blocks/login/simple-login',
     tag: 'SIMPLE',
   },
   {
     name: 'Background Login',
-    desc: '全幅背景图 + 居中表单，品牌感更强的登录页。',
+    descKey: 'blocks.backgroundLoginDesc',
     url: '/examples/blocks/login/simple-bg-login',
     tag: 'BACKGROUND',
   },
   {
     name: 'Card Login',
-    desc: '左图右卡的分栏布局，支持第三方登录按钮。',
+    descKey: 'blocks.cardLoginDesc',
     url: '/examples/blocks/login/card-login',
     tag: 'CARD',
   },
   {
     name: 'Slot Login',
-    desc: '通过默认插槽完全接管表单区域，自由度最高。',
+    descKey: 'blocks.slotLoginDesc',
     url: '/examples/blocks/login/slot-login',
     tag: 'SLOT',
   },
   {
     name: 'Two Column Login',
-    desc: '双栏布局：左侧品牌视觉，右侧登录表单。',
+    descKey: 'blocks.twoColumnLoginDesc',
     url: '/examples/blocks/login/two-column-login',
     tag: 'COLUMN',
   },
   {
     name: 'Register',
-    desc: '注册区块：表单校验、协议勾选与邮箱验证流程。',
+    descKey: 'blocks.registerDesc',
     tag: 'PLANNED',
   },
   {
     name: 'Dashboard',
-    desc: '仪表盘区块：指标卡、图表与列表的组合骨架。',
+    descKey: 'blocks.dashboardDesc',
     tag: 'PLANNED',
   },
 ]
@@ -59,10 +62,11 @@ const blocks: BlockItem[] = [
   <div class="blocks">
     <header class="blocks-head">
       <p class="bm-mono-label blocks-kicker">BLOCKS · GALLERY</p>
-      <h1 class="blocks-title">区块画廊</h1>
+      <h1 class="blocks-title">{{ t('blocks.galleryTitle') }}</h1>
       <p class="blocks-desc">
-        开箱即用的页面级区块。每个登录变体都是运行中的真实页面 —— 点击缩略图进入完整交互示例，
-        或阅读 <RouterLink to="/blocks/login">Login 文档</RouterLink> 查看接入方式。
+        {{ t('blocks.galleryDescLead') }}
+        <RouterLink to="/blocks/login">{{ t('blocks.galleryDescLink') }}</RouterLink>
+        {{ t('blocks.galleryDescTail') }}
       </p>
     </header>
 
@@ -75,15 +79,15 @@ const blocks: BlockItem[] = [
         :style="{ animationDelay: `${Math.min(index, 8) * 0.05}s` }"
       >
         <div v-if="block.url" class="block-thumb">
-          <iframe :src="block.url" :title="`${block.name} 预览`" loading="lazy" tabindex="-1" />
-          <RouterLink :to="block.url" class="block-thumb-overlay" :aria-label="`打开 ${block.name} 完整示例`">
+          <iframe :src="block.url" :title="t('blocks.previewTitle', { name: block.name })" loading="lazy" tabindex="-1" />
+          <a :href="block.url" target="_blank" class="block-thumb-overlay" :aria-label="t('blocks.openFullExampleLabel', { name: block.name })">
             <span>
-              打开完整示例
+              {{ t('blocks.openFullExample') }}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" />
               </svg>
             </span>
-          </RouterLink>
+          </a>
         </div>
         <div v-else class="block-thumb is-empty bm-dot-grid">
           <span class="bm-mono-label">COMING SOON</span>
@@ -94,7 +98,7 @@ const blocks: BlockItem[] = [
             <h2 class="block-name">{{ block.name }}</h2>
             <span class="block-tag bm-mono-label" :class="{ 'is-planned': !block.url }">{{ block.tag }}</span>
           </div>
-          <p class="block-desc">{{ block.desc }}</p>
+          <p class="block-desc">{{ t(block.descKey) }}</p>
         </div>
       </article>
     </div>

@@ -14,6 +14,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { useClipboard } from '@vueuse/core'
+import { t } from '@/locales'
 
 interface SpecimenState {
   accent: string
@@ -37,13 +38,13 @@ const defaults: SpecimenState = {
 
 const state = reactive<SpecimenState>({ ...defaults })
 
-const swatches = [
-  { name: '朱红', value: '#f04e23' },
-  { name: '电蓝', value: '#2f6bff' },
-  { name: '酸绿', value: '#7cb518' },
-  { name: '琥珀', value: '#e8a013' },
-  { name: '品红', value: '#d6409f' },
-]
+const swatches = computed(() => [
+  { name: t('specimen.swatchVermilion'), value: '#f04e23' },
+  { name: t('specimen.swatchBlue'), value: '#2f6bff' },
+  { name: t('specimen.swatchGreen'), value: '#7cb518' },
+  { name: t('specimen.swatchAmber'), value: '#e8a013' },
+  { name: t('specimen.swatchMagenta'), value: '#d6409f' },
+])
 
 const sizes = [
   { label: 'S', value: 'small' },
@@ -97,11 +98,11 @@ const exported = ref(false)
 
 function reset() {
   Object.assign(state, defaults)
-  message.info('标本已重置为默认主题')
+  message.info(t('specimen.resetMessage'))
 }
 
 function randomize() {
-  state.accent = swatches[Math.floor(Math.random() * swatches.length)].value
+  state.accent = swatches.value[Math.floor(Math.random() * swatches.value.length)].value
   state.radius = Math.floor(Math.random() * 17)
   state.size = sizes[Math.floor(Math.random() * sizes.length)].value
   state.fontSize = 12 + Math.floor(Math.random() * 5)
@@ -112,7 +113,7 @@ function randomize() {
 async function exportTheme() {
   await copy(JSON.stringify(themeOverrides.value, null, 2))
   exported.value = true
-  message.success('主题配置 JSON 已复制到剪贴板')
+  message.success(t('specimen.copyMessage'))
   setTimeout(() => {
     exported.value = false
   }, 1800)
@@ -125,9 +126,9 @@ const demoRate = ref(4)
 </script>
 
 <template>
-  <section class="specimen bm-corner-marks" aria-label="实时主题标本">
+  <section class="specimen bm-corner-marks" :aria-label="t('specimen.sectionLabel')">
     <header class="specimen-head">
-      <span class="bm-mono-label">LIVE SPECIMEN · 实时标本</span>
+      <span class="bm-mono-label">{{ t('specimen.headLabel') }}</span>
       <span class="specimen-status">
         <i class="specimen-dot bm-blink" aria-hidden="true"></i>
         RUNNING
@@ -142,19 +143,19 @@ const demoRate = ref(4)
       >
         <div class="specimen-stage">
           <div class="specimen-row">
-            <NButton type="primary" :ghost="state.ghost">主要操作</NButton>
-            <NButton :dashed="state.ghost">次要操作</NButton>
-            <NButton quaternary>文字按钮</NButton>
+            <NButton type="primary" :ghost="state.ghost">{{ t('specimen.btnPrimary') }}</NButton>
+            <NButton :dashed="state.ghost">{{ t('specimen.btnSecondary') }}</NButton>
+            <NButton quaternary>{{ t('specimen.btnText') }}</NButton>
           </div>
           <div class="specimen-row">
-            <NTag type="primary" size="small">配置化</NTag>
+            <NTag type="primary" size="small">{{ t('specimen.tagConfig') }}</NTag>
             <NTag type="info" size="small">TypeScript</NTag>
-            <NTag type="success" size="small">就绪</NTag>
-            <NTag type="warning" size="small">迭代中</NTag>
-            <NTag type="error" size="small">废弃</NTag>
+            <NTag type="success" size="small">{{ t('specimen.tagReady') }}</NTag>
+            <NTag type="warning" size="small">{{ t('specimen.tagWip') }}</NTag>
+            <NTag type="error" size="small">{{ t('specimen.tagDeprecated') }}</NTag>
           </div>
           <div class="specimen-row specimen-row-grow">
-            <NInput v-model:value="demoInput" placeholder="输入组件名称…" clearable />
+            <NInput v-model:value="demoInput" :placeholder="t('specimen.inputPlaceholder')" clearable />
             <NSwitch v-model:value="demoSwitch" />
           </div>
           <div class="specimen-row specimen-row-grow">
@@ -173,7 +174,7 @@ const demoRate = ref(4)
             <span class="specimen-rate-label">{{ demoRate }}.0 / 5.0</span>
           </div>
           <NAlert type="success" :bordered="false" class="specimen-alert">
-            所有参数已实时应用到上方真实组件
+            {{ t('specimen.alert') }}
           </NAlert>
         </div>
       </NConfigProvider>
@@ -181,7 +182,7 @@ const demoRate = ref(4)
 
     <div class="specimen-controls">
       <div class="specimen-control specimen-control-wide">
-        <span class="specimen-label">主题色 <em>ACCENT</em></span>
+        <span class="specimen-label">{{ t('specimen.labelAccent') }} <em>ACCENT</em></span>
         <div class="specimen-swatches">
           <button
             v-for="s in swatches"
@@ -191,11 +192,11 @@ const demoRate = ref(4)
             :class="{ active: state.accent === s.value }"
             :style="{ '--sw': s.value }"
             :title="s.name"
-            :aria-label="`主题色 ${s.name}`"
+            :aria-label="t('specimen.swatchAria', { name: s.name })"
             @click="state.accent = s.value"
           ></button>
-          <label class="specimen-colorpick" title="自定义颜色">
-            <input v-model="state.accent" type="color" aria-label="自定义主题色" />
+          <label class="specimen-colorpick" :title="t('specimen.colorPickTitle')">
+            <input v-model="state.accent" type="color" :aria-label="t('specimen.colorPickAria')" />
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
               <path d="M12 3v18M3 12h18" />
             </svg>
@@ -204,18 +205,18 @@ const demoRate = ref(4)
       </div>
 
       <div class="specimen-control">
-        <span class="specimen-label">圆角 <em>{{ state.radius }}px</em></span>
-        <input v-model.number="state.radius" type="range" min="0" max="16" step="1" aria-label="圆角" />
+        <span class="specimen-label">{{ t('specimen.labelRadius') }} <em>{{ state.radius }}px</em></span>
+        <input v-model.number="state.radius" type="range" min="0" max="16" step="1" :aria-label="t('specimen.labelRadius')" />
       </div>
 
       <div class="specimen-control">
-        <span class="specimen-label">字号 <em>{{ state.fontSize }}px</em></span>
-        <input v-model.number="state.fontSize" type="range" min="12" max="16" step="1" aria-label="字号" />
+        <span class="specimen-label">{{ t('specimen.labelFontSize') }} <em>{{ state.fontSize }}px</em></span>
+        <input v-model.number="state.fontSize" type="range" min="12" max="16" step="1" :aria-label="t('specimen.labelFontSize')" />
       </div>
 
       <div class="specimen-control">
-        <span class="specimen-label">尺寸 <em>SIZE</em></span>
-        <div class="specimen-segment" role="group" aria-label="组件尺寸">
+        <span class="specimen-label">{{ t('specimen.labelSize') }} <em>SIZE</em></span>
+        <div class="specimen-segment" role="group" :aria-label="t('specimen.sizeGroupAria')">
           <button
             v-for="s in sizes"
             :key="s.value"
@@ -229,7 +230,7 @@ const demoRate = ref(4)
       </div>
 
       <div class="specimen-control">
-        <span class="specimen-label">紧凑密度 <em>DENSITY</em></span>
+        <span class="specimen-label">{{ t('specimen.labelDensity') }} <em>DENSITY</em></span>
         <button
           type="button"
           class="specimen-toggle"
@@ -243,7 +244,7 @@ const demoRate = ref(4)
       </div>
 
       <div class="specimen-control">
-        <span class="specimen-label">描边模式 <em>GHOST</em></span>
+        <span class="specimen-label">{{ t('specimen.labelGhost') }} <em>GHOST</em></span>
         <button
           type="button"
           class="specimen-toggle"
@@ -257,7 +258,7 @@ const demoRate = ref(4)
       </div>
 
       <div class="specimen-control">
-        <span class="specimen-label">标本深色 <em>DARK</em></span>
+        <span class="specimen-label">{{ t('specimen.labelDark') }} <em>DARK</em></span>
         <button
           type="button"
           class="specimen-toggle"
@@ -275,20 +276,20 @@ const demoRate = ref(4)
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" />
           </svg>
-          重置
+          {{ t('specimen.reset') }}
         </button>
         <button type="button" class="specimen-btn" @click="randomize">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
           </svg>
-          随机
+          {{ t('specimen.randomize') }}
         </button>
         <button type="button" class="specimen-btn specimen-btn-primary" @click="exportTheme">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path v-if="!exported" d="M12 3v12M7 10l5 5 5-5M4 21h16" />
             <path v-else d="M4 12.5 9.5 18 20 6.5" />
           </svg>
-          {{ exported ? '已复制' : '导出主题' }}
+          {{ exported ? t('specimen.exported') : t('specimen.exportTheme') }}
         </button>
       </div>
 

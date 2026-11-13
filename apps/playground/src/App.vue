@@ -2,7 +2,21 @@
 import { NaiveProvider } from '@banmao/procomponent'
 import { NConfigProvider, darkTheme } from 'naive-ui'
 import { useDark } from '@vueuse/core'
-import { computed, provide } from 'vue'
+import { computed, provide, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import SearchModal from '@/components/SearchModal.vue'
+import { locale, localeFromPath } from '@/locales'
+
+const route = useRoute()
+
+watch(
+  () => route.path,
+  path => {
+    const signal = localeFromPath(path)
+    if (signal && signal !== locale.value) locale.value = signal
+  },
+  { immediate: true },
+)
 
 const isDark = useDark({
   storageKey: 'color-scheme',
@@ -105,6 +119,7 @@ const themeOverrides = computed(() => {
   <n-config-provider :theme="isDark ? darkTheme : null" :theme-overrides="themeOverrides">
     <naive-provider>
       <router-view />
+      <SearchModal />
     </naive-provider>
   </n-config-provider>
 </template>

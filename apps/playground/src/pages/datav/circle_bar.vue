@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import { CircleBar } from '@banmao/datav'
+import { computed } from 'vue'
+import { t } from '@/locales'
 
-const data = [
-  { name: '小米', value: 100 },
-  { name: '华为', value: 200 },
-  { name: '苹果', value: 300 },
+const data = computed(() => [
+  { name: t('datav.brandXiaomi'), value: 100 },
+  { name: t('datav.brandHuawei'), value: 200 },
+  { name: t('datav.brandApple'), value: 300 },
   { name: 'OPPO', value: 400 },
   { name: 'vivo', value: 500 },
-]
+])
 </script>
 
 <template>
   <div class="datav-sub">
     <header class="sub-head">
       <p class="bm-mono-label sub-kicker">DATAV · 3D SERIES</p>
-      <h1 class="sub-title">3D 环形柱状图</h1>
+      <h1 class="sub-title">{{ t('datav.circleBarTitle') }}</h1>
       <p class="sub-desc">
-        CircleBar 用象形柱（pictorialBar）的椭圆顶盖、底环叠加渐变柱身，在 2D 画布上拼出立体圆柱的视觉效果，
-        适合大屏展示与品牌占比对比。无需 WebGL，兼容性好；图表内部固定亮色主题，承载于纸感画布之上。
+        {{ t('datav.circleBarDesc') }}
       </p>
     </header>
 
@@ -36,7 +37,7 @@ const data = [
         />
       </div>
       <figcaption class="chart-note">
-        提示：立体效果由 2D 象形柱叠加绘制，不依赖 WebGL，在绝大多数设备上都能稳定渲染；柱顶数值标签随数据实时更新。
+        {{ t('datav.circleBarNote') }}
       </figcaption>
     </figure>
   </div>
