@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.7.31
+
+### Patch Changes
+
+- 修复表格塌陷，只剩下表头的问题
+
 ## 0.7.30
 
 ### Patch Changes
