@@ -17,7 +17,7 @@ export default defineComponent({
         const tourContext = inject<TourContext>(tourKey, {} as TourContext)
 
         const { current, total, onClose: tourOnClose, onFinish: tourOnFinish, onChange } = tourContext
-        
+
         const onClose = () => {
             tourOnClose()
             emit('close')
@@ -56,9 +56,7 @@ export default defineComponent({
                     <span>{description.value}</span>
                 </div>
                 <div class="tour-content_footer">
-                    <span>
-                        {current.value + 1} / {total}
-                    </span>
+                    <span>{current.value + 1} / {total.value}</span>
                     <NSpace justify="end">
                         {current.value > 0 && (
                             <NButton

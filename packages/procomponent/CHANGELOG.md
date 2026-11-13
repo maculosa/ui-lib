@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.7.30
+
+### Patch Changes
+
+- fix: 修复列设置中会显示带有hideInTable:true 列的问题
+
 ## 0.7.29
 
 ### Patch Changes

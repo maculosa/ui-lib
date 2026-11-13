@@ -15,13 +15,13 @@ export default defineComponent({
     const visible = ref(false)
 
     const columns = computed(() => {
-      return props.columns.filter(col => 
+      return props.columns.filter(col =>
         !['index', 'selection'].includes(col?.type as string) && col?.key !== 'actions'
       )
     })
 
     const width = computed(() => {
-      return props.width ? props.width : '640px'
+      return typeof props.width === 'number' ? `${props.width}px` : (props.width || '640px')
     })
 
     function handleVisible() {
@@ -74,7 +74,7 @@ export default defineComponent({
           v-model:show={visible.value}
           preset="card"
           title={props.title}
-          style={{ bodyStyle: typeof width === 'number' ? { width: `${width}px` } : { width } }}
+          style={{ width: width.value }}
         >
           {{
             default: () => (

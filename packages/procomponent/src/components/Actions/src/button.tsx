@@ -7,7 +7,7 @@ export default defineComponent({
     emits: actionButtonEmits,
     setup(props, { emit, slots }) {
         const { disabled, type, confirm, confirmContent, size } = props
-        
+
         if (confirm) {
             return () => (
                 <NPopconfirm
@@ -27,7 +27,9 @@ export default defineComponent({
         }
 
         return () => (
-            <NButton quaternary size={size} disabled={disabled} type={type}>
+            <NButton quaternary size={size} disabled={disabled} type={type}
+              onClick={() => emit('click')}
+            >
                {slots.default?.()}
             </NButton>
         )

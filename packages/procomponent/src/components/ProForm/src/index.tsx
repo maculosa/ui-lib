@@ -58,7 +58,7 @@ export default defineComponent({
      */
     const createFormData = (forceCreate: boolean = false) => {
       const currentHash = getColumnsHash(props.columns)
-      
+
       // 如果columns结构未变化且不强制创建，直接返回缓存的结构的深拷贝
       if (!forceCreate && currentHash === columnsHash.value && Object.keys(cachedFormDataStructure.value).length > 0) {
         const result = JSON.parse(JSON.stringify(cachedFormDataStructure.value))
@@ -73,7 +73,7 @@ export default defineComponent({
         }
         return result
       }
-      
+
       // columns结构变化或强制创建，重新创建formData
       const formData: any = {}
       props.columns.forEach((item: any) => {
@@ -100,11 +100,11 @@ export default defineComponent({
             break
         }
       })
-      
+
       // 更新缓存，使用深拷贝避免引用共享
       columnsHash.value = currentHash
       cachedFormDataStructure.value = JSON.parse(JSON.stringify(formData))
-      
+
       if (
         typeof props.model === 'object'
         && Object.keys(props.model).length > 0
@@ -185,7 +185,7 @@ export default defineComponent({
       () => props.model,
       (newModel) => {
         if (!newModel || typeof newModel !== 'object') return
-        
+
         Object.keys(newModel).forEach(key => {
           if (key in formData.value) {
             formData.value[key] = newModel[key]
@@ -479,8 +479,13 @@ export default defineComponent({
       gridCollapsed.value = !gridCollapsed.value
     }
 
+    const formPassThrough = computed(() => {
+      const { columns, mode, gridCols, gridCollapsed, gridCollapsedRows, defaultValue, loading, searchText, submitText, resetText, ...rest } = props
+      return rest
+    })
+
     return () => (
-      <NForm ref={formRef} {...props} model={formData.value}>
+      <NForm ref={formRef} {...formPassThrough.value} model={formData.value}>
         <NGrid
           ref={gridRef}
           item-responsive

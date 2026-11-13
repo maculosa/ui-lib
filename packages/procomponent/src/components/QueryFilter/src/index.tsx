@@ -198,8 +198,8 @@ export default defineComponent({
           labelWidth="auto"
           showFeedback={false}
           showRequireMark={false}
-          v-bind={props.formConfig}
           model={searchFormData.value}
+          {...props.formConfig}
         >
           <NGrid
             ref={gridRef}
@@ -254,7 +254,7 @@ export default defineComponent({
                       placeholder={getDefaultPlaceholder(item.valueType, item.title)}
                       clearable
                       style={{ width: '100%' }}
-                      v-bind={item?.formItemProps}
+                      {...item?.formItemProps}
                     />
                 }
               </NFormItemGi>

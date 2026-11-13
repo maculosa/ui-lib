@@ -242,7 +242,7 @@ export default defineComponent({
           loading={props.loading}
           pagination={props.pagination}
           renderCell={renderEmptyCell}
-          flexHeight={props.autoFlex}
+          flexHeight={props.autoFlex || props.height !== null}
           style={dataTableStyle.value}
           scrollX={autoScrollX.value ?? props.scrollX}
         />
