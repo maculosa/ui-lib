@@ -26,3 +26,15 @@ Login Blocks 是基于 Naive UI 而开发的登录页面组件，提供了登录
 <Demo title="带背景的登录页" url="/examples/blocks/login/simple-bg-login" :raw="SimpleBgLoginRaw">
     <SimpleBgLogin />
 </Demo>
+
+<Demo title="卡片登录页" url="/examples/blocks/login/card-login" :raw="CardLoginRaw">
+    <CardLogin />
+</Demo>
+
+<Demo title="自定义表单插槽" url="/examples/blocks/login/slot-login" :raw="SlotLoginRaw">
+    <SlotLogin />
+</Demo>
+
+<Demo title="双栏登录页" url="/examples/blocks/login/two-column-login" :raw="TwoColumnLoginRaw">
+    <TwoColumnLogin />
+</Demo>

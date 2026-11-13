@@ -1,111 +1,116 @@
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-const headers = ref<HTMLElement[]>([])
-const activeId = ref('')
-const route = useRoute()
-
-function initTOC() {
-  headers.value = []
-  headers.value = Array.from(document.querySelectorAll('h2, h3, h4'))
-
-  const observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          activeId.value = entry.target.id
-        }
-      })
-    },
-    { threshold: 0.5 }
-  )
-
-  headers.value.forEach(header => observer.observe(header))
+interface TocItem {
+  id: string
+  text: string
+  level: number
 }
 
-watchEffect(() => {
-  route.path
-  setTimeout(() => {
-    initTOC()
-    const hash = window.location.hash
-    if (hash) {
-      const target = document.querySelector(hash)
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }
-  }, 500)
-})
+const route = useRoute()
+const items = ref<TocItem[]>([])
+const activeId = ref('')
+
+let headings: HTMLElement[] = []
+let raf = 0
+let mutation: MutationObserver | null = null
+let collectTimer = 0
+
+function update() {
+  if (!headings.length) {
+    activeId.value = ''
+    return
+  }
+  let current = headings[0]
+  for (const heading of headings) {
+    if (heading.getBoundingClientRect().top <= 100) current = heading
+    else break
+  }
+  activeId.value = current.id
+}
+
+function collect() {
+  const main = document.querySelector('.doc-main')
+  if (!main) {
+    headings = []
+    items.value = []
+    return
+  }
+  headings = Array.from(main.querySelectorAll<HTMLElement>('h2[id], h3[id], h4[id]'))
+  items.value = headings.map(heading => ({
+    id: heading.id,
+    text: heading.textContent?.trim() ?? '',
+    level: Number(heading.tagName.slice(1)),
+  }))
+  update()
+}
+
+function scheduleCollect() {
+  window.clearTimeout(collectTimer)
+  collectTimer = window.setTimeout(collect, 250)
+}
+
+function onScroll() {
+  cancelAnimationFrame(raf)
+  raf = requestAnimationFrame(update)
+}
+
+function scrollToId(id: string) {
+  const el = document.getElementById(id)
+  if (!el) return
+  const top = el.getBoundingClientRect().top + window.scrollY - 84
+  window.scrollTo({ top, behavior: 'smooth' })
+}
+
+function handleClick(event: MouseEvent, id: string) {
+  event.preventDefault()
+  scrollToId(id)
+  history.replaceState(null, '', `#${id}`)
+}
+
+function scrollToHash() {
+  const hash = window.location.hash.slice(1)
+  if (hash) scrollToId(decodeURIComponent(hash))
+}
+
+watch(
+  () => route.path,
+  () => {
+    scheduleCollect()
+    window.setTimeout(scrollToHash, 320)
+  },
+)
 
 onMounted(() => {
-  setTimeout(() => {
-    initTOC()
-    const hash = window.location.hash
-    if (hash) {
-      const target = document.querySelector(hash)
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }
-  }, 500)
-
-  const contentObserver = new MutationObserver(() => {
-    initTOC()
-  })
-
-  const mainContent = document.querySelector('.main-content') || document.body
-  contentObserver.observe(mainContent, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    characterData: true,
-  })
-
-  document.addEventListener('click', e => {
-    const target = e.target as HTMLElement
-    if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('#')) {
-      const href = target.getAttribute('href')
-      if (href) {
-        const id = href.slice(1)
-        const element = document.getElementById(id)
-        if (element) {
-          setTimeout(() => {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-          }, 100)
-        }
-      }
-    }
-  })
+  scheduleCollect()
+  window.setTimeout(scrollToHash, 320)
+  window.addEventListener('scroll', onScroll, { passive: true })
+  const main = document.querySelector('.doc-main') ?? document.body
+  mutation = new MutationObserver(scheduleCollect)
+  mutation.observe(main, { childList: true, subtree: true })
 })
 
-function getLevel(tag: string): number {
-  return parseInt(tag.replace('H', '')) - 1
-}
-
-const currentPos = ref('0')
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
+  cancelAnimationFrame(raf)
+  window.clearTimeout(collectTimer)
+  mutation?.disconnect()
+})
 </script>
 
 <template>
-  <nav class="toc sticky top-[92px] pl-4 border-l border-zinc-300 dark:border-zinc-700">
-    <div class="outline-marker absolute -left-px opacity-0 w-0.5 h-4.5 bg-sky-500 rounded-sm transition-all duration-250" :style="{ top: `${currentPos}px`, opacity: 1 }"></div>
-    <div class="toc-title text-sm font-semibold leading-8">目录</div>
-    <ul class="toc-list list-none p-0 m-0">
+  <nav v-if="items.length" class="bm-toc" aria-label="本页目录">
+    <p class="bm-mono-label bm-toc-title">本页目录 / ON THIS PAGE</p>
+    <ul class="bm-toc-list">
       <li
-        v-for="header in headers"
-        :key="header.id"
-        :class="[
-          `level-${getLevel(header.tagName)}`,
-          'cursor-pointer my-1 leading-6',
-          { active: activeId === header.id },
-        ]"
+        v-for="item in items"
+        :key="item.id"
+        class="bm-toc-item"
+        :class="[`is-level-${item.level}`, { 'is-active': activeId === item.id }]"
       >
-        <a
-          :href="`#${header.id}`"
-          class="text-zinc-600 dark:text-zinc-400 no-underline text-sm leading-8 transition-colors duration-200 hover:text-primary"
-          :class="{ 'text-primary font-medium': activeId === header.id }"
-        >
-          {{ header.textContent }}
+        <a :href="`#${item.id}`" @click="handleClick($event, item.id)">
+          {{ item.text }}
         </a>
       </li>
     </ul>
@@ -113,16 +118,61 @@ const currentPos = ref('0')
 </template>
 
 <style scoped>
-.level-1 {
-  font-weight: 600;
-  padding-left: 0;
-}
-
-.level-2 {
+.bm-toc {
+  position: relative;
   padding-left: 16px;
+  border-left: 1px solid var(--color-divider);
 }
 
-.level-3 {
-  padding-left: 32px;
+.bm-toc-title {
+  margin: 0 0 12px;
+  color: var(--color-foreground-tertiary);
+}
+
+.bm-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bm-toc-item {
+  position: relative;
+  margin: 2px 0;
+}
+.bm-toc-item.is-level-3 {
+  padding-left: 14px;
+}
+.bm-toc-item.is-level-4 {
+  padding-left: 28px;
+}
+
+.bm-toc-item a {
+  display: block;
+  padding: 4px 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-foreground-tertiary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bm-toc-item a:hover {
+  color: var(--color-foreground);
+}
+.bm-toc-item.is-active a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+.bm-toc-item.is-active::before {
+  content: '';
+  position: absolute;
+  left: -17px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--color-primary);
 }
 </style>

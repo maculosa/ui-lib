@@ -194,14 +194,14 @@ desc="在表格行中添加操作按钮，如编辑、删除等，点击按钮�
 
 <Demo
 title="外部交互赋值表格搜索框"
-desc="xxx"
-:raw="StatisticToSearch" >
+desc="通过外部按钮或事件向表格搜索框赋值，联动触发查询，适合统计卡片下钻等场景。"
+:raw="StatisticToSearchRaw" >
 <StatisticToSearch />
 </Demo>
 
 <Demo
 title="选择组模式"
-desc="xxx"
+desc="以选择组（Select Group）承载多选筛选条件，适合标签化、可组合的查询场景。"
 :raw="SelectGroupDemoRaw">
 
 <SelectGroupDemo />

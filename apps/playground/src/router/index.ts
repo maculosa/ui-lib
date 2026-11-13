@@ -19,6 +19,18 @@ export const router = createRouter({
           path: 'simple-bg-login',
           component: () => import('@/examples/blocks/login/simple-bg-login.vue'),
         },
+        {
+          path: 'card-login',
+          component: () => import('@/examples/blocks/login/card-login.vue'),
+        },
+        {
+          path: 'slot-login',
+          component: () => import('@/examples/blocks/login/slot-login.vue'),
+        },
+        {
+          path: 'two-column-login',
+          component: () => import('@/examples/blocks/login/two-column-login.vue'),
+        },
       ],
     },
     {

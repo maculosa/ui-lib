@@ -1,164 +1,145 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-// import IconLogo from '~icons/bm-icon/vue';
 
 const router = useRouter()
-
-onMounted(() => {
-  initParticles()
-})
-
-function initParticles() {
-  const canvas = document.getElementById('error-particles') as HTMLCanvasElement
-  const ctx = canvas.getContext('2d')
-  const particles: Array<{ x: number; y: number; size: number; speedX: number; speedY: number }> =
-    []
-
-  const resizeCanvas = () => {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-  }
-
-  window.addEventListener('resize', resizeCanvas)
-  resizeCanvas()
-
-  for (let i = 0; i < 50; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      size: Math.random() * 2 + 1,
-      speedX: (Math.random() - 0.5) * 2,
-      speedY: (Math.random() - 0.5) * 2,
-    })
-  }
-
-  function animate() {
-    if (!ctx) return
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = 'rgba(234, 67, 53, 0.5)'
-
-    particles.forEach(particle => {
-      particle.x += particle.speedX
-      particle.y += particle.speedY
-
-      if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1
-      if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1
-
-      ctx.beginPath()
-      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-      ctx.fill()
-    })
-
-    requestAnimationFrame(animate)
-  }
-
-  animate()
-}
 </script>
 
 <template>
   <div class="error-page">
-    <canvas id="error-particles" class="particles"></canvas>
-    <div class="content">
-      <div class="logo-container">
-        <!-- <IconLogo class="main-logo" /> -->
-      </div>
-      <h1 class="error-code">Error</h1>
-      <p class="error-message">系统发生错误</p>
-      <div class="cta-buttons">
-        <button class="btn primary" @click="router.push('/')">返回首页</button>
+    <div class="error-card bm-corner-marks">
+      <svg class="error-mark" viewBox="0 0 64 64" aria-hidden="true">
+        <rect x="2" y="2" width="60" height="60" rx="14" fill="var(--color-primary)" />
+        <path
+          d="M18 26 L22 14 L29 22 Q32 21 35 22 L42 14 L46 26 Q48 30 48 34 Q48 46 32 46 Q16 46 16 34 Q16 30 18 26 Z"
+          fill="#f4f1ea"
+        />
+        <circle cx="26" cy="32" r="2.4" fill="#141310" />
+        <circle cx="38" cy="32" r="2.4" fill="#141310" />
+        <path
+          d="M30 38 Q32 40 34 38"
+          stroke="#141310"
+          stroke-width="1.8"
+          fill="none"
+          stroke-linecap="round"
+        />
+      </svg>
+      <p class="bm-mono-label error-kicker">SYSTEM · EXCEPTION</p>
+      <h1 class="error-code">Error<span class="error-dot">.</span></h1>
+      <p class="error-message">系统发生错误，请稍后重试，或返回首页继续浏览组件工坊。</p>
+      <div class="error-actions">
+        <button type="button" class="error-btn primary" @click="router.push('/')">返回首页</button>
+        <button type="button" class="error-btn ghost" @click="router.back()">返回上一页</button>
       </div>
     </div>
   </div>
 </template>
 
+<route lang="yaml">
+meta:
+  layout: home
+</route>
+
 <style scoped>
 .error-page {
-  position: relative;
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-  overflow: hidden;
+  min-height: calc(100dvh - var(--layout-header-height));
+  padding: 48px 20px;
 }
 
-.particles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.content {
+.error-card {
   position: relative;
-  z-index: 2;
+  max-width: 520px;
+  width: 100%;
   text-align: center;
-  padding: 2rem;
-  color: #fff;
+  padding: 56px 40px;
+  border: 1px solid var(--color-divider);
+  border-radius: 18px;
+  background: var(--color-surface);
+  box-shadow: 0 30px 80px -50px var(--color-shadow);
 }
 
-.logo-container {
-  margin-bottom: 2rem;
+.error-mark {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 22px;
 }
 
-.main-logo {
-  width: 80px;
-  height: 80px;
-  filter: drop-shadow(0 0 10px rgba(234, 67, 53, 0.5));
+.error-kicker {
+  color: var(--color-primary);
 }
 
 .error-code {
-  font-size: 8rem;
-  font-weight: 700;
-  margin: 0;
-  background: linear-gradient(45deg, #ea4335, #fbbc05, #34a853, #4285f4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 20px rgba(234, 67, 53, 0.3);
+  margin: 12px 0 10px;
+  font-family: var(--font-serif);
+  font-size: 72px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-foreground);
+}
+
+.error-dot {
+  color: var(--color-primary);
 }
 
 .error-message {
-  font-size: 1.5rem;
-  color: #b3b3b3;
-  margin: 1rem 0 3rem;
+  margin: 0 auto 30px;
+  max-width: 360px;
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--color-foreground-secondary);
 }
 
-.cta-buttons {
+.error-actions {
   display: flex;
   justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.btn {
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 1.1rem;
+.error-btn {
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
-.btn.primary {
-  background: #ea4335;
+.error-btn:active {
+  transform: translateY(1px);
+}
+
+.error-btn.primary {
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
   color: #fff;
-  border: none;
 }
 
-.btn.primary:hover {
-  background: #ef5350;
-  box-shadow: 0 0 20px rgba(234, 67, 53, 0.4);
+.error-btn.primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
 }
 
-@media (max-width: 768px) {
-  .error-code {
-    font-size: 6rem;
+.error-btn.ghost {
+  border: 1px solid var(--color-divider);
+  background: transparent;
+  color: var(--color-foreground);
+}
+
+.error-btn.ghost:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+@media (max-width: 640px) {
+  .error-card {
+    padding: 40px 24px;
   }
 
-  .error-message {
-    font-size: 1.2rem;
+  .error-code {
+    font-size: 56px;
   }
 }
 </style>

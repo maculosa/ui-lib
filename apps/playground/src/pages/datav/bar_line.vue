@@ -5,6 +5,7 @@ import {
   NColorPicker,
   NForm,
   NFormItemGi,
+  NGrid,
   NInput,
   NSpin,
   NSlider,
@@ -23,41 +24,13 @@ const data = ref<DataItem[]>([])
 const loading = ref<boolean>(false)
 
 const originData = [
-  {
-    name: 'Mon',
-    value: 1548,
-    phone: 234,
-  },
-  {
-    name: 'Tue',
-    value: 2125,
-    phone: 345,
-  },
-  {
-    name: 'Wed',
-    value: 1520,
-    phone: 124,
-  },
-  {
-    name: 'Thu',
-    value: 3498,
-    phone: 123,
-  },
-  {
-    name: 'Fri',
-    value: 3200,
-    phone: 123,
-  },
-  {
-    name: 'Sat',
-    value: 3181,
-    phone: 123,
-  },
-  {
-    name: 'Sun',
-    value: 2789,
-    phone: 123,
-  },
+  { name: 'Mon', value: 1548, phone: 234 },
+  { name: 'Tue', value: 2125, phone: 345 },
+  { name: 'Wed', value: 1520, phone: 124 },
+  { name: 'Thu', value: 3498, phone: 123 },
+  { name: 'Fri', value: 3200, phone: 123 },
+  { name: 'Sat', value: 3181, phone: 123 },
+  { name: 'Sun', value: 2789, phone: 123 },
 ].sort((a, b) => a.value - b.value)
 
 function fetchData(): Promise<DataItem[]> {
@@ -83,102 +56,285 @@ type FormType = {
   title: string
   barWidth: number
   vertical: boolean
-  type: 'bar' | 'line'
-  color: string | string[]
+  type: 'bar' | 'line' | 'scatter'
+  color: string[]
   colors: Array<[string, string]>
   isGradient: boolean
 }
 
 const formData = ref<FormType>({
-  title: '柱状图',
-  barWidth: 10,
+  title: '本周销售趋势',
+  barWidth: 14,
   vertical: false,
   type: 'bar',
-  color: ['#B1C654', '#60a5fa'],
+  color: ['#f04e23', '#2f6bff'],
   colors: [
-    ['#B1C654', '#91cc75'],
-    ['#60a5fa', '#22d3ee'],
+    ['#f04e23', '#e8a013'],
+    ['#2f6bff', '#22d3ee'],
   ],
   isGradient: true,
 })
 </script>
 
 <template>
-  <n-form>
-    <n-grid :cols="2" :x-gap="16">
-      <n-form-item-gi label="Title">
-        <n-input v-model:value="formData.title" />
-      </n-form-item-gi>
+  <div class="datav-sub">
+    <header class="sub-head">
+      <p class="bm-mono-label sub-kicker">DATAV · BAR / LINE / SCATTER</p>
+      <h1 class="sub-title">柱状 · 折线 · 散点</h1>
+      <p class="sub-desc">
+        Chart 是通用直角坐标图表：同一份双系列数据，可在柱状、折线、散点之间切换，支持横向布局、柱宽调节与渐变配色。
+        下方控件即时生效，右侧画布固定亮色纸感底，保证两种站点主题下读数一致。
+      </p>
+    </header>
 
-      <n-form-item-gi label="图标类型">
-        <n-radio-group v-model:value="formData.type">
-          <n-radio-button value="bar">柱状图</n-radio-button>
-          <n-radio-button value="line">折线图</n-radio-button>
-          <n-radio-button value="scatter">散点图</n-radio-button>
-        </n-radio-group>
-      </n-form-item-gi>
-      <n-form-item-gi v-if="formData.type === 'bar'" label="垂直布局">
-        <n-switch v-model:value="formData.vertical" />
-      </n-form-item-gi>
-      <n-form-item-gi v-if="formData.type === 'bar'" label="柱状图宽度">
-        <n-slider v-model:value="formData.barWidth" :min="10" :max="50" />
-      </n-form-item-gi>
-      <n-form-item-gi label="是否为渐变颜色">
-        <n-switch v-model:value="formData.isGradient" />
-      </n-form-item-gi>
-      <n-form-item-gi v-if="!formData.isGradient" label="柱状图颜色">
-        <n-color-picker v-model:value="formData.color[0]" />
-        <n-color-picker v-model:value="formData.color[1]" />
-      </n-form-item-gi>
-      <n-form-item-gi v-else label="柱状图渐变颜色">
-        <div
-          v-for="(_, index) in formData.colors"
-          :key="index"
-          style="display: flex; gap: 10px; width: 100%"
-        >
-          <n-color-picker v-model:value="formData.colors[index][0]" />
-          <n-color-picker v-model:value="formData.colors[index][1]" />
+    <div class="lab-body">
+      <section class="panel bm-corner-marks">
+        <div class="panel-head">
+          <span class="bm-mono-label">CONTROL DECK</span>
+          <span class="bm-mono-label panel-live"><i class="bm-blink" />LIVE</span>
         </div>
-      </n-form-item-gi>
-    </n-grid>
-  </n-form>
-  <n-spin :show="loading">
-    <div class="box">
-      <Chart
-        :title="{
-          text: formData.title,
-        }"
-        :legend="{
-          mapData: {
-            value: '销售额',
-            phone: '电话',
-          },
-        }"
-        triggerType="axis"
-        :barWidth="formData.barWidth"
-        :xAxis="{ type: formData.vertical ? 'value' : 'category' }"
-        :yAxis="{
-          type: formData.vertical ? 'category' : 'value',
-        }"
-        :seriesType="[
-          {
-            type: formData.type,
-            color: formData.isGradient ? formData.colors[0] : formData.color[0],
-          },
-          {
-            type: formData.type,
-            color: formData.isGradient ? formData.colors[1] : formData.color[1],
-          },
-        ]"
-        :data="data"
-      />
+
+        <n-form label-placement="top" class="panel-form">
+          <n-grid cols="1 s:2" responsive="screen" :x-gap="14" :y-gap="4">
+            <n-form-item-gi label="标题" :span="2">
+              <n-input v-model:value="formData.title" placeholder="图表标题" />
+            </n-form-item-gi>
+
+            <n-form-item-gi label="图表类型" :span="2">
+              <n-radio-group v-model:value="formData.type" size="small">
+                <n-radio-button value="bar">柱状</n-radio-button>
+                <n-radio-button value="line">折线</n-radio-button>
+                <n-radio-button value="scatter">散点</n-radio-button>
+              </n-radio-group>
+            </n-form-item-gi>
+
+            <n-form-item-gi v-if="formData.type === 'bar'" label="横向布局">
+              <n-switch v-model:value="formData.vertical" size="small" />
+            </n-form-item-gi>
+
+            <n-form-item-gi v-if="formData.type === 'bar'" label="柱宽">
+              <n-slider v-model:value="formData.barWidth" :min="6" :max="48" :step="1" />
+            </n-form-item-gi>
+
+            <n-form-item-gi label="渐变配色" :span="2">
+              <n-switch v-model:value="formData.isGradient" size="small" />
+            </n-form-item-gi>
+
+            <n-form-item-gi v-if="!formData.isGradient" label="系列颜色" :span="2">
+              <div class="color-row">
+                <n-color-picker
+                  v-model:value="formData.color[0]"
+                  size="small"
+                  :show-alpha="false"
+                  :modes="['hex']"
+                />
+                <n-color-picker
+                  v-model:value="formData.color[1]"
+                  size="small"
+                  :show-alpha="false"
+                  :modes="['hex']"
+                />
+              </div>
+            </n-form-item-gi>
+
+            <n-form-item-gi v-else label="渐变颜色" :span="2">
+              <div class="gradient-stack">
+                <div v-for="(_, index) in formData.colors" :key="index" class="color-row">
+                  <n-color-picker
+                    v-model:value="formData.colors[index][0]"
+                    size="small"
+                    :show-alpha="false"
+                    :modes="['hex']"
+                  />
+                  <n-color-picker
+                    v-model:value="formData.colors[index][1]"
+                    size="small"
+                    :show-alpha="false"
+                    :modes="['hex']"
+                  />
+                </div>
+              </div>
+            </n-form-item-gi>
+          </n-grid>
+        </n-form>
+      </section>
+
+      <section class="stage">
+        <div class="stage-head">
+          <span class="bm-mono-label">FIG.01 — CHART STAGE</span>
+          <span class="bm-mono-label stage-readout">
+            {{ formData.type.toUpperCase() }} · {{ data.length }} PTS ·
+            {{ formData.isGradient ? 'GRADIENT' : 'SOLID' }}
+          </span>
+        </div>
+        <n-spin :show="loading">
+          <div class="chart-paper">
+            <Chart
+              :title="{ text: formData.title }"
+              :legend="{ mapData: { value: '销售额', phone: '访问量' } }"
+              triggerType="axis"
+              :barWidth="formData.barWidth"
+              :xAxis="{ type: formData.vertical && formData.type === 'bar' ? 'value' : 'category' }"
+              :yAxis="{ type: formData.vertical && formData.type === 'bar' ? 'category' : 'value' }"
+              :seriesType="[
+                {
+                  type: formData.type,
+                  color: formData.isGradient ? formData.colors[0] : formData.color[0],
+                },
+                {
+                  type: formData.type,
+                  color: formData.isGradient ? formData.colors[1] : formData.color[1],
+                },
+              ]"
+              :data="data"
+            />
+          </div>
+        </n-spin>
+        <p class="stage-note">
+          提示：Chart 内部固定使用 ECharts 亮色主题，画布因此保持纸白底；站点切换暗色时图表读数不受影响。
+        </p>
+      </section>
     </div>
-  </n-spin>
+  </div>
 </template>
 
 <style scoped>
-.box {
-  width: 600px;
-  height: 400px;
+.datav-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.sub-kicker {
+  color: var(--color-primary);
+}
+
+.sub-title {
+  margin: 10px 0 12px;
+  font-family: var(--font-serif);
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--color-foreground);
+}
+
+.sub-desc {
+  max-width: 640px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--color-foreground-secondary);
+}
+
+.lab-body {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.panel {
+  position: sticky;
+  top: calc(var(--layout-header-height) + 24px);
+  border: 1px solid var(--color-divider);
+  border-radius: 14px;
+  background: var(--color-surface);
+  padding: 18px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px dashed var(--color-divider);
+  color: var(--color-foreground-secondary);
+}
+
+.panel-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-primary);
+}
+
+.panel-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.panel-form :deep(.n-form-item-label) {
+  font-size: 12px;
+  color: var(--color-foreground-secondary);
+}
+
+.color-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.gradient-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.stage-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--color-foreground-secondary);
+}
+
+.stage-readout {
+  color: var(--color-primary);
+}
+
+.chart-paper {
+  height: 440px;
+  border: 1px solid #dfdacc;
+  border-radius: 14px;
+  background: #fbfaf6;
+  overflow: hidden;
+}
+
+.stage-note {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--color-foreground-tertiary);
+}
+
+@media (max-width: 1100px) {
+  .lab-body {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .sub-title {
+    font-size: 28px;
+  }
+
+  .chart-paper {
+    height: 340px;
+  }
 }
 </style>

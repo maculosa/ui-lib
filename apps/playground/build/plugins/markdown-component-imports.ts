@@ -12,11 +12,20 @@ export function markdownComponentImports(): Plugin {
       if (!id.endsWith('.md')) return
 
       const examplesDir = path.resolve(process.cwd(), 'src/examples')
+      const pagesDir = path.resolve(process.cwd(), 'src/pages')
       const mdDir = path.dirname(id)
       const mdName = path.basename(id, '.md')
 
-      // 查找对应目录下的所有示例组件
-      const demoFiles = glob.sync(`${examplesDir}/${mdName}/**/*.vue`)
+      // 优先使用与文档同结构的嵌套示例目录（如 procomponent/watermark、blocks/login），
+      // 不存在时回退到扁平目录，避免两处同名示例产生重复导入
+      const relDir = path.relative(pagesDir, mdDir)
+      const nestedFiles =
+        relDir && relDir !== '.' && !relDir.startsWith('..')
+          ? glob.sync(`${examplesDir}/${relDir}/${mdName}/**/*.vue`)
+          : []
+      const demoFiles = nestedFiles.length
+        ? nestedFiles
+        : glob.sync(`${examplesDir}/${mdName}/**/*.vue`)
 
       if (demoFiles.length === 0) return
 

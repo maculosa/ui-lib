@@ -6,114 +6,362 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ---------------------------------------------------------------------------
+ * Banmao UI · 组件工坊 — Design Tokens
+ * 纸感暖白 / 墨色暖黑 + 朱红主色，电蓝 / 酸绿 / 琥珀 / 品红辅色
+ * ------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/dmsans-2fb93aaf.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/dmsans-dbe1f17c.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'DM Serif Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/dmserifdisplay-aca0e217.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Serif Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/dmserifdisplay-cbc631ca.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/dmmono-cbe07c46.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/dmmono-612bc94f.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    line-height: 1.4;
-    font-weight: 400;
+  --font-sans: 'DM Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif;
+  --font-serif: 'DM Serif Display', 'Songti SC', 'STSong', 'Noto Serif SC', serif;
+  --font-mono: 'DM Mono', 'SF Mono', 'JetBrains Mono', Menlo, Consolas, 'PingFang SC', monospace;
 
-    color-scheme: light dark;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
 
-    /* iOS 风格系统颜色定义 - 亮色模式 */
-    --color-primary: #84cc16; /* lime-500 */
-    --color-background: #f7faf7;
-    --color-background-secondary: #ffffff;
-    --color-background-tertiary: #edf7ed;
-    --color-foreground: #363636;
-    --color-foreground-secondary: #446644;
-    --color-foreground-tertiary: #6b8b6b;
-    --color-accent: #84cc16; /* lime-500 */
-    --color-accent-secondary: #a3d84d; /* lighter lime */
-    --color-success: #22c55e;
-    --color-warning: #f59e0b;
-    --color-danger: #ef4444;
-    --color-overlay: #00000020;
-    --color-shadow: #00000014;
-    --color-card: #ffffff;
-    --color-card-secondary: #f5fdf5;
-    --color-input: #ffffff;
-    --color-input-border: #c7e5c7;
-    --color-divider: #c7e5c7;
-    --color-selected: #84cc1614;
-    --color-hover: #84cc1608;
-    --color-active: #84cc1614;
-    --color-surface: #ffffff;
-    --color-surface-secondary: #f5fdf5;
-    --color-surface-tertiary: #edf7ed;
-    --color-fill: #e0f0e0;
-    --color-fill-secondary: #d1e8d1;
-    --color-fill-tertiary: #c2e0c2;
+  /* 主色 · 朱红 */
+  --color-primary: #f04e23;
+  --color-primary-hover: #f26339;
+  --color-primary-pressed: #d8431c;
+  --color-accent: #f04e23;
+  --color-accent-secondary: #2f6bff;
+
+  /* 辅助色相 */
+  --color-electric: #2f6bff;
+  --color-acid: #7cb518;
+  --color-amber: #e8a013;
+  --color-magenta: #d6409f;
+
+  /* 语义色 */
+  --color-success: #3e9b4f;
+  --color-warning: #e8a013;
+  --color-danger: #d64545;
+  --color-info: #2f6bff;
+
+  /* 纸面中性色 */
+  --color-background: #f4f1ea;
+  --color-background-secondary: #fbfaf6;
+  --color-background-tertiary: #ece8de;
+  --color-foreground: #1c1a15;
+  --color-foreground-secondary: #57534a;
+  --color-foreground-tertiary: #6c675b;
+  --color-overlay: rgba(28, 26, 21, 0.45);
+  --color-shadow: rgba(28, 26, 21, 0.08);
+  --color-card: #fbfaf6;
+  --color-card-secondary: #f4f1ea;
+  --color-input: #fbfaf6;
+  --color-input-border: #d5cfbf;
+  --color-divider: #dfdacc;
+  --color-selected: rgba(240, 78, 35, 0.09);
+  --color-hover: rgba(240, 78, 35, 0.05);
+  --color-active: rgba(240, 78, 35, 0.12);
+  --color-surface: #fbfaf6;
+  --color-surface-secondary: #f4f1ea;
+  --color-surface-tertiary: #ece8de;
+  --color-fill: #ece8de;
+  --color-fill-secondary: #e2ddd0;
+  --color-fill-tertiary: #d8d2c2;
+
+  /* 代码面板（恒为墨色） */
+  --bm-code-bg: #1c1a16;
+  --bm-code-fg: #e8e4d8;
+  --bm-code-muted: #9a9583;
+  --bm-code-divider: #322e25;
+
+  --layout-header-height: 64px;
+  --bm-grid-line: rgba(28, 26, 21, 0.055);
+  --bm-grid-line-strong: rgba(28, 26, 21, 0.09);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --color-primary: #ff6a3d;
+  --color-primary-hover: #ff8159;
+  --color-primary-pressed: #e55a2e;
+  --color-accent: #ff6a3d;
+  --color-accent-secondary: #6b93ff;
+
+  --color-electric: #6b93ff;
+  --color-acid: #a3d65c;
+  --color-amber: #f0b429;
+  --color-magenta: #f06bc0;
+
+  --color-success: #5fbf6e;
+  --color-warning: #f0b429;
+  --color-danger: #f0655a;
+  --color-info: #6b93ff;
+
+  --color-background: #141310;
+  --color-background-secondary: #1c1a16;
+  --color-background-tertiary: #242119;
+  --color-foreground: #f0ede3;
+  --color-foreground-secondary: #b5b1a2;
+  --color-foreground-tertiary: #979280;
+  --color-overlay: rgba(0, 0, 0, 0.62);
+  --color-shadow: rgba(0, 0, 0, 0.4);
+  --color-card: #1c1a16;
+  --color-card-secondary: #242119;
+  --color-input: #242119;
+  --color-input-border: #3e392d;
+  --color-divider: #322e25;
+  --color-selected: rgba(255, 106, 61, 0.15);
+  --color-hover: rgba(255, 106, 61, 0.08);
+  --color-active: rgba(255, 106, 61, 0.2);
+  --color-surface: #1c1a16;
+  --color-surface-secondary: #242119;
+  --color-surface-tertiary: #2c2820;
+  --color-fill: #2c2820;
+  --color-fill-secondary: #383327;
+  --color-fill-tertiary: #443e2f;
+
+  --bm-code-bg: #12110e;
+  --bm-code-fg: #e8e4d8;
+  --bm-code-muted: #9a9583;
+  --bm-code-divider: #2c2820;
+
+  --bm-grid-line: rgba(240, 237, 227, 0.05);
+  --bm-grid-line-strong: rgba(240, 237, 227, 0.085);
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-accent: var(--color-accent);
+  --color-electric: var(--color-electric);
+  --color-acid: var(--color-acid);
+  --color-amber: var(--color-amber);
+  --color-magenta: var(--color-magenta);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-danger: var(--color-danger);
+  --color-info: var(--color-info);
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-card: var(--color-card);
+  --color-foreground: var(--color-foreground);
+  --color-secondary: var(--color-foreground-secondary);
+  --color-muted: var(--color-fill);
+  --color-muted-foreground: var(--color-foreground-tertiary);
+  --color-border: var(--color-divider);
+  --color-divider: var(--color-divider);
+  --color-fill: var(--color-fill);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+  --default-font-family: var(--font-sans);
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--layout-header-height) + 20px);
 }
 
 html,
 body,
 #app {
-    min-height: 100svh;
-    margin: 0;
-    padding: 0;
+  min-height: 100svh;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-@theme inline {
-    --color-accent: var(--color-primary);
-    --color-secondary: var(--color-foreground-secondary);
-    --color-background: var(--color-background);
-
-    /* 映射到标准颜色名称 */
-    --primary: var(--color-accent);
-    --primary-foreground: #ffffff;
-    --secondary: var(--color-foreground-secondary);
-    --secondary-foreground: #ffffff;
-    --muted: var(--color-background-tertiary);
-    --muted-foreground: var(--color-foreground-tertiary);
-    --accent: var(--color-accent);
-    --accent-foreground: #ffffff;
-    --destructive: var(--color-danger);
-    --destructive-foreground: #ffffff;
+::selection {
+  background: var(--color-primary);
+  color: #fff;
 }
 
-.dark {
-    /* iOS 风格系统颜色定义 - 暗色模式 */
-    --color-primary: #84cc16;
-    --color-background: #27272a;
-    --color-background-secondary: #112811;
-    --color-background-tertiary: #1a351a;
-    --color-foreground: #f0fdf4;
-    --color-foreground-secondary: #dcfce7;
-    --color-foreground-tertiary: #86efac;
-    --color-accent: #a3f74d; /* lighter lime for dark mode */
-    --color-accent-secondary: #bef264; /* even lighter lime */
-    --color-success: #4ade80;
-    --color-warning: #fbbf24;
-    --color-danger: #f87171;
-    --color-overlay: #00000060;
-    --color-shadow: #00000030;
-    --color-card: #112811;
-    --color-card-secondary: #1a351a;
-    --color-input: #1a351a;
-    --color-input-border: #3a6a3a;
-    --color-divider: #2d5a2d;
-    --color-selected: #a3f74d20;
-    --color-hover: #a3f74d10;
-    --color-active: #a3f74d20;
-    --color-surface: #112811;
-    --color-surface-secondary: #1a351a;
-    --color-surface-tertiary: #24432420;
-    --color-fill: #244324;
-    --color-fill-secondary: #2d5a2d;
-    --color-fill-tertiary: #1a351a20;
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
+/* --- 滚动条：工坊视觉语言 --- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-fill-tertiary) transparent;
+}
+.dark * {
+  scrollbar-color: var(--color-fill-secondary) transparent;
+}
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-fill-tertiary);
+  border: 3px solid var(--color-background);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-fill-secondary);
+  border-color: var(--color-background);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* --- 图纸纹理 --- */
+.bm-grid-paper {
+  background-image:
+    linear-gradient(var(--bm-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bm-grid-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.bm-grid-paper-strong {
+  background-image:
+    linear-gradient(var(--bm-grid-line-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bm-grid-line-strong) 1px, transparent 1px),
+    linear-gradient(var(--bm-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bm-grid-line) 1px, transparent 1px);
+  background-size: 140px 140px, 140px 140px, 28px 28px, 28px 28px;
+}
+.bm-dot-grid {
+  background-image: radial-gradient(var(--bm-grid-line-strong) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* --- mono 标注 --- */
+.bm-mono-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-foreground-tertiary);
+}
+
+/* --- 角标记（制图规线） --- */
+.bm-corner-marks {
+  position: relative;
+}
+.bm-corner-marks::before,
+.bm-corner-marks::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  border-color: var(--color-primary);
+  border-style: solid;
+  opacity: 0.65;
+}
+.bm-corner-marks::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1.5px 0 0 1.5px;
+}
+.bm-corner-marks::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 1.5px 1.5px 0;
+}
+
+/* --- 进场动效 --- */
+.bm-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s cubic-bezier(0.19, 1, 0.22, 1), transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.bm-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes bm-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.bm-marquee-track {
+  animation: bm-marquee 36s linear infinite;
+}
+.bm-marquee:hover .bm-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes bm-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+.bm-blink {
+  animation: bm-blink 1.6s ease-in-out infinite;
+}
+
+@keyframes bm-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .bm-reveal { opacity: 1; transform: none; transition: none; }
+  .bm-marquee-track { animation: none; }
+  .bm-blink { animation: none; }
 }

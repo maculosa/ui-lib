@@ -18,7 +18,6 @@ import uslug from "uslug";
 import Icons from "unplugin-icons/vite";
 import { FileSystemIconLoader } from "unplugin-icons/loaders";
 import Layouts from "vite-plugin-vue-layouts-next";
-// import { autoImportRaw } from './build/plugins/vite-plugin-auto-import-raw'
 import { markdownComponentImports } from "./build/plugins/markdown-component-imports";
 import tailwindcss from '@tailwindcss/vite'
 
@@ -36,24 +35,9 @@ export default defineConfig({
     }),
     vueJSX(),
     tailwindcss(),
-    // autoImportRaw(),
     Markdown({
       markdownItOptions: {
-        highlight: (str, lang) => {
-          if (lang && hljs.getLanguage(lang)) {
-              return `<pre><code class="hljs">${
-                hljs.highlight(str, { language: lang, ignoreIllegals: true })
-                  .value
-              }</code></pre>`;
-          } else if (lang === "vue") {
-            return `<pre><code class="hljs">${
-              hljs.highlight(str, { language: "xml", ignoreIllegals: true })
-                .value
-            }</code></pre>`;
-          }
-
-          return `<pre><code class="hljs">${""}</code></pre>`; // use external default escaping
-        },
+        html: true,
       },
       headEnabled: true,
       markdownItUses: [
@@ -62,7 +46,6 @@ export default defineConfig({
         [
           markdownItAnchor,
           {
-            // permalink: true,
             permalinkBefore: true,
             permalinkSymbol: "§",
             permalinkSpace: false,
@@ -80,9 +63,28 @@ export default defineConfig({
       markdownItSetup(md) {
         md.use(markdownItAnchor, {
           permalinkBefore: true,
-          permalinkSymbol: "", // TOC 开头的图标
+          permalinkSymbol: "",
           permalinkAttrs: () => ({ "aria-hidden": true }),
         });
+        md.renderer.rules.fence = (tokens, idx) => {
+          const token = tokens[idx];
+          const info = token.info.trim();
+          if (info === "script-tabs") {
+            const pkg = md.utils.escapeHtml(token.content.trim());
+            return `<ScriptTabs pkg="${pkg}" />`;
+          }
+          const lang = info.split(/\s+/)[0] || "text";
+          const langAlias = lang === "vue" ? "xml" : lang;
+          const code = hljs.getLanguage(langAlias)
+            ? hljs.highlight(token.content, {
+                language: langAlias,
+                ignoreIllegals: true,
+              }).value
+            : md.utils.escapeHtml(token.content);
+          return `<div class="bm-codeblock"><div class="bm-codeblock-bar"><span>${md.utils.escapeHtml(
+            lang
+          )}</span></div><pre><code class="hljs">${code}</code></pre></div>`;
+        };
       },
     }),
     VueRouter({
@@ -185,7 +187,6 @@ export default defineConfig({
       "vue-router",
       "naive-ui",
       "@vueuse/core",
-      "@vueuse/head",
       "highlight.js",
       "@highlightjs/vue-plugin",
     ],

@@ -27,10 +27,6 @@ async function fetchCityList() {
 
 function fakeDataList(data: Record<string, any>) {
   console.log('request data: ', data)
-  fetch('/api/fake/data', {
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
   return new Promise<any>(resolve => {
     setTimeout(() => {
       resolve({

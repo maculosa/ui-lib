@@ -4,6 +4,7 @@ import { setupRouter } from './router'
 import App from './App.vue'
 import Demo from './components/Demo/index.vue'
 import UiDemo from './components/UiDemo/index.vue'
+import ScriptTabs from './components/ScriptTabs/index.vue'
 
 // 引入 Tailwind CSS
 import './styles/main.css'
@@ -21,6 +22,7 @@ const head = createHead()
 
 app.component('Demo', Demo)
 app.component('UiDemo', UiDemo)
+app.component('ScriptTabs', ScriptTabs)
 
 app.use(hljsVuePlugin)
 app.use(head)
