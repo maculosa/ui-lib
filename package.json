@@ -17,6 +17,7 @@
     "docs:preview": "vitepress preview apps/docs",
     "changeset": "changeset",
     "version-packages": "changeset version",
+    "release:one": "node scripts/release.mjs",
     "release": "changeset publish",
     "release:lib": "pnpm build:lib && pnpm release:only",
     "release:datav": "pnpm build:datav && pnpm release:only",
