@@ -27,7 +27,9 @@ export function useTableColumns(columns: any[], options?: { searchSort?: 'asc' |
    * 设置列的数据
    */
   const settingColumns = ref(
-    columns?.map(column => {
+    columns.filter(c => {
+      if (!c.hideInTable) return c
+    })?.map(column => {
       if (column?.type === 'index') {
         return renderIndexCell(column)
       }
@@ -38,10 +40,10 @@ export function useTableColumns(columns: any[], options?: { searchSort?: 'asc' |
 
   /**
    * 初始化表格列配置
-   * 
+   *
    * 本函数用于从全局列配置中筛选出需要显示在表格中的列。
    * 通过过滤掉设置中标记了`hideInTable`属性的列，保留需要在表格展示的列配置。
-   * 
+   *
    * @returns {Array<object>} 过滤后的表格列配置数组，包含所有未标记隐藏的列配置项
    */
   function initTableColumns() {
