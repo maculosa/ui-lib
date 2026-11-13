@@ -191,6 +191,34 @@ export default defineComponent({
       emit('search', searchFormData.value)
     }
 
+    const renderField = (item: QueryFilterColumn) => {
+      if (item.valueType === 'date') {
+        return (
+          <NDatePicker
+            v-model:formatted-value={searchFormData.value[item.key]}
+            type={item.valueType}
+            style="width: 100%"
+            placeholder={getDefaultPlaceholder(item.valueType, item.title)}
+            clearable
+            value-format="yyyy-MM-dd"
+            {...item?.formItemProps}
+          />
+        )
+      }
+
+      const Field = formFieldMaps[item.valueType]
+      return (
+        <Field
+          v-model:value={searchFormData.value[item.key]}
+          options={item.options || options[item.key]}
+          placeholder={getDefaultPlaceholder(item.valueType, item.title)}
+          clearable
+          style={{ width: '100%' }}
+          {...item?.formItemProps}
+        />
+      )
+    }
+
     return () => (
       <NCard hoverable>
         <NForm
@@ -212,51 +240,24 @@ export default defineComponent({
           >
             {transformColumns.value.map(item => (
               <NFormItemGi key={item.key} label={item.title} path={item.key}>
-                {item.tooltip
-                  ? {
-                      label: () => (
-                        <div class="flex gap-2 items-center">
-                          <span>{item.title}</span>
-                          <NTooltip trigger="hover">
-                            {{
-                              trigger: () => <BmIconInfoCircle />,
-                              default: () => item.tooltip,
-                            }}
-                          </NTooltip>
-                        </div>
-                      ),
-                      default: () => (
-                        item.valueType === 'date'
-                          ? <NDatePicker
-                              v-model:formatted-value={searchFormData.value[item.key]}
-                              type={item.valueType}
-                              style="width: 100%"
-                              placeholder={getDefaultPlaceholder(item.valueType, item.title)}
-                              clearable
-                              value-format="yyyy-MM-dd"
-                              v-bind={item?.formItemProps}
-                            />
-                          : <component
-                              is={formFieldMaps[item.valueType]}
-                              v-model:value={searchFormData.value[item.key]}
-                              options={item.options || options[item.key]}
-                              placeholder={getDefaultPlaceholder(item.valueType, item.title)}
-                              clearable
-                              style={{ width: '100%' }}
-                              v-bind={item?.formItemProps}
-                            />
-                      ),
-                    }
-                  : <component
-                      is={formFieldMaps[item.valueType]}
-                      v-model:value={searchFormData.value[item.key]}
-                      options={item.options || options[item.key]}
-                      placeholder={getDefaultPlaceholder(item.valueType, item.title)}
-                      clearable
-                      style={{ width: '100%' }}
-                      {...item?.formItemProps}
-                    />
-                }
+                {{
+                  default: () => renderField(item),
+                  ...(item.tooltip
+                    ? {
+                        label: () => (
+                          <div class="flex gap-2 items-center">
+                            <span>{item.title}</span>
+                            <NTooltip trigger="hover">
+                              {{
+                                trigger: () => <BmIconInfoCircle />,
+                                default: () => item.tooltip,
+                              }}
+                            </NTooltip>
+                          </div>
+                        ),
+                      }
+                    : {}),
+                }}
               </NFormItemGi>
             ))}
 
