@@ -1,4 +1,5 @@
 import type { ExtractPropTypes, PropType } from "vue"
+import { descriptionsProps } from "naive-ui"
 
 export interface ProDescriptionsColumn {
   /** 列的标题 */
@@ -11,7 +12,8 @@ export interface ProDescriptionsColumn {
   render?: (value: any) => any
 }
 
-export const descriptionsProps = {
+export const proDescriptionsProps = {
+  ...descriptionsProps,
   data: {
     type: Object,
     default: () => ({}),
@@ -22,4 +24,4 @@ export const descriptionsProps = {
   },
 }
 
-export type ProDescriptionsProps = ExtractPropTypes<typeof descriptionsProps>
+export type ProDescriptionsProps = ExtractPropTypes<typeof proDescriptionsProps>

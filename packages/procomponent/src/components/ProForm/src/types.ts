@@ -51,7 +51,7 @@ export const proFormProps = {
 
 export const proFormEmits = {
     submit: (values: Record<string, any>) => values,
-    reset: (values?: Record<string, any>) => values ?? undefined,
+    reset: (values?: Record<string, any>) => values === undefined || typeof values === 'object',
     // 'reset:search': (values: Record<string, any>) => values,
 }
 

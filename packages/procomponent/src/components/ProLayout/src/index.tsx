@@ -1,24 +1,28 @@
 import { NButton, NMenu, NScrollbar } from "naive-ui";
 import { proLayoutEmits, proLayoutProps } from "./types";
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 
 export default defineComponent({
   name: "ProLayout",
   props: proLayoutProps,
   emits: proLayoutEmits,
-  setup(props, { slots }) {
+  setup(props, { slots, emit }) {
 
     const currentCollapsed = ref(props.collapsed);
+    watch(() => props.collapsed, (val) => {
+      currentCollapsed.value = val;
+    });
     const toggleCollapsed = () => {
       currentCollapsed.value = !currentCollapsed.value;
+      emit('collapseChange', currentCollapsed.value);
     }
 
     return () => (
       <div class={'w-full  flex flex-col ' + props.class} style={props.style}>
         <header class="p-4 h-16 flex items-center bg-zinc-800 shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
           {props.title && <div class="text-white text-lg font-bold">{props.title}</div>}
-          <slot name="header-extra" />
+          {slots['header-extra']?.()}
           <NButton
             quaternary
             size="small"

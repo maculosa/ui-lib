@@ -1,16 +1,19 @@
 import { NDescriptions, NDescriptionsItem } from 'naive-ui'
-import { defineComponent } from 'vue'
-import { descriptionsProps } from './types'
+import { computed, defineComponent } from 'vue'
+import { proDescriptionsProps } from './types'
 
 export default defineComponent({
   name: 'ProDescriptions',
-  props: descriptionsProps,
+  props: proDescriptionsProps,
   setup(props) {
-    const { data, columns, ...descriptionsProps } = props
+    const descriptionsPassThrough = computed(() => {
+      const { data, columns, ...rest } = props
+      return rest
+    })
 
     return () => (
-      <NDescriptions {...descriptionsProps}>
-        {columns.map((item) => {
+      <NDescriptions {...descriptionsPassThrough.value}>
+        {props.columns.map((item) => {
           if (item && item.render) {
             return (
               <NDescriptionsItem
@@ -18,7 +21,7 @@ export default defineComponent({
                 label={item.title}
                 span={item.span}
               >
-                {item.render(data[item.key])}
+                {item.render(props.data[item.key])}
               </NDescriptionsItem>
             )
           }
@@ -29,7 +32,7 @@ export default defineComponent({
                 label={item.title}
                 span={item.span}
               >
-                {data[item.key]}
+                {props.data[item.key]}
               </NDescriptionsItem>
             )
           }

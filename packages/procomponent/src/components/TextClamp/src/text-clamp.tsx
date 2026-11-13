@@ -1,19 +1,19 @@
 import { defineComponent } from 'vue'
 import type { CSSProperties } from 'vue'
 
-export default defineComponent((props, { slots }) => {
-
-    const { lines } = defineProps({
-        lines: {
-            type: Number,
-            default: 1
-        },
-        ellipsis: {
-            type: Boolean,
-            default: true
-        }
-    })
-
+export default defineComponent({
+  name: 'TextClamp',
+  props: {
+    lines: {
+      type: Number,
+      default: 1
+    },
+    ellipsis: {
+      type: Boolean,
+      default: true
+    }
+  },
+  setup(props, { slots }) {
     const textRef = ref<HTMLDivElement>()
 
     const style = computed<CSSProperties>(() => ({
@@ -29,7 +29,7 @@ export default defineComponent((props, { slots }) => {
 
         const element = textRef.value
         const lineHeight = parseInt(getComputedStyle(element).lineHeight)
-        const maxHeight = lineHeight * lines
+        const maxHeight = lineHeight * props.lines
 
         if (element.scrollHeight > maxHeight) {
             element.style.height = `${maxHeight}px`
@@ -49,6 +49,5 @@ export default defineComponent((props, { slots }) => {
             {slots.default?.()}
         </div>
     )
-}, {
-    name: 'TextClamp'
+  }
 })

@@ -93,13 +93,10 @@ export default defineComponent({
 
     const draw = ref<any>()
 
-    const size = computed(() => {
-      const w = width ? `${width}px` : '100%'
-      return {
-        width: w,
-        height: `${height}px`,
-      }
-    })
+    const size = computed(() => ({
+      width: width.value !== null ? `${width.value}px` : '100%',
+      height: height.value !== null ? `${height.value}px` : '100%'
+    }))
 
     function handleImg() {
       if (!draw.value)
@@ -192,8 +189,10 @@ export default defineComponent({
       })
     })
 
+    onUnmounted(() => draw.value?.destroy?.())
+
     return () => (
-      <div class="shadow-md" style={{ ...size }}>
+      <div class="shadow-md" style={size.value}>
         <n-button onClick={handleImg}>
           导出图片
         </n-button>
