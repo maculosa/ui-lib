@@ -13,6 +13,10 @@ function toTopLevel(options: MenuOption[]): MenuOption[] {
   })
 }
 
+function hasMenuKey(options: MenuOption[] | undefined, key: string | number): boolean {
+  return (options ?? []).some(option => option.key === key || hasMenuKey(option.children as MenuOption[] | undefined, key));
+}
+
 export default defineComponent({
   name: "ProLayout",
   props: proLayoutProps,
@@ -72,13 +76,33 @@ export default defineComponent({
       const active = topLevelOptions.value.find(option => option.key === activeTopKey.value);
       return active?.children ?? [];
     });
-    watch(headerMenus, (options) => {
+    watch([headerMenus, () => props.menuValue], ([options, value]) => {
       if (props.layout !== 'mix') return;
+      // 单一 value 源：外部选中项反推所属一级项，顶栏点击只切一级、不写 value
+      if (value !== undefined) {
+        const owner = topLevelOptions.value.find(option => hasMenuKey(option.children as MenuOption[] | undefined, value));
+        if (owner) {
+          activeTopKey.value = owner.key ?? null;
+          return;
+        }
+      }
       if (options.some(option => option.key === activeTopKey.value)) return;
       const source = topLevelOptions.value;
       const first = source.find(option => option.children?.length) ?? source[0];
       activeTopKey.value = first?.key ?? null;
     }, { immediate: true });
+
+    const handleMenuSelect = (key: string | number, item: MenuOption) => {
+      emit('update:menuValue', key);
+      emit('menuClick', key, item);
+    }
+    const handleTopMenuSelect = (key: string | number, item: MenuOption) => {
+      activeTopKey.value = key;
+      emit('topMenuClick', key, topLevelOptions.value.find(option => option.key === key) ?? item);
+    }
+    const handleExpandedKeysChange = (keys: (string | number)[]) => {
+      emit('update:expandedKeys', keys);
+    }
 
     const collapsedWidth = computed(() => props.menu?.collapsedWidth ?? 64);
     const collapsedIconSize = computed(() => props.menu?.collapsedIconSize ?? 22);
@@ -98,8 +122,10 @@ export default defineComponent({
             mode="horizontal"
             responsive={props.menu?.responsive}
             options={headerMenus.value}
-            value={props.layout === 'mix' ? activeTopKey.value : undefined}
-            onUpdate:value={(key: string | number) => { activeTopKey.value = key }}
+            value={props.layout === 'mix' ? activeTopKey.value : props.menuValue}
+            expandedKeys={props.expandedKeys}
+            onUpdate:value={props.layout === 'mix' ? handleTopMenuSelect : handleMenuSelect}
+            onUpdate:expandedKeys={handleExpandedKeysChange}
           />}
       </div>
     );
@@ -113,6 +139,10 @@ export default defineComponent({
             collapsedWidth={collapsedWidth.value}
             collapsedIconSize={collapsedIconSize.value}
             options={sideMenus.value}
+            value={props.menuValue}
+            expandedKeys={props.expandedKeys}
+            onUpdate:value={handleMenuSelect}
+            onUpdate:expandedKeys={handleExpandedKeysChange}
           />}
       </NScrollbar>
     );

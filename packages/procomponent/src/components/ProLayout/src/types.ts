@@ -72,12 +72,26 @@ export const proLayoutProps = {
   menus: {
     type: Array as PropType<MenuOption[]>,
   },
+  menuValue: {
+    type: [String, Number] as PropType<string | number>,
+    default: undefined,
+  },
+  expandedKeys: {
+    type: Array as PropType<(string | number)[]>,
+    default: undefined,
+  },
 };
 
 export type ProLayoutProps = ExtractPropTypes<typeof proLayoutProps>;
 
 export const proLayoutEmits = {
   collapseChange: (collapsed: boolean) => typeof collapsed === "boolean",
+  'update:menuValue': (key: string | number) => typeof key === "string" || typeof key === "number",
+  'update:expandedKeys': (keys: (string | number)[]) => Array.isArray(keys),
+  menuClick: (key: string | number, item: MenuOption) =>
+    (typeof key === "string" || typeof key === "number") && !!item,
+  topMenuClick: (key: string | number, item: MenuOption) =>
+    (typeof key === "string" || typeof key === "number") && !!item,
 };
 
 export type ProLayoutEmits = ExtractPropTypes<typeof proLayoutEmits>;
