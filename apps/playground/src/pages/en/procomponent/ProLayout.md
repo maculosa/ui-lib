@@ -1,6 +1,6 @@
 ---
 name: ProLayout
-desc: ProLayout is the page skeleton for admin apps — a dark header, a collapsible side menu and a content area, with side / top / mix layouts, header and sidebar customization, a custom footer, built-in content scrolling, remote menu requests and a loading state.
+desc: ProLayout is the page skeleton for admin apps — a dark header, a collapsible side menu and a content area, with side / top / mix layouts, header and sidebar customization, a custom footer, built-in content scrolling, controlled menu selection and menu events, remote menu requests and a loading state.
 ---
 
 <route lang="yaml">
@@ -10,17 +10,18 @@ meta:
 
 # ProLayout
 
-ProLayout is the **layout skeleton** for admin pages: a header bar + menu + content area, with an optional footer. The menu is generated from the `menus` config (passed straight through to Naive UI `NMenu` as `options`). It supports the `side` / `top` / `mix` layouts and the collapsed state can be controlled from outside. The header can be customized with `logo`, `titleRender`, `headerClass` and the `header-extra` slot; the sidebar and content area with `siderClass`, `siderWidth`, `contentClass` and `contentScroll`; the footer content comes from the `footer` slot; and menus can be fetched from the backend through `menu.request`.
+ProLayout is the **layout skeleton** for admin pages: a header bar + menu + content area, with an optional footer. The menu is generated from the `menus` config (passed straight through to Naive UI `NMenu` as `options`). It supports the `side` / `top` / `mix` layouts and the collapsed state can be controlled from outside. The header can be customized with `logo`, `titleRender`, `headerClass` and the `header-extra` slot; the sidebar and content area with `siderClass`, `siderWidth`, `contentClass` and `contentScroll`; the footer content comes from the `footer` slot; menu selection and expansion can be controlled with `menuValue` and `expandedKeys`; and menus can be fetched from the backend through `menu.request`.
 
 This document tracks the repository source.
 
-> **Version note**: the following are **not implemented** in the published `0.7.31` and need the next release: `logo`, `titleRender`, `headerClass`, `collapsedTriggerPosition`, `layout`, `menu`, plus the `footer` slot, `siderClass`, `siderWidth`, `contentClass`, `contentScroll`, `menu.params`, `menu.responsive` and the `expose` methods. Everything else behaves the same as `0.7.31`.
+> **Version note**: the following are **not implemented** in the published `0.7.31` and need the next release: `logo`, `titleRender`, `headerClass`, `collapsedTriggerPosition`, `layout`, `menu`, the `footer` slot, `siderClass`, `siderWidth`, `contentClass`, `contentScroll`, `menu.params`, `menu.responsive` and the `expose` methods, plus `menuValue`, `expandedKeys`, `menuClick`, `topMenuClick` and `update:expandedKeys`. Everything else behaves the same as `0.7.31`.
 
 ## Features
 
 - **Three layout modes**: `layout="side"` for a left menu, `"top"` for a horizontal header menu, `"mix"` for top-level items in the header plus second-level items in the sidebar
 - **Three-part skeleton out of the box**: header (64px) + sidebar (expanded `siderWidth`, 256px by default; configurable collapsed width) + content area, with an optional footer (64px)
 - **Config-driven menu**: `menus` is passed through to `NMenu` as `options`, so icons, nested submenus, groups, dividers and disabled items all work
+- **Controlled menu**: `menuValue` holds the selected key and `expandedKeys` holds the expanded parents; `menuClick` / `topMenuClick` / `update:expandedKeys` report interactions, so you can bind `route.path` directly for router-aware highlighting
 - **Remote menus**: `menu.request` fetches menus on mount, `menu.params` changes re-fetch automatically, with a built-in loading state and an `onLoadingChange` callback
 - **Collapsible sidebar**: `collapsedTriggerPosition` decides whether the trigger sits in the header or at the bottom of the sidebar, with a 300ms width transition
 - **Externally controlled collapse**: the `collapsed` prop plus the `collapseChange` event, or the `expose` methods
@@ -36,11 +37,11 @@ This document tracks the repository source.
 - The **overall page skeleton** of an admin system: one header + one navigation menu + one content container
 - Projects that need to switch between side / top / mixed navigation
 - Menus that come from a backend API and need a loading state or re-fetching by query conditions
+- Projects that need the menu highlight to follow the router, or menu clicks to drive the content area
 - Projects that need a collapsible navigation prototype quickly
 
 The current version is **not a good fit** for the following — compose `NLayout` / `NMenu` yourself instead:
 
-- Controlled menu selection, menu click events, or automatic highlight syncing with the router
 - A responsive mobile drawer menu
 
 ## Quick start
@@ -180,7 +181,8 @@ How `mix` links the two menus:
 - The header renders only top-level items, with `children` stripped; `type: 'group'` keeps its group title, and items inside the group are stripped to top level as well
 - An internal "active top-level item" state starts at the **first top-level item that has children**, falling back to the first item when none do; items inside a group count as top-level candidates, while the group title itself is not clickable and never selected
 - Clicking a top-level item in the header swaps the sidebar content; when the active item has no `children`, **the sidebar is not rendered at all** and the content area takes the full width
-- The horizontal header menu is **controlled** (the component keeps its own `value`); the sidebar menu still manages its selection inside `NMenu`
+- The "active top-level item" of the horizontal header menu is kept internally; when `menuValue` is passed in, the component **derives** the top-level item that owns it and switches both menus together
+- Clicking a top-level item only swaps the sidebar and emits `topMenuClick` — it **never writes** `menuValue`; only sidebar clicks write `menuValue`. See [Menu and selection state](#menu-and-selection-state)
 
 > The horizontal menu in `top` / `mix` does not enable `responsive` by default, so too many items overflow instead of collapsing into a "more" menu. Pass `menu.responsive = true` to enable it — see [MenuConfig](#menuconfig).
 
@@ -226,27 +228,50 @@ The sidebar menu always wraps `NScrollbar`, so overflowing items scroll automati
 
 ### Menu and selection state
 
-`menus` is used directly as `NMenu`'s `options`, so the whole `NMenu` option shape is available (see [MenuOption](#menuoption)). But ProLayout **does not pass through** `value` / `onUpdate:value` / `expandedKeys`, which leads to three constraints:
+`menus` is used directly as `NMenu`'s `options`, so the whole `NMenu` option shape is available (see [MenuOption](#menuoption)). Both selection and expansion can be controlled:
 
-- **Selection highlight is managed inside `NMenu`**: clicking an item highlights it, but the outside can neither read nor change the current selection
-- **There is no menu click event**: ProLayout only emits `collapseChange`, so menu clicks must be handled in the `label` render function
-- **`props.onClick` does not work**: `NMenu` only reads menu-level `nodeProps`; an option's `props` never reach the DOM
+| Prop / event | Purpose |
+| --- | --- |
+| `menuValue` | Key of the selected menu item; supports `v-model:menu-value` |
+| `update:menuValue` | Emits the new key when a menu item is clicked |
+| `expandedKeys` | Array of expanded parent keys; supports `v-model:expanded-keys` |
+| `update:expandedKeys` | Emits the new array when a submenu opens or closes; also the only expansion event |
+| `menuClick` | Emits `(key, item)` when a menu item is clicked — the `side` sidebar, the `top` horizontal menu and the `mix` sidebar all use it |
+| `topMenuClick` | `mix` only: emits `(key, item)` when a top-level header item is clicked; `item` keeps its full `children` |
 
-The correct way to handle menu clicks is to write `label` as a render function:
+**Without `menuValue` the menu is uncontrolled**: `NMenu` keeps the highlight itself, clicks still highlight automatically, and `menuClick` / `update:menuValue` are still emitted — the outside just does not own that state. `expandedKeys` works the same way: leave it out and `NMenu` opens and closes submenus on its own.
 
-```tsx
-const menus = [
-  {
-    key: '/home',
-    icon: () => <Icon icon="hugeicons:home-01" />,
-    label: () => <span onClick={() => router.push('/home')}>Home</span>,
-  },
-]
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { ProLayout } from '@banmao/procomponent'
+
+const menuValue = ref('/home')
+const expandedKeys = ref<string[]>(['/system'])
+</script>
+
+<template>
+  <ProLayout
+    v-model:menu-value="menuValue"
+    v-model:expanded-keys="expandedKeys"
+    :menus="menus"
+    :style="{ height: '100vh' }"
+    @menu-click="(key, item) => console.log(key, item)"
+  />
+</template>
 ```
 
-Clicking the `label` bubbles up to the menu item, so **the highlight and your callback both fire**.
+Two things to keep in mind once controlled:
 
-> In `mix` mode the horizontal header menu is controlled internally (to drive the sidebar), but that selection is not exposed either and has no matching event.
+- **A highlight inside a collapsed submenu is invisible**: `menuValue` only decides the highlight, it never expands parents. When the router lands on a deep page, put the ancestor keys into `expandedKeys` as well
+- **`props.onClick` still does not work**: `NMenu` only reads menu-level `nodeProps`, so an option's `props` never reach the DOM. Use `menuClick` for extra click behavior, or write `label` as a render function
+
+`mix` uses a **single source of value**:
+
+- The selection of top-level header items is kept internally; clicking one only switches the level and emits `topMenuClick`, and **never writes** `menuValue` — otherwise a header click would overwrite the selection with a top-level key and the sidebar highlight would be lost
+- Only sidebar clicks write `menuValue` (and emit `menuClick`)
+- When `menuValue` changes from outside (a route change, for example), the component searches `menus` recursively for the top-level item that owns it and switches to it; if no owner is found, the active top-level item stays as it is
+- When a top-level item has no `children` of its own, clicking it only emits `topMenuClick`; to treat it as a selected page, write `menuValue` yourself in that handler
 
 ### Collapsed state
 
@@ -400,10 +425,26 @@ desc="Groups (type: 'group'), dividers (type: 'divider'), nested children, disab
 </Demo>
 
 <Demo title="Menu and content linkage"
-desc="label is a render function with onClick, so clicking a menu item swaps the content on the right; the highlight is still managed by the inner NMenu."
+desc="v-model:menu-value owns the selection; clicking a menu item writes back through update:menuValue and the content area follows — no onClick inside label needed."
 :raw="MenuNavigateRaw">
 
 <MenuNavigate />
+
+</Demo>
+
+<Demo title="Controlled selection and expansion"
+desc="menuValue decides the highlight and expandedKeys decides which parents are open, both owned outside; external buttons can select a deep item directly, while menuClick and update:expandedKeys log the interactions."
+:raw="MenuControlledRaw">
+
+<MenuControlled />
+
+</Demo>
+
+<Demo title="Controlled mix and top-level derivation"
+desc="A single source of value: header clicks only switch the top level and emit topMenuClick, sidebar clicks write menuValue; changing menuValue from outside derives the owning top-level item and switches both menus."
+:raw="MenuMixControlledRaw">
+
+<MenuMixControlled />
 
 </Demo>
 
@@ -453,41 +494,50 @@ desc="The sidebar menu scrolls automatically through the built-in NScrollbar; wi
 
 ### Linking menus to the router
 
-ProLayout is router-agnostic; render `RouterLink` inside `label` to hook into `vue-router`:
-
-```tsx
-import { RouterLink } from 'vue-router'
-import { Icon } from '@iconify/vue'
-
-const menus = [
-  {
-    key: '/home',
-    icon: () => <Icon icon="hugeicons:home-01" />,
-    label: () => <RouterLink to="/home">Home</RouterLink>,
-  },
-  {
-    key: '/system',
-    icon: () => <Icon icon="hugeicons:settings-02" />,
-    label: 'System',
-    children: [
-      { key: '/system/user', label: () => <RouterLink to="/system/user">Users</RouterLink> },
-      { key: '/system/role', label: () => <RouterLink to="/system/role">Roles</RouterLink> },
-    ],
-  },
-]
-```
+ProLayout does not depend on `vue-router`: bind `route.path` to `menuValue` and call `router.push` in `menuClick`, and the two stay in sync — highlights survive refreshes and direct visits to child routes.
 
 ```vue
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ProLayout } from '@banmao/procomponent'
+
+const route = useRoute()
+const router = useRouter()
+
+// Menu keys are route paths, so the selection follows the router
+const menuValue = computed(() => route.path)
+
+// Deep routes need their ancestors expanded, otherwise the highlight hides inside a collapsed submenu
+const expandedKeys = computed(() => {
+  const segments = route.path.split('/').filter(Boolean)
+  return segments.slice(0, -1).map((_, i) => `/${segments.slice(0, i + 1).join('/')}`)
+})
+
+function handleMenuClick(key: string | number) {
+  router.push(String(key))
+}
+</script>
+
 <template>
-  <ProLayout :menus="menus" :style="{ height: '100vh' }">
-    <div class="h-full overflow-auto">
-      <router-view />
-    </div>
+  <ProLayout
+    :menus="menus"
+    :menu-value="menuValue"
+    :expanded-keys="expandedKeys"
+    :style="{ height: '100vh' }"
+    content-scroll
+    @menu-click="handleMenuClick"
+  >
+    <router-view />
   </ProLayout>
 </template>
 ```
 
-> **Note**: the menu highlight does not follow route changes — after a refresh or when visiting a child route directly, the highlight returns to "nothing selected". For route-level highlighting, style the `label` render function yourself based on `route.path`, or compose the layout with `NMenu` directly.
+This uses `:menu-value` rather than `v-model`: the router is the single source of the selection, menu clicks only navigate, and the route change flows back into the highlight — so two copies of the state never overwrite each other.
+
+Under `mix`, top-level header items usually do not map to real routes: clicking one only emits `topMenuClick` (to swap the sidebar), while sidebar clicks go through `menuClick` to navigate. If a top-level item is itself a page, call `router.push` yourself inside `topMenuClick`.
+
+> You can still render `RouterLink` inside `label`, but then you have to maintain the selection from `route.path` yourself — binding `menuValue` is simpler.
 
 ### Remote menu data
 
@@ -677,6 +727,8 @@ When the content area holds a `ProTable`, use `auto-flex` so the table fills the
 | logo | Header logo image URL, rendered as an `h-8 w-auto` `<img>` left of the title | `string` | - |
 | titleRender | Custom title render function; its return value replaces the whole title node | `(title: string) => VNodeChild` | - |
 | menus | Menu config, passed straight through to `NMenu` as `options` and reactive; acts as `defaultMenuData` when `menu.request` is set | `MenuOption[]` | - |
+| menuValue | Key of the selected menu item, controlled; when omitted the inner `NMenu` owns the selection. Supports `v-model:menu-value` | `string \| number` | `undefined` |
+| expandedKeys | Array of expanded parent keys, controlled; when omitted the inner `NMenu` owns the expansion. Supports `v-model:expanded-keys` | `(string \| number)[]` | `undefined` |
 | menu | Menu behavior config, see [MenuConfig](#menuconfig) | `MenuConfig` | - |
 | layout | Layout mode, see [Layout modes](#layout-modes) | `'side' \| 'top' \| 'mix'` | `'side'` |
 | collapsed | Sidebar collapsed state; changes sync into the internal state, internal flips do not write back. When omitted, the initial value comes from `menu.collapsed` | `boolean` | `undefined` |
@@ -697,10 +749,16 @@ All of the above are consumed except `menu.locale`. The `MenuConfig` type is not
 | Event | Description | Callback parameters |
 | --- | --- | --- |
 | collapseChange | Fired after clicking the header or sidebar-bottom trigger; the argument is the flipped state | `(collapsed: boolean) => void` |
+| update:menuValue | Fired when a menu item is clicked; pairs with `menuValue` for `v-model:menu-value` | `(key: string \| number) => void` |
+| update:expandedKeys | Fired when a submenu opens or closes; pairs with `expandedKeys` for `v-model:expanded-keys`, and is the only expansion event | `(keys: (string \| number)[]) => void` |
+| menuClick | Fired when a menu item is clicked (the `side` sidebar, the `top` horizontal menu, the `mix` sidebar); `item` is the original `MenuOption` | `(key: string \| number, item: MenuOption) => void` |
+| topMenuClick | `mix` only: fired when a top-level header item is clicked; it **does not write** `menuValue`, and `item` keeps its full `children` | `(key: string \| number, item: MenuOption) => void` |
 
-Both `@collapse-change` and `@collapseChange` work in templates.
+`@collapse-change`, `@menu-click`, `@top-menu-click` and their camelCase forms all work in templates.
 
-> There is **no** `update:collapsed`, so `v-model:collapsed` is not supported; there are **no** menu click / select / expand events either — handle menu interaction in the `label` render function.
+> There is **no** `update:collapsed`, so `v-model:collapsed` is not supported — use `:collapsed` plus `@collapse-change`. Menu selection and expansion do support `v-model:menu-value` / `v-model:expanded-keys`.
+
+> Clicking a parent item that has children only opens or closes it: that emits `update:expandedKeys`, not `menuClick` or `update:menuValue`.
 
 ### Slots
 
@@ -747,7 +805,7 @@ const menus = [
 ]
 ```
 
-> `type: 'render'` is ignored by `NMenu`; an option's `props` (such as `props.onClick`) never reach the DOM, so put custom events in `label`. Icon colors come from the theme — there is no need to add `text-white` on `Icon`.
+> `type: 'render'` is ignored by `NMenu`; an option's `props` (such as `props.onClick`) never reach the DOM. Use the `menuClick` event for menu clicks, and only write finer custom interactions into `label`. Icon colors come from the theme — there is no need to add `text-white` on `Icon`.
 
 ### MenuConfig
 
@@ -805,7 +863,7 @@ function reload() {
 </template>
 ```
 
-Both collapse methods take the same path as clicking the trigger, so you still need to write `collapsed` back from `collapseChange` to stay in sync. No menu-related methods (selection, expansion, scrolling to an item) are exposed.
+Both collapse methods take the same path as clicking the trigger, so you still need to write `collapsed` back from `collapseChange` to stay in sync. There are no methods for menu selection or expansion — write `menuValue` / `expandedKeys` directly; no scroll-to-item method is exposed either.
 
 </div>
 
@@ -824,10 +882,19 @@ The root node has no default height. Use `:style="{ height: '100vh' }"`, or a fi
 There is no `update:collapsed` event. Use `:collapsed` plus `@collapse-change` and write the value back yourself.
 
 **No callback when clicking a menu item?**
-ProLayout does not pass menu events through. Write `label` as a render function and bind `onClick`; an option's `props.onClick` does not work.
+Use `@menu-click`, whose arguments are `(key, item)`; `mix` top-level header items go through `@top-menu-click`. An option's `props.onClick` does not work, and expanding / collapsing a submenu emits `@update:expanded-keys`.
 
 **The menu highlight is lost after a refresh?**
-The selection lives inside `NMenu`, is router-agnostic and cannot be controlled. For route-level highlighting, style `label` yourself based on `route.path`.
+Bind `route.path` to `menu-value` and use route paths as menu keys — the highlight then follows the router, including refreshes and direct hits on nested routes. For deep routes, also write the ancestor keys into `expanded-keys`; see [Linking menus to the router](#linking-menus-to-the-router).
+
+**Clicking a menu does not highlight it once `menu-value` is passed?**
+In controlled mode the component never changes the selection on its own. Use `v-model:menu-value`, or assign the value yourself inside `@update:menu-value`. Passing only `:menu-value` without listening to the event freezes the highlight on the key you passed in.
+
+**The selected item sits in a submenu and I cannot see the highlight?**
+`menuValue` only decides the highlight; it does not expand parents automatically. Write the ancestor keys into `expandedKeys` (in router scenarios, derive them segment by segment from the path).
+
+**Why does `menuValue` stay unchanged when I click the header under `mix`?**
+That is the single value source by design: a header click only switches the top-level item and emits `topMenuClick`, while only a sidebar click writes `menuValue`. Otherwise clicking the header would overwrite the selection with a top-level key and the sidebar highlight would be lost. When a top-level item is itself a page, write the value or navigate inside `topMenuClick`.
 
 **The header collapse trigger disappeared?**
 `collapsedTriggerPosition` defaults to `'bottom'`, so only the sidebar-bottom trigger renders. Pass `collapsed-trigger-position="top"` for the header one; under `layout="top"` neither renders.
@@ -858,15 +925,14 @@ That callback only reflects the internal request state. An externally supplied `
 
 ## Known limitations
 
-Footer content, sidebar color, sidebar width, content padding and scrolling, horizontal menu overflow, menu query params and instance methods are all implemented now. The following capabilities are still missing — plan around them:
+Footer content, sidebar color, sidebar width, content padding and scrolling, horizontal menu overflow, menu query params, instance methods, menu selection state and menu events are all implemented now. The following capabilities are still missing — plan around them:
 
 | Member / capability | Notes |
 | --- | --- |
-| Menu selection | `value` / `expandedKeys` are not passed through: not controllable and router-agnostic (the `mix` header selection is internal only) |
-| Menu events | No click / select / expand events; only the `label` render function |
+| Auto-expanding to the selection | `menuValue` only decides the highlight and never expands ancestors; compute `expandedKeys` yourself for deep routes |
 | Footer height | Fixed at 64px with no `footerClass`; for another height turn `footer` off and lay it out yourself |
 | Header title color | The built-in title hard-codes `text-white`; use `titleRender` when lightening the header |
 | `menu.locale` | Not consumed; the library has no i18n yet |
 | Responsive | No mobile breakpoints and no drawer menu |
 | Multi-tab pages | No built-in tabs; pair it with `ProTabs` yourself |
-| `expose` scope | Only `reloadMenus` / `setCollapsed` / `toggleCollapsed`; no menu selection or expansion methods |
+| `expose` scope | Only `reloadMenus` / `setCollapsed` / `toggleCollapsed`; write `menuValue` / `expandedKeys` for selection and expansion, and no scroll-to-item method |

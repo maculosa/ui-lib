@@ -1,6 +1,6 @@
 ---
 name: ProLayout
-desc: ProLayout 是中后台页面骨架组件，提供深色顶栏、可折叠侧边菜单与内容区，支持 side / top / mix 三种布局、顶栏与侧栏定制、自定义页脚、内容区内置滚动、远程菜单请求与加载态。
+desc: ProLayout 是中后台页面骨架组件，提供深色顶栏、可折叠侧边菜单与内容区，支持 side / top / mix 三种布局、顶栏与侧栏定制、自定义页脚、内容区内置滚动、受控菜单选中态与菜单事件、远程菜单请求与加载态。
 ---
 
 <route lang="yaml">
@@ -10,17 +10,18 @@ meta:
 
 # ProLayout
 
-ProLayout 是中后台页面的**布局骨架**组件：顶部标题栏 + 菜单 + 内容区，可选页脚。菜单由 `menus` 配置生成（直接透传 Naive UI `NMenu` 的 `options`），支持 `side` / `top` / `mix` 三种布局，折叠状态可外部控制。顶栏可通过 `logo`、`titleRender`、`headerClass` 与 `header-extra` 插槽定制，侧栏与内容区可通过 `siderClass`、`siderWidth`、`contentClass`、`contentScroll` 定制，页脚内容走 `footer` 插槽，菜单可通过 `menu.request` 从后端拉取。
+ProLayout 是中后台页面的**布局骨架**组件：顶部标题栏 + 菜单 + 内容区，可选页脚。菜单由 `menus` 配置生成（直接透传 Naive UI `NMenu` 的 `options`），支持 `side` / `top` / `mix` 三种布局，折叠状态可外部控制。顶栏可通过 `logo`、`titleRender`、`headerClass` 与 `header-extra` 插槽定制，侧栏与内容区可通过 `siderClass`、`siderWidth`、`contentClass`、`contentScroll` 定制，页脚内容走 `footer` 插槽，菜单选中态与展开态可通过 `menuValue`、`expandedKeys` 受控，菜单可通过 `menu.request` 从后端拉取。
 
 当前文档对应仓库源码。
 
-> **版本提示**：以下能力在已发布的 `0.7.31` 中**尚未实现**，需等待下一个发布版本：`logo`、`titleRender`、`headerClass`、`collapsedTriggerPosition`、`layout`、`menu`，以及 `footer` 插槽、`siderClass`、`siderWidth`、`contentClass`、`contentScroll`、`menu.params`、`menu.responsive` 与 `expose` 方法。其余行为与 `0.7.31` 一致。
+> **版本提示**：以下能力在已发布的 `0.7.31` 中**尚未实现**，需等待下一个发布版本：`logo`、`titleRender`、`headerClass`、`collapsedTriggerPosition`、`layout`、`menu`，`footer` 插槽、`siderClass`、`siderWidth`、`contentClass`、`contentScroll`、`menu.params`、`menu.responsive` 与 `expose` 方法，以及 `menuValue`、`expandedKeys`、`menuClick`、`topMenuClick`、`update:expandedKeys`。其余行为与 `0.7.31` 一致。
 
 ## 特性
 
 - **三种布局模式**：`layout="side"` 左侧菜单 / `"top"` 顶部横排菜单 / `"mix"` 顶部一级 + 侧边二级
 - **开箱即用的三段骨架**：顶栏（64px）+ 侧栏（展开 `siderWidth`，默认 256px；折叠宽度可配）+ 内容区，可选页脚（64px）
 - **配置式菜单**：`menus` 透传 `NMenu` 的 `options`，支持图标、多级子菜单、分组、分割线、禁用项
+- **受控菜单**：`menuValue` 持有选中项、`expandedKeys` 持有展开的父级，`menuClick` / `topMenuClick` / `update:expandedKeys` 抛出交互，可直接绑 `route.path` 做路由高亮
 - **远程菜单**：`menu.request` 挂载时拉取菜单，`menu.params` 变化自动重新请求，自带加载态与 `onLoadingChange` 回调
 - **可折叠侧栏**：`collapsedTriggerPosition` 决定折叠按钮在顶栏还是侧栏底部，带 300ms 宽度过渡动画
 - **折叠状态可外部控制**：`collapsed` 属性 + `collapseChange` 事件，也可调用 `expose` 的方法
@@ -36,11 +37,11 @@ ProLayout 是中后台页面的**布局骨架**组件：顶部标题栏 + 菜单
 - 中后台系统的**整体页面骨架**：一个顶栏 + 一份导航菜单 + 一个内容容器
 - 需要在侧边 / 顶部 / 混合三种导航形态之间切换的项目
 - 菜单来自后端接口、需要加载态或按查询条件重新拉取的场景
+- 需要菜单高亮跟随路由、或用菜单点击事件驱动内容区的项目
 - 需要快速搭出可折叠导航原型的项目
 
 以下场景当前版本**不适合**，请自行组合 `NLayout` / `NMenu`：
 
-- 需要受控菜单选中态、菜单点击事件、菜单与路由自动高亮联动
 - 需要响应式移动端抽屉菜单
 
 ## 快速上手
@@ -180,7 +181,8 @@ div  ← 根节点：w-full flex flex-col + class prop，style prop 作用于这
 - 顶栏只渲染一级菜单，`children` 被剥离；`type: 'group'` 分组保留分组标题，组内项同样被剥离为一级
 - 内部维护「当前一级菜单」状态，初始取**第一个带子菜单的一级项**，都没有子菜单时取第一项；分组内的项视为一级项参与候选，分组标题本身不可点击、不参与选中
 - 点击顶栏一级菜单即切换侧栏内容；当前一级菜单没有 `children` 时**侧栏整体不渲染**，内容区占满宽度
-- 顶栏横排菜单是**受控**的（内部维护 `value`），侧栏菜单仍由 `NMenu` 自行维护选中态
+- 顶栏横排菜单的「当前一级项」由组件内部维护；传入 `menuValue` 时会**反推**它所属的一级项，顶栏与侧栏一起切过去
+- 点击顶栏一级项只切换侧栏并抛出 `topMenuClick`，**不会**写 `menuValue`；侧栏点击才写 `menuValue`，详见[菜单与选中态](#菜单与选中态)
 
 > `top` / `mix` 的横排菜单默认不开启 `responsive`，菜单项过多时会溢出而不是收进「更多」。需要收纳请传 `menu.responsive = true`，见 [MenuConfig](#menuconfig)。
 
@@ -226,27 +228,50 @@ div  ← 根节点：w-full flex flex-col + class prop，style prop 作用于这
 
 ### 菜单与选中态
 
-`menus` 直接作为 `NMenu` 的 `options`，因此 `NMenu` 的选项结构全部可用（见 [MenuOption](#menuoption)）。但 ProLayout **没有透传** `value` / `onUpdate:value` / `expandedKeys`，由此产生三条约束：
+`menus` 直接作为 `NMenu` 的 `options`，因此 `NMenu` 的选项结构全部可用（见 [MenuOption](#menuoption)）。选中态与展开态都支持受控：
 
-- **选中高亮由 `NMenu` 内部维护**：点击菜单项会自动高亮，但外部读不到、也改不了当前选中项
-- **没有菜单点击事件**：ProLayout 只抛出 `collapseChange`，菜单点击需要写在 `label` 渲染函数里
-- **`props.onClick` 不生效**：`NMenu` 只读取菜单级的 `nodeProps`，选项上的 `props` 不会落到 DOM
+| 属性 / 事件 | 作用 |
+| --- | --- |
+| `menuValue` | 当前选中的菜单 key，支持 `v-model:menu-value` |
+| `update:menuValue` | 点击菜单项时抛出新的 key |
+| `expandedKeys` | 展开的父级 key 数组，支持 `v-model:expanded-keys` |
+| `update:expandedKeys` | 展开 / 收起子菜单时抛出新的数组，也是唯一的展开事件 |
+| `menuClick` | 点击菜单项时抛出 `(key, item)`；`side` 的侧栏、`top` 的横排菜单、`mix` 的侧栏都走这个事件 |
+| `topMenuClick` | 仅 `mix`：点击顶栏一级项时抛出 `(key, item)`，`item` 带完整 `children` |
 
-菜单点击的正确写法是把 `label` 写成渲染函数：
+**不传 `menuValue` 时是非受控**：`NMenu` 自己维护高亮，点击照样自动高亮，`menuClick` 与 `update:menuValue` 也照样抛出，只是外部不持有这份状态。`expandedKeys` 同理，不传时由 `NMenu` 自行展开收起。
 
-```tsx
-const menus = [
-  {
-    key: '/home',
-    icon: () => <Icon icon="hugeicons:home-01" />,
-    label: () => <span onClick={() => router.push('/home')}>首页</span>,
-  },
-]
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { ProLayout } from '@banmao/procomponent'
+
+const menuValue = ref('/home')
+const expandedKeys = ref<string[]>(['/system'])
+</script>
+
+<template>
+  <ProLayout
+    v-model:menu-value="menuValue"
+    v-model:expanded-keys="expandedKeys"
+    :menus="menus"
+    :style="{ height: '100vh' }"
+    @menu-click="(key, item) => console.log(key, item)"
+  />
+</template>
 ```
 
-点击 `label` 时，事件会冒泡到菜单项，因此**高亮与自定义回调会同时生效**。
+受控之后有两点要注意：
 
-> `mix` 模式的顶栏横排菜单由组件内部受控（用于联动侧栏），但这份选中态同样不对外暴露，也没有对应事件。
+- **高亮项在收起的子菜单里时看不到**：`menuValue` 只决定高亮，不会自动展开父级。路由直达深层页面时，请把祖先 key 一并写进 `expandedKeys`
+- **`props.onClick` 仍然不生效**：`NMenu` 只读取菜单级的 `nodeProps`，选项上的 `props` 不会落到 DOM。需要额外点击行为时用 `menuClick`，或把 `label` 写成渲染函数
+
+`mix` 模式是**单一 value 源**：
+
+- 顶栏一级项的选中态由组件内部维护，点击只切一级并抛 `topMenuClick`，**不写** `menuValue`——否则点顶栏就会把选中态覆盖成一级 key，侧栏高亮丢失
+- 侧栏点击才写 `menuValue`，同时抛 `menuClick`
+- 外部改 `menuValue`（例如路由变化）时，组件在 `menus` 里递归查找它所属的一级项并切过去；找不到所属一级项时不改动当前一级项
+- 一级项自身没有 `children` 时，点它只抛 `topMenuClick`；需要把它当作页面选中，请在该事件里自行写 `menuValue`
 
 ### 折叠状态
 
@@ -400,10 +425,26 @@ desc="分组（type: 'group'）、分割线（type: 'divider'）、多级 childr
 </Demo>
 
 <Demo title="菜单与内容联动"
-desc="label 写成渲染函数并绑定 onClick，点击菜单切换右侧内容；高亮仍由内部 NMenu 维护。"
+desc="v-model:menu-value 持有选中项，点击菜单经 update:menuValue 回写，内容区随之切换，不再需要把 onClick 写进 label。"
 :raw="MenuNavigateRaw">
 
 <MenuNavigate />
+
+</Demo>
+
+<Demo title="受控选中态与展开态"
+desc="menuValue 决定高亮、expandedKeys 决定展开的父级，两者都由外部持有；外部按钮可直接选中深层项，menuClick 与 update:expandedKeys 记录交互。"
+:raw="MenuControlledRaw">
+
+<MenuControlled />
+
+</Demo>
+
+<Demo title="mix 受控与一级项反推"
+desc="单一 value 源：顶栏点击只切一级并抛 topMenuClick，侧栏点击才写 menuValue；外部改 menuValue 会反推所属一级项，顶栏与侧栏一起切过去。"
+:raw="MenuMixControlledRaw">
+
+<MenuMixControlled />
 
 </Demo>
 
@@ -453,41 +494,50 @@ desc="侧栏菜单由内置 NScrollbar 自动滚动；不开启 content-scroll �
 
 ### 菜单联动路由
 
-ProLayout 不感知路由，用 `label` 渲染 `RouterLink` 即可接入 `vue-router`：
-
-```tsx
-import { RouterLink } from 'vue-router'
-import { Icon } from '@iconify/vue'
-
-const menus = [
-  {
-    key: '/home',
-    icon: () => <Icon icon="hugeicons:home-01" />,
-    label: () => <RouterLink to="/home">首页</RouterLink>,
-  },
-  {
-    key: '/system',
-    icon: () => <Icon icon="hugeicons:settings-02" />,
-    label: '系统管理',
-    children: [
-      { key: '/system/user', label: () => <RouterLink to="/system/user">用户管理</RouterLink> },
-      { key: '/system/role', label: () => <RouterLink to="/system/role">角色管理</RouterLink> },
-    ],
-  },
-]
-```
+ProLayout 不依赖 `vue-router`：把 `route.path` 绑到 `menuValue`、在 `menuClick` 里 `router.push`，即可双向联动，刷新与直达子路由都能正确高亮。
 
 ```vue
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ProLayout } from '@banmao/procomponent'
+
+const route = useRoute()
+const router = useRouter()
+
+// 菜单 key 直接用路由 path，选中态就跟随路由
+const menuValue = computed(() => route.path)
+
+// 深层路由要把祖先一并展开，否则高亮项藏在收起的子菜单里
+const expandedKeys = computed(() => {
+  const segments = route.path.split('/').filter(Boolean)
+  return segments.slice(0, -1).map((_, i) => `/${segments.slice(0, i + 1).join('/')}`)
+})
+
+function handleMenuClick(key: string | number) {
+  router.push(String(key))
+}
+</script>
+
 <template>
-  <ProLayout :menus="menus" :style="{ height: '100vh' }">
-    <div class="h-full overflow-auto">
-      <router-view />
-    </div>
+  <ProLayout
+    :menus="menus"
+    :menu-value="menuValue"
+    :expanded-keys="expandedKeys"
+    :style="{ height: '100vh' }"
+    content-scroll
+    @menu-click="handleMenuClick"
+  >
+    <router-view />
   </ProLayout>
 </template>
 ```
 
-> **注意**：菜单高亮不会跟随路由变化——刷新页面或直接访问子路由时，高亮会回到「无选中」。需要路由级高亮时，请在 `label` 渲染函数里根据 `route.path` 自行加样式，或改用 `NMenu` 自行组合布局。
+这里用 `:menu-value` 而不是 `v-model`：选中态的唯一来源是路由，菜单点击只负责跳转，路由变化后再回流成高亮，避免两份状态互相覆盖。
+
+`mix` 布局下顶栏一级项通常不对应真实路由，点击它只抛 `topMenuClick`（用于切侧栏），侧栏点击才走 `menuClick` 跳转；若一级项本身就是页面，请在 `topMenuClick` 里自行 `router.push`。
+
+> 仍然可以把 `label` 写成 `RouterLink` 渲染函数，但那样选中态还得自己按 `route.path` 维护，不如直接绑 `menuValue`。
 
 ### 远程菜单数据
 
@@ -677,6 +727,8 @@ import { ProLayout } from '@banmao/procomponent'
 | logo | 顶栏 logo 图片地址，渲染为 `h-8 w-auto` 的 `<img>`，位于标题左侧 | `string` | - |
 | titleRender | 自定义标题渲染函数，返回值替换整个标题节点 | `(title: string) => VNodeChild` | - |
 | menus | 菜单配置，直接透传 `NMenu` 的 `options`，响应式生效；有 `menu.request` 时作为 `defaultMenuData` | `MenuOption[]` | - |
+| menuValue | 当前选中的菜单 key，受控；不传时由内部 `NMenu` 维护选中态。支持 `v-model:menu-value` | `string \| number` | `undefined` |
+| expandedKeys | 展开的父级 key 数组，受控；不传时由内部 `NMenu` 维护展开态。支持 `v-model:expanded-keys` | `(string \| number)[]` | `undefined` |
 | menu | 菜单行为配置，见 [MenuConfig](#menuconfig) | `MenuConfig` | - |
 | layout | 布局模式，见[布局模式](#布局模式) | `'side' \| 'top' \| 'mix'` | `'side'` |
 | collapsed | 侧栏折叠状态；变化时同步内部状态，内部翻转不会回写。未传时初始值取 `menu.collapsed` | `boolean` | `undefined` |
@@ -697,10 +749,16 @@ import { ProLayout } from '@banmao/procomponent'
 | 事件名 | 说明 | 回调参数 |
 | --- | --- | --- |
 | collapseChange | 点击顶栏或侧栏底部的折叠按钮后触发，参数为翻转后的状态 | `(collapsed: boolean) => void` |
+| update:menuValue | 点击菜单项时触发，配合 `menuValue` 实现 `v-model:menu-value` | `(key: string \| number) => void` |
+| update:expandedKeys | 展开 / 收起子菜单时触发，配合 `expandedKeys` 实现 `v-model:expanded-keys`，也是唯一的展开事件 | `(keys: (string \| number)[]) => void` |
+| menuClick | 点击菜单项时触发（`side` 的侧栏、`top` 的横排菜单、`mix` 的侧栏），`item` 是原始 `MenuOption` | `(key: string \| number, item: MenuOption) => void` |
+| topMenuClick | 仅 `mix`：点击顶栏一级项时触发，**不写** `menuValue`，`item` 带完整 `children` | `(key: string \| number, item: MenuOption) => void` |
 
-模板中写 `@collapse-change` 或 `@collapseChange` 均可。
+模板中写 `@collapse-change`、`@menu-click`、`@top-menu-click` 或对应驼峰均可。
 
-> **没有** `update:collapsed`，因此不支持 `v-model:collapsed`；**没有**菜单点击 / 选中 / 展开事件，菜单交互请写在 `label` 渲染函数里。
+> **没有** `update:collapsed`，因此不支持 `v-model:collapsed`，折叠请用 `:collapsed` + `@collapse-change`；菜单选中态与展开态则支持 `v-model:menu-value` / `v-model:expanded-keys`。
+
+> 点击带子菜单的父级项只会展开 / 收起，抛 `update:expandedKeys`，不抛 `menuClick` 与 `update:menuValue`。
 
 ### Slots
 
@@ -747,7 +805,7 @@ const menus = [
 ]
 ```
 
-> `type: 'render'` 会被 `NMenu` 忽略；选项上的 `props`（如 `props.onClick`）不会落到 DOM，自定义事件请写在 `label` 里。图标颜色由主题控制，无需在 `Icon` 上写 `text-white`。
+> `type: 'render'` 会被 `NMenu` 忽略；选项上的 `props`（如 `props.onClick`）不会落到 DOM，菜单点击请用 `menuClick` 事件，更细的自定义交互才写进 `label`。图标颜色由主题控制，无需在 `Icon` 上写 `text-white`。
 
 ### MenuConfig
 
@@ -805,7 +863,7 @@ function reload() {
 </template>
 ```
 
-两个折叠方法与点击按钮走同一条路径，因此外部仍需用 `collapseChange` 回写 `collapsed` 才能保持同步。菜单相关的方法（选中、展开、滚动到某项）没有暴露。
+两个折叠方法与点击按钮走同一条路径，因此外部仍需用 `collapseChange` 回写 `collapsed` 才能保持同步。菜单选中与展开没有对应方法，请直接写 `menuValue` / `expandedKeys`；滚动到某项的方法也没有暴露。
 
 </div>
 
@@ -824,10 +882,19 @@ function reload() {
 没有 `update:collapsed` 事件。请用 `:collapsed` + `@collapse-change` 手动回写。
 
 **点击菜单没有回调？**
-ProLayout 不透传菜单事件。把 `label` 写成渲染函数并绑定 `onClick`；选项上的 `props.onClick` 不生效。
+用 `@menu-click`，参数是 `(key, item)`；`mix` 的顶栏一级项走 `@top-menu-click`。选项上的 `props.onClick` 不生效，展开 / 收起子菜单则抛 `@update:expanded-keys`。
 
 **刷新后菜单高亮丢失？**
-选中态由内部 `NMenu` 维护且不感知路由，无法受控。需要路由级高亮请在 `label` 中按 `route.path` 自行加样式。
+把 `route.path` 绑到 `menu-value`，菜单 key 用路由 path，高亮就会跟随路由（含刷新与直达子路由）。深层路由记得把祖先 key 一并写进 `expanded-keys`，见[菜单联动路由](#菜单联动路由)。
+
+**传了 `menu-value` 后点击菜单不高亮？**
+受控模式下组件不会自行改选中态，必须用 `v-model:menu-value`，或在 `@update:menu-value` 里自己赋值。只传 `:menu-value` 而不接事件，高亮会一直停在传入的那个 key。
+
+**选中项在子菜单里，看不到高亮？**
+`menuValue` 只决定高亮，不会自动展开父级。请把祖先 key 写进 `expandedKeys`（路由场景可按 path 逐级推导）。
+
+**`mix` 下点顶栏为什么 `menuValue` 不变？**
+这是单一 value 源的设计：顶栏点击只切一级项并抛 `topMenuClick`，侧栏点击才写 `menuValue`。否则点顶栏会把选中态覆盖成一级 key，侧栏高亮就丢了。一级项本身是页面时，请在 `topMenuClick` 里自行写值或跳转。
 
 **顶栏的折叠按钮不见了？**
 `collapsedTriggerPosition` 默认 `'bottom'`，只渲染侧栏底部那一个按钮。需要顶栏按钮请传 `collapsed-trigger-position="top"`；`layout="top"` 下两者都不渲染。
@@ -858,15 +925,14 @@ ProLayout 不透传菜单事件。把 `label` 写成渲染函数并绑定 `onCli
 
 ## 已知限制
 
-页脚内容、侧栏配色、侧栏宽度、内容区边距与滚动、横排菜单收纳、菜单查询参数与实例方法均已补齐，以下能力仍然缺失，选型时请避开：
+页脚内容、侧栏配色、侧栏宽度、内容区边距与滚动、横排菜单收纳、菜单查询参数、实例方法、菜单选中态与菜单事件均已补齐，以下能力仍然缺失，选型时请避开：
 
 | 成员 / 能力 | 说明 |
 | --- | --- |
-| 菜单选中态 | 未透传 `value` / `expandedKeys`，不可受控、不感知路由（`mix` 顶栏选中态仅内部使用） |
-| 菜单事件 | 无点击 / 选中 / 展开事件，只能用 `label` 渲染函数 |
+| 自动展开到选中项 | `menuValue` 只决定高亮，不会自动展开祖先；深层路由请自行计算 `expandedKeys` |
 | 页脚高度 | 固定 64px，无 `footerClass`；需要别的高度请关闭 `footer` 自行排版 |
 | 顶栏标题配色 | 内置标题写死 `text-white`，改浅色顶栏时需用 `titleRender` 自行渲染 |
 | `menu.locale` | 未消费，组件库尚未接入 i18n |
 | 响应式 | 无移动端断点与抽屉菜单 |
 | 多标签页 | 无内置页签，请自行配合 `ProTabs` |
-| `expose` 范围 | 只有 `reloadMenus` / `setCollapsed` / `toggleCollapsed`，没有菜单选中、展开相关方法 |
+| `expose` 范围 | 只有 `reloadMenus` / `setCollapsed` / `toggleCollapsed`；选中与展开请写 `menuValue` / `expandedKeys`，也没有滚动到某项的方法 |
