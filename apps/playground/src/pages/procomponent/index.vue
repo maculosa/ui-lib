@@ -133,6 +133,7 @@ const catalog: CatalogItem[] = [
     name: 'ProTabs',
     descKey: 'proTabs',
     category: 'layout',
+    url: '/procomponent/ProTabs',
     tags: ['Tabs'],
   },
   {

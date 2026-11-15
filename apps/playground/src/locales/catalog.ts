@@ -32,7 +32,7 @@ export const zh = {
   desc_proList: '分页列表：卡片式数据流与加载更多。',
   desc_textClamp: '多行截断文本：展开/收起与复制。',
   desc_linkDiagram: '拓扑图：油罐-加油机关系可视化。',
-  desc_proTabs: '选项卡容器：页签缓存与路由联动。',
+  desc_proTabs: '选项卡条：card / line 两种形态，受控选中、徽标、可关闭与自定义渲染。',
   desc_actions: '可折叠操作按钮组：超出宽度自动收纳。',
   desc_tour: '漫游引导：分步高亮页面元素。',
 }
@@ -71,7 +71,7 @@ export const en = {
   desc_proList: 'Paginated list: card-style data feed with load-more.',
   desc_textClamp: 'Multi-line clamped text: expand/collapse and copy.',
   desc_linkDiagram: 'Topology diagram: tank-to-dispenser relationship visualization.',
-  desc_proTabs: 'Tabs container: tab caching wired to the router.',
+  desc_proTabs: 'Tab bar: card / line styles, controlled selection, badges, closable tabs and custom rendering.',
   desc_actions: 'Collapsible action group: buttons fold away when they overflow.',
   desc_tour: 'Guided tour: highlight page elements step by step.',
 }

@@ -198,6 +198,7 @@ function handleSubmit(model: Record<string, unknown>) {
 | 组件 | 说明 |
 | --- | --- |
 | [ProLayout](/procomponent/ProLayout) | 中后台整体布局骨架 |
+| [ProTabs](/procomponent/ProTabs) | 选项卡条，card / line 两种形态，支持徽标、关闭与自定义渲染 |
 | `Actions` | 操作按钮组，收敛表格行内与工具栏操作 |
 
 ### 数据录入
@@ -228,7 +229,7 @@ function handleSubmit(model: Record<string, unknown>) {
 | [Watermark](/procomponent/watermark) | 水印，支持文本与图片 |
 | `LinkDiagram` | 基于 `@banmao/draw` 的链路图编排 |
 
-> `ProTabs`、`TextClamp`、`Tour` 的源码目录虽然存在，但**尚未从入口导出**，当前无法从 `@banmao/procomponent` 引入。侧边栏中标记为「规划中」的条目同理。
+> `TextClamp`、`Tour` 的源码目录虽然存在，但**尚未从入口导出**，当前无法从 `@banmao/procomponent` 引入。侧边栏中标记为「规划中」的条目同理。
 
 ## Hooks
 

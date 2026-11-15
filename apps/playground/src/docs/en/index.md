@@ -200,6 +200,7 @@ Everything currently exported from the `@banmao/procomponent` entry is listed be
 | Component | Description |
 | --- | --- |
 | [ProLayout](/procomponent/ProLayout) | Overall layout shell for admin applications |
+| [ProTabs](/en/procomponent/ProTabs) | Tab bar with card / line styles, badges, closing and custom rendering |
 | `Actions` | Action button group for table rows and toolbars |
 
 ### Data entry
@@ -230,7 +231,7 @@ Everything currently exported from the `@banmao/procomponent` entry is listed be
 | [Watermark](/procomponent/watermark) | Watermark with text or image support |
 | `LinkDiagram` | Link diagram orchestration built on `@banmao/draw` |
 
-> Source directories for `ProTabs`, `TextClamp` and `Tour` exist, but they are **not exported from the entry** yet and cannot be imported from `@banmao/procomponent`. The same applies to sidebar entries marked as planned.
+> Source directories for `TextClamp` and `Tour` exist, but they are **not exported from the entry** yet and cannot be imported from `@banmao/procomponent`. The same applies to sidebar entries marked as planned.
 
 ## Hooks
 

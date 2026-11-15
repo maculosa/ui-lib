@@ -1,6 +1,6 @@
 ---
 name: ProLayout
-desc: ProLayout 是中后台页面骨架组件，提供深色顶栏、可折叠侧边菜单与内容区，支持 side / top / mix 三种布局、顶栏与侧栏定制、自定义页脚、内容区内置滚动、受控菜单选中态与菜单事件、远程菜单请求与加载态。
+desc: ProLayout 是中后台页面骨架组件，提供深色顶栏、可折叠侧边菜单与内容区，支持 side / top / mix 三种布局、顶栏与侧栏定制、自定义页脚、内容区内置滚动、受控菜单选中态与菜单事件、远程菜单请求与加载态、可选的移动端抽屉菜单。
 ---
 
 <route lang="yaml">
@@ -10,11 +10,11 @@ meta:
 
 # ProLayout
 
-ProLayout 是中后台页面的**布局骨架**组件：顶部标题栏 + 菜单 + 内容区，可选页脚。菜单由 `menus` 配置生成（直接透传 Naive UI `NMenu` 的 `options`），支持 `side` / `top` / `mix` 三种布局，折叠状态可外部控制。顶栏可通过 `logo`、`titleRender`、`headerClass` 与 `header-extra` 插槽定制，侧栏与内容区可通过 `siderClass`、`siderWidth`、`contentClass`、`contentScroll` 定制，页脚内容走 `footer` 插槽，菜单选中态与展开态可通过 `menuValue`、`expandedKeys` 受控，菜单可通过 `menu.request` 从后端拉取。
+ProLayout 是中后台页面的**布局骨架**组件：顶部标题栏 + 菜单 + 内容区，可选页脚。菜单由 `menus` 配置生成（直接透传 Naive UI `NMenu` 的 `options`），支持 `side` / `top` / `mix` 三种布局，折叠状态可外部控制。顶栏可通过 `logo`、`titleRender`、`headerClass` 与 `header-extra` 插槽定制，侧栏与内容区可通过 `siderClass`、`siderWidth`、`contentClass`、`contentScroll` 定制，页脚内容走 `footer` 插槽，菜单选中态与展开态可通过 `menuValue`、`expandedKeys` 受控，菜单可通过 `menu.request` 从后端拉取。传入 `mobileBreakpoint` 后，窄屏自动收起侧栏与横排菜单，改由顶栏按钮唤出左侧抽屉菜单。
 
 当前文档对应仓库源码。
 
-> **版本提示**：以下能力在已发布的 `0.7.31` 中**尚未实现**，需等待下一个发布版本：`logo`、`titleRender`、`headerClass`、`collapsedTriggerPosition`、`layout`、`menu`，`footer` 插槽、`siderClass`、`siderWidth`、`contentClass`、`contentScroll`、`menu.params`、`menu.responsive` 与 `expose` 方法，以及 `menuValue`、`expandedKeys`、`menuClick`、`topMenuClick`、`update:expandedKeys`。其余行为与 `0.7.31` 一致。
+> **版本提示**：以下能力在已发布的 `0.7.31` 中**尚未实现**，需等待下一个发布版本：`logo`、`titleRender`、`headerClass`、`collapsedTriggerPosition`、`layout`、`menu`，`footer` 插槽、`siderClass`、`siderWidth`、`contentClass`、`contentScroll`、`menu.params`、`menu.responsive` 与 `expose` 方法，`menuValue`、`expandedKeys`、`menuClick`、`topMenuClick`、`update:expandedKeys`，以及 `mobileBreakpoint`（移动端抽屉）。同时 `MenuConfig` 的 `locale` 字段已**移除**——它在 `0.7.31` 中从未被消费，组件库尚未接入 i18n，保留只会误导；TypeScript 项目里写过 `locale` 的地方需要删掉。其余行为与 `0.7.31` 一致。
 
 ## 特性
 
@@ -25,6 +25,7 @@ ProLayout 是中后台页面的**布局骨架**组件：顶部标题栏 + 菜单
 - **远程菜单**：`menu.request` 挂载时拉取菜单，`menu.params` 变化自动重新请求，自带加载态与 `onLoadingChange` 回调
 - **可折叠侧栏**：`collapsedTriggerPosition` 决定折叠按钮在顶栏还是侧栏底部，带 300ms 宽度过渡动画
 - **折叠状态可外部控制**：`collapsed` 属性 + `collapseChange` 事件，也可调用 `expose` 的方法
+- **移动端抽屉**：传 `mobileBreakpoint` 后窄屏自动隐藏侧栏与横排菜单，顶栏出现汉堡按钮，唤出的左侧抽屉承载完整多级菜单；默认不开启，不传时行为与旧版完全一致
 - **顶栏可定制**：`logo` 图片、`titleRender` 自定义标题、`headerClass` 覆盖顶栏样式、`header-extra` 插槽
 - **侧栏与内容区可定制**：`siderClass` 改侧栏配色、`siderWidth` 改展开宽度、`contentClass` 覆盖内容区内边距、`contentScroll` 开启内置滚动
 - **页脚可自定义**：`footer` 开关 + `footer` 插槽，插槽内容横跨整个布局宽度
@@ -38,11 +39,13 @@ ProLayout 是中后台页面的**布局骨架**组件：顶部标题栏 + 菜单
 - 需要在侧边 / 顶部 / 混合三种导航形态之间切换的项目
 - 菜单来自后端接口、需要加载态或按查询条件重新拉取的场景
 - 需要菜单高亮跟随路由、或用菜单点击事件驱动内容区的项目
+- 同一套骨架要兼顾桌面与窄屏（平板 / 手机）的项目
 - 需要快速搭出可折叠导航原型的项目
 
-以下场景当前版本**不适合**，请自行组合 `NLayout` / `NMenu`：
+以下场景当前版本**不适合**，请自行组合 `NLayout` / `NMenu` / `NDrawer`：
 
-- 需要响应式移动端抽屉菜单
+- 需要在移动端抽屉里放菜单之外的内容（抽屉只渲染 `menus`，没有插槽）
+- 需要组件内置的多标签页与页签状态管理（请自行配合 `ProTabs`，见[多标签页](#多标签页)）
 
 ## 快速上手
 
@@ -140,18 +143,22 @@ const layoutTheme = {
 ```text
 div  ← 根节点：w-full flex flex-col + class prop，style prop 作用于这里
 ├── header  ← p-4 h-16 flex items-center bg-zinc-800 + headerClass（固定 64px）
+│   ├── 抽屉按钮        窄屏时渲染在最左侧，点击打开抽屉
 │   ├── logo           logo 有值时渲染 <img class="h-8 w-auto mr-2">
 │   ├── title          titleRender 优先，否则纯文本 text-white text-lg font-bold
-│   ├── 横向菜单        layout 为 top / mix 时渲染，flex-1 min-w-0 mx-4，menu.responsive 控制收纳
-│   ├── header-extra   插槽
-│   └── 折叠按钮        collapsedTriggerPosition="top" 且 layout 不为 top 时渲染
+│   ├── 横向菜单        非窄屏且 layout 为 top / mix 时渲染，flex-1 min-w-0 mx-4，menu.responsive 控制收纳
+│   ├── header-extra   插槽（窄屏同样渲染）
+│   └── 折叠按钮        非窄屏、collapsedTriggerPosition="top" 且 layout 不为 top 时渲染
 ├── main    ← flex flex-1 min-h-0 overflow-hidden
-│   ├── aside   ← bg-zinc-800 + siderClass，展开 siderWidth / 折叠 menu.collapsedWidth，300ms 过渡
+│   ├── aside   ← 非窄屏时渲染；bg-zinc-800 + siderClass，展开 siderWidth / 折叠 menu.collapsedWidth，300ms 过渡
 │   │   ├── NScrollbar → NMenu（side 为 menus；mix 为当前一级菜单的 children）
 │   │   └── 折叠按钮   ← collapsedTriggerPosition="bottom" 时渲染，mt-auto 固定在底部
 │   └── section ← flex-1 p-4 + contentClass，默认插槽渲染在这里
 │                 contentScroll 为 true 时追加 flex flex-col min-h-0，并在内部包一层 NScrollbar
-└── footer  ← footer 为 true 时渲染，p-4 h-16，内容为 footer 插槽，缺省文案 Footer
+├── footer  ← footer 为 true 时渲染，p-4 h-16，内容为 footer 插槽，缺省文案 Footer
+└── NDrawer ← 窄屏时渲染，placement="left"、width 取 siderWidth，内层 bg-zinc-800 + siderClass
+              → NScrollbar → NMenu（完整 menus，不受 layout 与 collapsed 影响）
+              NDrawer 自身 teleport 到 body，不在根节点的 DOM 子树内
 ```
 
 尺寸与默认值一览：
@@ -161,6 +168,7 @@ div  ← 根节点：w-full flex flex-col + class prop，style prop 作用于这
 | 顶栏高度 | 64px | `h-16`，可用 `headerClass` 覆盖 |
 | 侧栏宽度（展开） | 256px | `siderWidth`；行内样式，类名覆盖不了 |
 | 侧栏宽度（折叠） | 64px | `menu.collapsedWidth`，同时作用于侧栏与 `NMenu` |
+| 抽屉宽度（窄屏） | 256px | 取 `siderWidth`，**不取** `menu.collapsedWidth` |
 | 折叠图标尺寸 | 22px | `menu.collapsedIconSize` |
 | 菜单项高度 | 42px | `NMenu` 主题默认值，可通过 `Menu.itemHeight` 覆盖 |
 | 内容区内边距 | 16px | `p-4`，可用 `contentClass` 覆盖 |
@@ -185,6 +193,8 @@ div  ← 根节点：w-full flex flex-col + class prop，style prop 作用于这
 - 点击顶栏一级项只切换侧栏并抛出 `topMenuClick`，**不会**写 `menuValue`；侧栏点击才写 `menuValue`，详见[菜单与选中态](#菜单与选中态)
 
 > `top` / `mix` 的横排菜单默认不开启 `responsive`，菜单项过多时会溢出而不是收进「更多」。需要收纳请传 `menu.responsive = true`，见 [MenuConfig](#menuconfig)。
+
+> 窄屏下三种布局统一收敛为「顶栏 + 内容区 + 抽屉」，`layout` 不再影响菜单摆放，见[移动端抽屉](#移动端抽屉)。
 
 ### 高度模型
 
@@ -305,6 +315,41 @@ const expandedKeys = ref<string[]>(['/system'])
 `layout="top"` 没有侧栏，两种取值都不渲染按钮。
 
 > **行为变更**：`0.7.31` 中顶栏与侧栏底部两个按钮始终同时渲染，现在默认只保留侧栏底部那一个。需要顶栏按钮请显式传 `collapsed-trigger-position="top"`。
+
+### 移动端抽屉
+
+传 `mobileBreakpoint`（单位 px）即开启窄屏适配。**默认 `undefined`，不开启**：不传时组件内部用一条永不匹配的媒体查询，DOM 与行为和旧版完全一致，升级零回归。
+
+```vue
+<ProLayout :menus="menus" :mobile-breakpoint="768" :style="{ height: '100vh' }">
+  <div class="h-full overflow-auto">
+    <router-view />
+  </div>
+</ProLayout>
+```
+
+判定基于**视口宽度**（`matchMedia('(max-width: Npx)')`，含等于），不是容器宽度：
+
+| 视口宽度 | 形态 |
+| --- | --- |
+| `> mobileBreakpoint` | 桌面形态，按 `layout` 渲染侧栏 / 横排菜单 |
+| `≤ mobileBreakpoint` | 窄屏形态：侧栏与横排菜单都不渲染，顶栏最左侧出现汉堡按钮 |
+
+窄屏下的具体行为：
+
+- **抽屉里始终是完整 `menus`**：三种 `layout` 一视同仁，`mix` 也放完整多级菜单，不再按当前一级项裁剪——窄屏没有顶栏一级菜单可点，裁剪会让二级以下的项永远进不去
+- **折叠态被忽略**：抽屉里的 `NMenu` 始终按展开宽度渲染，`collapsed` / `menu.collapsed` / `menu.collapsedWidth` 都不参与，顶栏与侧栏底部的折叠按钮也都不渲染；回到宽屏时折叠态原样恢复
+- **宽度与配色沿用侧栏配置**：抽屉宽度取 `siderWidth`（**不是** `menu.collapsedWidth`），内层背景同样是 `bg-zinc-800` + `siderClass`，[浅色侧栏](#浅色侧栏)的写法在窄屏一样生效
+- **`header-extra` 与 `footer` 照常渲染**，内容区 `section` 占满整行宽度
+- **选中即关闭**：点击叶子项先抛 `update:menuValue` / `menuClick`，再关闭抽屉；点击父级项只展开子菜单（抛 `update:expandedKeys`），抽屉保持打开
+- **点遮罩 / 按 Esc 也能关闭**（`NDrawer` 默认行为），视口回到宽屏时抽屉自动关闭
+- 抽屉内容走 `NDrawer` 默认的 `display-directive="if"`，**关闭时不渲染**，不会与侧栏菜单同时存在两份
+
+抽屉虽然 teleport 到 `body`，但仍在 Vue 组件树内，外层 `NConfigProvider abstract :theme="darkTheme"` 的主题照样注入，菜单文字不会退回浅色。
+
+> 抽屉**没有插槽**，只能放菜单。需要放用户信息、搜索框等内容时请自行组合 `NDrawer`，或把它们放进 `header-extra`。
+
+> 媒体查询是视口级的，`mobileBreakpoint` 只对整页布局有意义。把 ProLayout 嵌在窄容器里（例如文档示例卡片）**不会**触发窄屏形态；要演示请把浏览器窗口调窄，或临时把断点设成大于当前视口宽度的值。
 
 ### 远程菜单与加载态
 
@@ -490,6 +535,26 @@ desc="侧栏菜单由内置 NScrollbar 自动滚动；不开启 content-scroll �
 
 </Demo>
 
+### 移动端
+
+<Demo title="移动端抽屉菜单"
+desc="mobileBreakpoint 按视口宽度切换形态：窄屏下 aside 与横排菜单都不渲染，顶栏汉堡按钮唤出左侧抽屉，抽屉内始终是完整多级 menus，点叶子项即关闭。断点是视口级的，用「模拟窄屏」把断点抬到当前视口之上即可演示。"
+:raw="MobileDrawerRaw">
+
+<MobileDrawer />
+
+</Demo>
+
+### 多标签页组合
+
+<Demo title="ProLayout + ProTabs 多标签页"
+desc="menuClick 打开页签、active 同时驱动页签与菜单高亮（单一 value 源），close 事件由外部从 options 中移除；关掉当前页签时落到相邻页签，全部关闭后内容区显示空态。"
+:raw="MultiTabsRaw">
+
+<MultiTabs />
+
+</Demo>
+
 ## 进阶用法
 
 ### 菜单联动路由
@@ -538,6 +603,74 @@ function handleMenuClick(key: string | number) {
 `mix` 布局下顶栏一级项通常不对应真实路由，点击它只抛 `topMenuClick`（用于切侧栏），侧栏点击才走 `menuClick` 跳转；若一级项本身就是页面，请在 `topMenuClick` 里自行 `router.push`。
 
 > 仍然可以把 `label` 写成 `RouterLink` 渲染函数，但那样选中态还得自己按 `route.path` 维护，不如直接绑 `menuValue`。
+
+### 多标签页
+
+ProLayout 没有内置页签，配合 [ProTabs](/procomponent/ProTabs) 就能搭出「点菜单开页签、切页签换内容」的多标签页骨架。关键是**只维护一份 `active`**：它同时是 ProTabs 的激活页签和 ProLayout 的 `menuValue`，菜单高亮自然跟随当前页签，不会有两份状态互相覆盖。
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import type { MenuOption } from 'naive-ui'
+import { ProLayout, ProTabs } from '@banmao/procomponent'
+
+const menus: MenuOption[] = [
+  { label: '首页', key: '/home' },
+  { label: '表格', key: '/table' },
+  { label: '用户管理', key: '/user' },
+]
+
+const tabs = ref([{ label: '首页', key: '/home' }])
+const active = ref('/home')
+
+// 点菜单：没有页签就新开一个，有就切过去
+function openTab(key: string | number, item: MenuOption) {
+  const tabKey = String(key)
+  if (!tabs.value.some(tab => tab.key === tabKey)) {
+    tabs.value = [...tabs.value, { label: String(item.label ?? tabKey), key: tabKey }]
+  }
+  active.value = tabKey
+}
+
+// 关页签：ProTabs 只抛事件，移除动作由外部完成
+function closeTab(key: string) {
+  const index = tabs.value.findIndex(tab => tab.key === key)
+  if (index === -1) return
+  const next = tabs.value.filter(tab => tab.key !== key)
+  tabs.value = next
+  // 关的不是当前页签就不动 active；否则落到相邻页签，全关时置空
+  if (active.value !== key) return
+  active.value = next[Math.min(index, next.length - 1)]?.key ?? ''
+}
+</script>
+
+<template>
+  <ProLayout
+    :menus="menus"
+    :menu-value="active"
+    content-class="p-0"
+    :style="{ height: '100vh' }"
+    @menu-click="openTab"
+  >
+    <div class="h-full flex flex-col min-h-0">
+      <div class="px-3 pt-3">
+        <ProTabs v-model:active="active" :options="tabs" closable inset @close="closeTab" />
+      </div>
+      <div class="flex-1 min-h-0 overflow-auto p-4">
+        <router-view />
+      </div>
+    </div>
+  </ProLayout>
+</template>
+```
+
+几个要点：
+
+- **用 `:menu-value` 而不是 `v-model:menu-value`**：`active` 是唯一来源，菜单点击只负责开页签并写 `active`，不需要再接 `update:menuValue`
+- **`content-class="p-0"`**：页签条要贴住内容区边缘，默认的 `p-4` 会让它四周留白；内边距改由页签条与内容容器各自控制
+- **`h-full flex flex-col min-h-0` 不能省**：页签条占固定高度，内容区靠 `flex-1 min-h-0 overflow-auto` 才能正确滚动
+- **ProTabs 只渲染页签条**，内容区完全由你决定；`closable` 只抛 `close(key)`，**不会**自己从 `options` 里删项
+- 结合路由时 `active` 仍用 `ref`：在 `openTab` 与 ProTabs 的 `update:active` 里 `router.push`，再用 `watch(route)` 把 `active` 和页签列表同步回来（补齐刷新 / 直达路由的页签）。不要把它换成只读 `computed`，`v-model:active` 需要可写
 
 ### 远程菜单数据
 
@@ -731,6 +864,7 @@ import { ProLayout } from '@banmao/procomponent'
 | expandedKeys | 展开的父级 key 数组，受控；不传时由内部 `NMenu` 维护展开态。支持 `v-model:expanded-keys` | `(string \| number)[]` | `undefined` |
 | menu | 菜单行为配置，见 [MenuConfig](#menuconfig) | `MenuConfig` | - |
 | layout | 布局模式，见[布局模式](#布局模式) | `'side' \| 'top' \| 'mix'` | `'side'` |
+| mobileBreakpoint | 窄屏断点（px），按**视口宽度**判定，`≤` 该值时隐藏侧栏与横排菜单、改用抽屉；不传则不开启，见[移动端抽屉](#移动端抽屉) | `number` | `undefined` |
 | collapsed | 侧栏折叠状态；变化时同步内部状态，内部翻转不会回写。未传时初始值取 `menu.collapsed` | `boolean` | `undefined` |
 | collapsedTriggerPosition | 折叠按钮位置，同一时刻只渲染一个；`layout="top"` 时不渲染 | `'top' \| 'bottom'` | `'bottom'` |
 | class | 追加到根节点的类名，经 `tailwind-merge` 合并，**只接受字符串** | `string` | - |
@@ -742,7 +876,7 @@ import { ProLayout } from '@banmao/procomponent'
 | style | 根节点行内样式，常用于设置高度 | `Record<string, string \| number>` | - |
 | footer | 是否渲染页脚，内容由 `footer` 插槽决定，缺省文案 `Footer` | `boolean` | `false` |
 
-除 `menu.locale` 外，以上属性均已消费。`MenuConfig` 类型未从包入口导出，需要标注类型时请自行声明同形结构。
+以上属性均已消费。`MenuConfig` 类型未从包入口导出，需要标注类型时请自行声明同形结构。
 
 ### Events
 
@@ -768,7 +902,7 @@ import { ProLayout } from '@banmao/procomponent'
 | header-extra | 顶栏标题（`top` / `mix` 下为横排菜单）右侧、折叠按钮左侧的区域 | 无 |
 | footer | 页脚内容，仅在 `footer` 为 `true` 时渲染；不提供时文案为 `Footer` | 无 |
 
-三个插槽都**不接收参数**。没有 `menu` / `title` / `logo` 插槽（标题与 logo 走 `titleRender`、`logo` 属性）。
+三个插槽都**不接收参数**。没有 `menu` / `title` / `logo` 插槽（标题与 logo 走 `titleRender`、`logo` 属性），窄屏抽屉也没有插槽，只能放菜单。
 
 > `header-extra` 与标题、折叠按钮同处一个 `flex items-center` 容器。想把内容推到右侧，请在插槽内使用 `flex-1` 或 `ml-auto`。
 
@@ -821,7 +955,6 @@ const menus = [
 | responsive | `boolean` | `false` | 横排菜单是否把放不下的项收进「更多」，只作用于 `top` / `mix` 的顶栏菜单 |
 | request | `(params, defaultMenuData) => Promise<MenuOption[]>` | - | 挂载时调用；`params` 取 `menu.params`，`defaultMenuData` 为 `menus` |
 | onLoadingChange | `(loading: boolean) => void` | - | 内部请求态翻转时回调；`menu.loading` 变化不触发 |
-| locale | `boolean` | - | **未消费**：组件库尚未接入 i18n，保留字段仅为兼容 |
 
 ```ts
 const menu = {
@@ -902,6 +1035,21 @@ function reload() {
 **`layout="mix"` 侧栏不显示？**
 当前一级菜单没有 `children` 时侧栏整体不渲染。点击顶栏一个带子菜单的一级项即可看到侧栏。
 
+**窄屏下抽屉没出现？**
+先确认传了 `mobile-breakpoint`，不传就完全不开启。其次断点按**视口宽度**判定，不是容器宽度：把 ProLayout 放进 400px 宽的卡片、而浏览器视口是 1440px，仍然是桌面形态。演示时请把窗口调窄，或把断点设成大于当前视口宽度的值，见[移动端抽屉](#移动端抽屉)。
+
+**抽屉里为什么不是 `mix` 的当前二级菜单？**
+设计如此：窄屏没有顶栏一级菜单可点，若按当前一级项裁剪，其余分支就永远进不去。三种 `layout` 下抽屉一律渲染完整 `menus`。
+
+**窄屏下折叠按钮不见了、`collapsed` 也没效果？**
+窄屏不渲染侧栏，顶栏与侧栏底部的折叠按钮都不渲染，抽屉里的菜单始终按展开宽度显示。折叠态本身保留，回到宽屏即恢复。
+
+**点抽屉里的父级菜单为什么不关闭？**
+父级项只负责展开 / 收起子菜单（抛 `update:expandedKeys`），只有叶子项才写选中态并关闭抽屉。点遮罩与按 Esc 同样能关。
+
+**抽屉的宽度和配色怎么改？**
+宽度取 `siderWidth`（不是 `menu.collapsedWidth`），配色走 `siderClass`，与侧栏共用同一套配置。
+
 **`menu.request` 什么时候执行？**
 挂载时执行一次，之后 `menus` 数组引用变化、`menu.params` 变化（深层监听，就地修改也算）都会再次执行，也可以调用 `expose` 的 `reloadMenus()`。第一个参数是 `menu.params`（缺省 `{}`），第二个参数是 `menus`。只改 `menu.request` 函数不会重新请求。
 
@@ -925,14 +1073,12 @@ function reload() {
 
 ## 已知限制
 
-页脚内容、侧栏配色、侧栏宽度、内容区边距与滚动、横排菜单收纳、菜单查询参数、实例方法、菜单选中态与菜单事件均已补齐，以下能力仍然缺失，选型时请避开：
+页脚内容、侧栏配色、侧栏宽度、内容区边距与滚动、横排菜单收纳、菜单查询参数、实例方法、菜单选中态与菜单事件、移动端抽屉均已补齐；多标签页没有内置，但可以用 `ProTabs` 组合出来（见[多标签页](#多标签页)）。以下能力仍然缺失，选型时请避开：
 
 | 成员 / 能力 | 说明 |
 | --- | --- |
 | 自动展开到选中项 | `menuValue` 只决定高亮，不会自动展开祖先；深层路由请自行计算 `expandedKeys` |
 | 页脚高度 | 固定 64px，无 `footerClass`；需要别的高度请关闭 `footer` 自行排版 |
 | 顶栏标题配色 | 内置标题写死 `text-white`，改浅色顶栏时需用 `titleRender` 自行渲染 |
-| `menu.locale` | 未消费，组件库尚未接入 i18n |
-| 响应式 | 无移动端断点与抽屉菜单 |
-| 多标签页 | 无内置页签，请自行配合 `ProTabs` |
+| 抽屉定制 | 断点只按视口宽度判定（无容器查询）；抽屉固定左侧弹出、无插槽、宽度只能取 `siderWidth`，也没有开关抽屉的 `expose` 方法 |
 | `expose` 范围 | 只有 `reloadMenus` / `setCollapsed` / `toggleCollapsed`；选中与展开请写 `menuValue` / `expandedKeys`，也没有滚动到某项的方法 |
