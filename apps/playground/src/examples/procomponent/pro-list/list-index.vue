@@ -73,11 +73,6 @@ function renderCell(row: RowType) {
     :pagination
     :row-key
     :loading="loading"
-    :search-config="{
-      defaultValue: {
-        age: 16,
-      },
-    }"
     :render-item="renderCell"
     @update:page-size="handleChangePageSize"
     @load-data="fetchTableData"

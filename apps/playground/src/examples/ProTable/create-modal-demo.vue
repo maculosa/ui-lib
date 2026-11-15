@@ -10,7 +10,7 @@ const columns = ref([
     minWidth: 100,
     valueType: 'text',
     tooltip: '这是姓名',
-    rules: [{ required: true, message: '请输入姓名' }],
+    rule: [{ type: 'string', max: 20, message: '姓名不超过 20 个字符', trigger: ['blur', 'change'] }],
   },
   {
     title: '年龄',
@@ -19,7 +19,7 @@ const columns = ref([
     valueType: 'digit',
     hideInForm: true,
     formItemProps: { min: 1 },
-    rules: [{ required: true, message: '请输入年龄' }],
+    rule: [{ type: 'number', message: '年龄需为数字', trigger: ['blur', 'change'] }],
   },
   {
     title: '性别',

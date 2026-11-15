@@ -15,7 +15,7 @@ const columns = ref([
     sorter: 'default',
     filter: true,
     filterOptions: [{ label: 'London', value: 'London' }],
-    rules: [{ required: true, message: '请输入姓名' }],
+    rule: [{ type: 'string', max: 20, message: '姓名不超过 20 个字符', trigger: ['blur', 'change'] }],
   },
   {
     title: '年龄',
@@ -29,7 +29,7 @@ const columns = ref([
       return rowA.age - rowB.age
     },
     formItemProps: { min: 1 },
-    rules: [{ required: true, message: '请输入年龄' }],
+    rule: [{ type: 'number', message: '年龄需为数字', trigger: ['blur', 'change'] }],
   },
   {
     title: '性别',
