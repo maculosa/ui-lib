@@ -1,7 +1,8 @@
-import { NButton, NMenu, NScrollbar, NSpin } from "naive-ui";
+import { NButton, NDrawer, NMenu, NScrollbar, NSpin } from "naive-ui";
 import type { MenuOption } from "naive-ui";
 import { proLayoutEmits, proLayoutProps } from "./types";
 import { computed, ref, shallowRef, watch } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
 import { Icon } from '@iconify/vue'
 import { cn } from '@/utils'
 
@@ -92,6 +93,13 @@ export default defineComponent({
       activeTopKey.value = first?.key ?? null;
     }, { immediate: true });
 
+    // mobileBreakpoint 未传时用一个永不匹配的查询，默认行为与旧版完全一致
+    const isMobile = useMediaQuery(computed(() => `(max-width: ${props.mobileBreakpoint ?? 0}px)`));
+    const drawerVisible = ref(false);
+    watch(isMobile, (mobile) => {
+      if (!mobile) drawerVisible.value = false;
+    });
+
     const handleMenuSelect = (key: string | number, item: MenuOption) => {
       emit('update:menuValue', key);
       emit('menuClick', key, item);
@@ -102,6 +110,10 @@ export default defineComponent({
     }
     const handleExpandedKeysChange = (keys: (string | number)[]) => {
       emit('update:expandedKeys', keys);
+    }
+    const handleDrawerMenuSelect = (key: string | number, item: MenuOption) => {
+      handleMenuSelect(key, item);
+      drawerVisible.value = false;
     }
 
     const collapsedWidth = computed(() => props.menu?.collapsedWidth ?? 64);
@@ -130,18 +142,22 @@ export default defineComponent({
       </div>
     );
 
-    const renderSideMenu = () => (
+    const renderMenu = (
+      options: MenuOption[],
+      onSelect: (key: string | number, item: MenuOption) => void,
+      collapsed = false
+    ) => (
       <NScrollbar>
         {menuLoading.value
           ? <div class="flex justify-center py-6"><NSpin size="small" /></div>
           : <NMenu
-            collapsed={currentCollapsed.value}
+            collapsed={collapsed}
             collapsedWidth={collapsedWidth.value}
             collapsedIconSize={collapsedIconSize.value}
-            options={sideMenus.value}
+            options={options}
             value={props.menuValue}
             expandedKeys={props.expandedKeys}
-            onUpdate:value={handleMenuSelect}
+            onUpdate:value={onSelect}
             onUpdate:expandedKeys={handleExpandedKeysChange}
           />}
       </NScrollbar>
@@ -155,11 +171,23 @@ export default defineComponent({
           'p-4 h-16 flex items-center bg-zinc-800 shadow-[0_2px_4px_rgba(0,0,0,0.1)]',
           props.headerClass
         )}>
+          {isMobile.value && (
+            <NButton
+              quaternary
+              size="small"
+              class="mr-2"
+              onClick={() => { drawerVisible.value = true }}
+            >
+              {{
+                icon: () => <Icon icon="hugeicons:menu-01" class="text-white cursor-pointer" />
+              }}
+            </NButton>
+          )}
           {props.logo && <img src={props.logo} alt="" class="h-8 w-auto mr-2 object-contain" />}
           {renderTitle()}
-          {props.layout !== 'side' && renderHorizontalMenu()}
+          {!isMobile.value && props.layout !== 'side' && renderHorizontalMenu()}
           {slots['header-extra']?.()}
-          {hasTrigger.value && props.collapsedTriggerPosition === 'top' && (
+          {!isMobile.value && hasTrigger.value && props.collapsedTriggerPosition === 'top' && (
             <NButton
               quaternary
               size="small"
@@ -173,7 +201,7 @@ export default defineComponent({
           )}
         </header>
         <main class="flex flex-1 min-h-0 overflow-hidden">
-          {(props.layout === 'side' || (props.layout === 'mix' && sideMenus.value.length > 0)) && (
+          {!isMobile.value && (props.layout === 'side' || (props.layout === 'mix' && sideMenus.value.length > 0)) && (
             <aside
               class={cn(
                 'bg-zinc-800 transition-all duration-300 ease-in-out flex flex-col gap-2 min-h-0 overflow-hidden',
@@ -181,7 +209,7 @@ export default defineComponent({
               )}
               style={{ width: `${currentCollapsed.value ? collapsedWidth.value : props.siderWidth}px` }}
             >
-              {renderSideMenu()}
+              {renderMenu(sideMenus.value, handleMenuSelect, currentCollapsed.value)}
               {hasTrigger.value && props.collapsedTriggerPosition === 'bottom' && (
                 <div class="mt-auto! p-4">
                   <NButton
@@ -207,6 +235,21 @@ export default defineComponent({
             {slots.footer?.() ?? 'Footer'}
           </footer>
         }
+        {isMobile.value && (
+          <NDrawer
+            show={drawerVisible.value}
+            onUpdate:show={(value: boolean) => { drawerVisible.value = value }}
+            placement="left"
+            width={props.siderWidth}
+          >
+            <div class={cn(
+              'h-full bg-zinc-800 flex flex-col gap-2 min-h-0 overflow-hidden',
+              props.siderClass
+            )}>
+              {renderMenu(menuOptions.value, handleDrawerMenuSelect)}
+            </div>
+          </NDrawer>
+        )}
       </div>
     );
   },

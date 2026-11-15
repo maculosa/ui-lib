@@ -8,6 +8,7 @@ export * from "./ProDescriptions";
 export * from "./ProForm";
 export * from "./ProList";
 export * from "./ProTable";
+export * from "./ProTabs";
 export * from "./ProText";
 export * from "./QueryFilter";
 export * from "./Watermark";

@@ -9,7 +9,7 @@
   - `titleRender`：自定义标题渲染函数，返回值替换整个标题节点
   - `headerClass`：经 `tailwind-merge` 合并到 `header`，可覆盖内置的 `bg-zinc-800` 等类名
   - `collapsedTriggerPosition`：`top` / `bottom` 决定折叠按钮位置，默认 `bottom`
-  - `menu`：新增 `MenuConfig`，支持 `collapsed`（初始折叠态）、`collapsedWidth`（同时作用于侧栏与 `NMenu`）、`collapsedIconSize`、`loading`、`request`（挂载时拉取远程菜单，第二个参数为 `menus`，失败时 `console.error` 并回退 `menus`）与 `onLoadingChange`（仅反映内部请求态）；`locale` 仍未消费，组件库尚未接入 i18n
+  - `menu`：新增 `MenuConfig`，支持 `collapsed`（初始折叠态）、`collapsedWidth`（同时作用于侧栏与 `NMenu`）、`collapsedIconSize`、`loading`、`request`（挂载时拉取远程菜单，第二个参数为 `menus`，失败时 `console.error` 并回退 `menus`）与 `onLoadingChange`（仅反映内部请求态）
 
 - fix(ProLayout): 折叠按钮默认只渲染一个（行为变更）
 

@@ -30,6 +30,8 @@ declare global {
   const ProListPlugin: typeof import('./components/ProList/index')['ProListPlugin']
   const ProTable: typeof import('./components/ProTable/index')['ProTable']
   const ProTablePlugin: typeof import('./components/ProTable/index')['ProTablePlugin']
+  const ProTabs: typeof import('./components/ProTabs/index')['ProTabs']
+  const ProTabsPlugin: typeof import('./components/ProTabs/index')['ProTabsPlugin']
   const ProText: typeof import('./components/ProText/index')['ProText']
   const ProTextPlugin: typeof import('./components/ProText/index')['ProTextPlugin']
   const QueryFilter: typeof import('./components/QueryFilter/index')['QueryFilter']
@@ -144,6 +146,8 @@ declare module 'vue' {
     readonly ProListPlugin: UnwrapRef<typeof import('./components/ProList/index')['ProListPlugin']>
     readonly ProTable: UnwrapRef<typeof import('./components/ProTable/index')['ProTable']>
     readonly ProTablePlugin: UnwrapRef<typeof import('./components/ProTable/index')['ProTablePlugin']>
+    readonly ProTabs: UnwrapRef<typeof import('./components/ProTabs/index')['ProTabs']>
+    readonly ProTabsPlugin: UnwrapRef<typeof import('./components/ProTabs/index')['ProTabsPlugin']>
     readonly ProText: UnwrapRef<typeof import('./components/ProText/index')['ProText']>
     readonly ProTextPlugin: UnwrapRef<typeof import('./components/ProText/index')['ProTextPlugin']>
     readonly QueryFilter: UnwrapRef<typeof import('./components/QueryFilter/index')['QueryFilter']>

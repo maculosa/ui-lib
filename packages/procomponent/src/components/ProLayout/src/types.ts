@@ -7,8 +7,6 @@ export interface MenuConfig {
   collapsed?: boolean;
   collapsedWidth?: number;
   collapsedIconSize?: number;
-  // 预留字段，组件库尚未接入 i18n，当前不消费
-  locale?: boolean
   loading?: boolean
   params?: Record<string, any>;
   responsive?: boolean;
@@ -61,6 +59,10 @@ export const proLayoutProps = {
   layout: {
     type: String as PropType<'side' | 'top' | 'mix'>,
     default: 'side',
+  },
+  mobileBreakpoint: {
+    type: Number,
+    default: undefined,
   },
   footer: {
     type: Boolean,
