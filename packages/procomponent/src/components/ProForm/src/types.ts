@@ -47,11 +47,22 @@ export const proFormProps = {
         type: String,
         default: '重置',
     },
+    /** 搜索模式下是否展示重置按钮 */
+    showResetButton: {
+        type: Boolean,
+        default: true,
+    },
+    /** 搜索模式下是否展示折叠 / 展开按钮 */
+    showAdvancedButton: {
+        type: Boolean,
+        default: true,
+    },
 }
 
 export const proFormEmits = {
     submit: (values: Record<string, any>) => values,
     reset: (values?: Record<string, any>) => values === undefined || typeof values === 'object',
+    'update:model': (values: Record<string, any>) => typeof values === 'object' && values !== null,
     // 'reset:search': (values: Record<string, any>) => values,
 }
 

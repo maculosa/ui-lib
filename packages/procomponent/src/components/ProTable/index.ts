@@ -10,3 +10,10 @@ export const ProTablePlugin: Plugin = {
 export {
   ProTable,
 }
+
+export type {
+  ProTableRequest,
+  ProTableRequestParams,
+  ProTableRequestResult,
+  ProTableSorter,
+} from './src/types'

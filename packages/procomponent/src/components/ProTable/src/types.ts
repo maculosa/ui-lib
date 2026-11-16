@@ -1,4 +1,4 @@
-import type { PropType, ExtractPropTypes, HtmlHTMLAttributes } from 'vue'
+import type { PropType, ExtractPropTypes } from 'vue'
 import type { ProTableColumn } from 'naive-ui'
 import { dataTableProps } from 'naive-ui'
 
@@ -7,12 +7,44 @@ export const proTableEmits = {
     loadData: (page: number) => typeof page === 'number',
     create: () => true,
     exportData: (params: Record<string, any>) => typeof params === 'object' && params !== null,
-    submit: () => true,
-    reset: () => true,
+    submit: (values: Record<string, any>) => typeof values === 'object' && values !== null,
+    reset: (values?: Record<string, any>) => values === undefined || typeof values === 'object',
+    delete: (rowKeys: (string | number)[]) => Array.isArray(rowKeys),
+    print: () => true,
+    import: (file: File) => typeof File === 'undefined' || file instanceof File,
     'update:searchModel': (val: Record<string, any>) => typeof val === 'object' && val !== null,
 }
 
 export type ProTableEmits = ExtractPropTypes<typeof proTableEmits>
+
+/** request 模式的查询参数,分页信息与查询条件合并在一层 */
+export interface ProTableRequestParams {
+  /** 当前页,从 1 开始 */
+  current: number
+  /** 每页条数 */
+  pageSize: number
+  [key: string]: any
+}
+
+/** 排序信息,未排序时为 null */
+export interface ProTableSorter {
+  columnKey?: string | number
+  order?: 'ascend' | 'descend'
+}
+
+/** request 返回值 */
+export interface ProTableRequestResult<T = any> {
+  data: T[]
+  /** 总条数,用于计算分页 */
+  total?: number
+}
+
+/** 表格级远程数据请求 */
+export type ProTableRequest<T = any> = (
+  params: ProTableRequestParams,
+  sort: ProTableSorter | null,
+  filter: Record<string, any[] | null>,
+) => Promise<ProTableRequestResult<T>>
 
 /**
  * 表格搜索配置
@@ -78,6 +110,8 @@ export interface ToolbarConfig {
   import?: boolean
   /** 导入按钮文本 */
   importLabel?: string
+  /** 导入文件选择器的 accept 属性 */
+  importAccept?: string
   /** 刷新按钮 */
   reload?: boolean
   /** 刷新按钮文本 */
@@ -171,17 +205,21 @@ export const proTableProps = {
   onQuery: {
     type: Function as PropType<(params: Record<string, any>) => Promise<void>>,
   },
+  /**
+   * 表格级远程数据请求，传入后由 ProTable 托管数据、分页与 loading
+   * @type {ProTableRequest}
+   */
   request: {
-    type: Function as PropType<(params: { pageSize: number, current: number }, sort: Record<string, any>, filter: Record<string, any>) => Promise<void>>,
+    type: Function as PropType<ProTableRequest>,
   },
   /** 适配 Flex 布局中的高度填充 */
   autoFlex: {
     type: Boolean
   },
+  /** 表格 style，与 height 生成的样式合并 */
   dataTableStyle: {
-    type: String || Object as PropType<HtmlHTMLAttributes['style']>
+    type: [String, Object] as PropType<string | Record<string, any>>
   },
-  // TODO 1.该配置不生效
   /**
    * 表格高度
    * @type {number}

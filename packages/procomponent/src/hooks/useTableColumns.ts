@@ -1,97 +1,86 @@
 import { renderCopyableCell, renderIndexCell, renderTitle } from '@/utils/table'
 import type { ProTableColumn } from 'naive-ui'
-import { computed, ref } from 'vue'
+import { computed, ref, toValue, watch, type MaybeRefOrGetter } from 'vue'
 import { orderBy } from 'lodash-es'
 
+type ColumnsSource = MaybeRefOrGetter<ProTableColumn<any>[]>
 
 /**
  * useColumns - 获取表格列、搜索栏列、表单列
- * @param columns - 表格列
+ * @param columns - 表格列,支持 ref / getter,列数组替换或内部变化时自动重建
  * @param options - 选项
  * @param options.searchSort - 搜索栏列排序方式，'asc'表示升序，'desc'表示降序，默认值为'desc'
  * @returns
  */
-export function useTableColumns(columns: any[], options?: { searchSort?: 'asc' | 'desc' }) {
-  if (!Array.isArray(columns)) {
-    console.warn('useTableColumns: columns should be an array')
-    return {
-      settingColumns: ref([]),
-      tableColumns: ref([]),
-      searchColumns: ref([]),
-      formColumns: ref([]),
-    }
+export function useTableColumns(columns: ColumnsSource, options?: { searchSort?: 'asc' | 'desc' }) {
+  if (!Array.isArray(toValue(columns))) {
+    console.warn('useTableColumns: columns should be an array, ref or getter')
   }
   const { searchSort = 'asc' } = options ?? {}
+
+  /** 归一化后的列来源,非数组时退化为空数组 */
+  const source = computed<ProTableColumn<any>[]>(() => {
+    const value = toValue(columns)
+    return Array.isArray(value) ? value : []
+  })
+
+  /** 由原始列配置派生列设置面板的完整列(过滤 hideInTable,index 列生成序号渲染) */
+  function buildSettingColumns(cols: ProTableColumn<any>[]): ProTableColumn<any>[] {
+    return cols
+      .filter((column: ProTableColumn<any>) => !column.hideInTable)
+      .map((column: ProTableColumn<any>) => (column?.type === 'index' ? renderIndexCell(column) : column))
+  }
 
   /**
    * 设置列的数据
    */
-  const settingColumns = ref(
-    columns.filter(c => {
-      if (!c.hideInTable) return c
-    })?.map(column => {
-      if (column?.type === 'index') {
-        return renderIndexCell(column)
-      }
-      return column
-    })
+  const settingColumns = ref<ProTableColumn<any>[]>(buildSettingColumns(source.value))
+
+  // 列数组被替换(或内部变化)时重建列设置列表,
+  // 保持工具栏列设置、表格列与搜索栏同步
+  watch(
+    source,
+    (cols) => {
+      settingColumns.value = buildSettingColumns(cols)
+    },
+    { deep: true },
   )
-
-
-  /**
-   * 初始化表格列配置
-   *
-   * 本函数用于从全局列配置中筛选出需要显示在表格中的列。
-   * 通过过滤掉设置中标记了`hideInTable`属性的列，保留需要在表格展示的列配置。
-   *
-   * @returns {Array<object>} 过滤后的表格列配置数组，包含所有未标记隐藏的列配置项
-   */
-  function initTableColumns() {
-    // 从响应式列配置中筛选出未隐藏的列（hideInTable为假值的列）
-    return settingColumns.value.filter((column) => !column.hideInTable)
-  }
 
   /**
    * 表格列
    */
-  const tableColumns = ref(initTableColumns())
+  const tableColumns = computed(() => {
+    return settingColumns.value
+      .filter((column: ProTableColumn<any>) => !column.hideInTable)
+      .map((column: ProTableColumn<any>) => {
+        if (column?.type === 'index') return renderIndexCell(column)
+        if (column?.copyable) return renderCopyableCell(column)
+        if (column?.tooltip && typeof column.title === 'string') {
+          return { ...column, formTitle: column.title, title: renderTitle(column) }
+        }
+        return column
+      })
+  })
 
   /**
    * 搜索栏列
    */
-  const searchColumns = ref(orderBy(columns?.filter(
+  const searchColumns = computed(() => orderBy(source.value.filter(
     (column: ProTableColumn) =>
       column?.type !== 'selection'
       && column?.type !== 'index'
       && column.key !== 'action'
       && column.key !== 'actions'
       && column.hideInSearch !== true,
-  ), ['order'], [searchSort])
-  )
+  ), ['order'], [searchSort]))
 
   /**
    * 表单列
    */
   const formColumns = computed(() => {
-    return columns?.filter(
+    return source.value.filter(
       column => !column.hideInForm && column.type !== 'selection' && column.type !== 'index' && column.key !== 'actions',
     )
-  })
-
-  watchEffect(() => {
-    if (settingColumns.value.length > 0) {
-      const cloneSettingColumns = initTableColumns()
-      tableColumns.value = cloneSettingColumns.map((column) => {
-        if (column?.type === 'index') return renderIndexCell(column)
-        if (column?.copyable) return renderCopyableCell(column)
-        if (column?.tooltip && typeof column.title === 'string') {
-          if (typeof column.tooltip === 'string') {
-            return { ...column, formTitle: column.title, title: renderTitle(column) }
-          }
-        }
-        return column
-      })
-    }
   })
 
   return {

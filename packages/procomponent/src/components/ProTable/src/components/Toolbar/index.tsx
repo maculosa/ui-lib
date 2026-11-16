@@ -1,11 +1,14 @@
-import { computed, defineComponent, inject, toRefs } from 'vue'
+import { computed, defineComponent, inject, ref, toRefs } from 'vue'
 import { NButton, NButtonGroup, NSpace } from 'naive-ui'
 import { DrawerForm, ModalForm } from '@components/index'
 import { ColumnSetting, DensityButton, RefreshButton } from '../index'
 import { toolbarProps, toolbarEmits } from './types'
 import type { TableSize } from './types'
+import BmIconDelete from '~icons/bm-icon/delete'
 import BmIconDownload from '~icons/bm-icon/download'
 import BmIconPlus from '~icons/bm-icon/plus'
+import BmIconPrint from '~icons/bm-icon/print'
+import BmIconUpload from '~icons/bm-icon/upload'
 
 export default defineComponent({
   name: 'ToolbarComponent',
@@ -14,76 +17,30 @@ export default defineComponent({
   setup(props, { emit, slots }) {
     const { config, title, loading, formColumns } = toRefs(props)
 
-    const {
-      columnSetting,
-      columnSettingKey,
-      columnSettingLabel,
-      create,
-      createLabel,
-      createMode = 'button',
-      density,
-      exportLabel,
-      reload,
-      reloadLabel,
-    } = config.value
-
-    /**
-     * 列设置 inject
-     */
+    /** 列设置:列设置面板实例,供 ProTable 的 setColumnsState 调用 */
     const settingColumns = inject<any>('settingColumns')
+    const columnSettingRef = inject<any>('column-setting-ref', null)
 
     /**
      * 创建按钮 inject
      */
     const onCreate = inject<() => void>('toolbar-create')
 
-    /**
-     * 刷新按钮点击事件
-     */
-    function handleRefresh() {
-      emit('refresh')
-    }
-
-    /**
-     * 是否有导出按钮 computed
-     */
-    const hasExportButton = computed(() => {
-      return config.value.export
-    })
-
-    /**
-     * 是否有新增按钮 computed
-     */
-    const hasCreateButton = computed(() => {
-      return create
-    })
-
-    /**
-     * 是否为新增按钮 modal 模式 computed
-     */
-    const isModal = computed(() => {
-      return createMode === 'modal'
-    })
-
-    /**
-     * 是否为新增按钮 drawer 模式 computed
-     */
-    const isDrawer = computed(() => {
-      return createMode === 'drawer'
-    })
-
-    /**
-     * 是否为新增按钮 button 模式 computed
-     */
-    const isButton = computed(() => {
-      return createMode === 'button'
-    })
+    const createMode = computed(() => config.value.createMode ?? 'button')
+    const createLabel = computed(() => config.value.createLabel || '新增')
+    const deleteLabel = computed(() => config.value.deleteLabel || '删除')
+    const exportLabel = computed(() => config.value.exportLabel || '导出Excel')
+    const printLabel = computed(() => config.value.printLabel || '打印')
+    const importLabel = computed(() => config.value.importLabel || '导入')
+    const isModal = computed(() => createMode.value === 'modal')
+    const isDrawer = computed(() => createMode.value === 'drawer')
+    const isButton = computed(() => createMode.value === 'button')
 
     /**
      * 新增表单标题
      */
     const formTitle = computed(() => {
-      return `${(createLabel || '新增')} ${title.value}`
+      return `${createLabel.value} ${title.value}`
     })
 
     /**
@@ -101,6 +58,37 @@ export default defineComponent({
     }
 
     /**
+     * 删除点击事件
+     */
+    function handleDelete() {
+      emit('delete')
+    }
+
+    /**
+     * 打印点击事件
+     */
+    function handlePrint() {
+      emit('print')
+    }
+
+    const fileInputRef = ref<HTMLInputElement | null>(null)
+
+    /**
+     * 导入点击事件:打开文件选择器
+     */
+    function handleImport() {
+      fileInputRef.value?.click()
+    }
+
+    function handleImportChange(event: Event) {
+      const input = event.target as HTMLInputElement
+      const file = input.files?.[0]
+      if (file) emit('import', file)
+      // 清空 value,允许重复选择同一个文件
+      input.value = ''
+    }
+
+    /**
      * 选择表格大小
      * @param key 列设置按钮选中的 key
      */
@@ -112,19 +100,8 @@ export default defineComponent({
       <NSpace align="center">
         { slots.default?.() }
         {
-          // 导出按钮
-          hasExportButton.value && (
-            <NButton type="info" ghost size="small" onClick={handleExportData}>
-              {{
-                icon: () => <BmIconDownload class="mr-4px text-16px" />,
-                default: () => exportLabel || '导出Excel',
-              }}
-            </NButton>
-          )
-        }
-        {
-          // 新增按钮 modal 模式
-          hasCreateButton.value && isModal.value && (
+          // 新增按钮
+          config.value.create === true && isModal.value && (
             <ModalForm
               title={formTitle.value}
               columns={formColumns.value}
@@ -132,7 +109,7 @@ export default defineComponent({
               <NButton type="primary" ghost size="small" onClick={handleCreate}>
                 {{
                   icon: () => <BmIconPlus class="mr-4px text-16px" />,
-                  default: () => createLabel || '新增',
+                  default: () => createLabel.value,
                 }}
               </NButton>
             </ModalForm>
@@ -140,14 +117,14 @@ export default defineComponent({
         }
         {
           // 新增按钮 drawer 模式
-          hasCreateButton.value && isDrawer.value && (
+          config.value.create === true && isDrawer.value && (
             <DrawerForm
               title={formTitle.value}
               columns={formColumns.value}
             >
               <NButton type="primary" ghost size="small" onClick={handleCreate}>
                 {{
-                  default: () => createLabel || '新增',
+                  default: () => createLabel.value,
                   icon: () => <BmIconPlus class="mr-4px text-16px" />,
                 }}
               </NButton>
@@ -156,30 +133,81 @@ export default defineComponent({
         }
         {
           // 新增按钮 button 模式
-          (hasCreateButton.value && isButton.value) && (
+          (config.value.create === true && isButton.value) && (
             <NButton type="primary" ghost size="small" onClick={handleCreate}>
               {{
                 icon: () => <BmIconPlus class="mr-4px text-16px" />,
-                default: () => createLabel || '新增',
+                default: () => createLabel.value,
               }}
             </NButton>
           )
         }
+        {
+          // 删除按钮
+          config.value.delete === true && (
+            <NButton type="error" ghost size="small" disabled={props.deleteDisabled} onClick={handleDelete}>
+              {{
+                icon: () => <BmIconDelete class="mr-4px text-16px" />,
+                default: () => deleteLabel.value,
+              }}
+            </NButton>
+          )
+        }
+        {
+          // 导出按钮
+          config.value.export === true && (
+            <NButton type="info" ghost size="small" onClick={handleExportData}>
+              {{
+                icon: () => <BmIconDownload class="mr-4px text-16px" />,
+                default: () => exportLabel.value,
+              }}
+            </NButton>
+          )
+        }
+        {
+          // 打印按钮
+          config.value.print === true && (
+            <NButton size="small" onClick={handlePrint}>
+              {{
+                icon: () => <BmIconPrint class="mr-4px text-16px" />,
+                default: () => printLabel.value,
+              }}
+            </NButton>
+          )
+        }
+        {
+          // 导入按钮
+          config.value.import === true && (
+            <NButton size="small" onClick={handleImport}>
+              {{
+                icon: () => <BmIconUpload class="mr-4px text-16px" />,
+                default: () => importLabel.value,
+              }}
+            </NButton>
+          )
+        }
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept={config.value.importAccept}
+          style={{ display: 'none' }}
+          onChange={handleImportChange}
+        />
 
         <NButtonGroup>
           {
             // 刷新按钮
-            (reload !== false) && (
+            (config.value.reload !== false) && (
               <RefreshButton
-                label={reloadLabel}
+                label={config.value.reloadLabel}
                 loading={loading.value}
-                onClick={handleRefresh}
+                onClick={() => emit('refresh')}
               />
             )
           }
           {
             // 密度按钮
-            (density !== false) && (
+            (config.value.density !== false) && (
               <DensityButton
                 onUpdate:select={handleSelectForTableSize}
               />
@@ -187,10 +215,11 @@ export default defineComponent({
           }
           {
             // 列设置按钮
-            (columnSetting !== false) && (
+            (config.value.columnSetting !== false) && (
               <ColumnSetting
-                label={columnSettingLabel || false}
-                storageKey={columnSettingKey}
+                ref={columnSettingRef}
+                label={config.value.columnSettingLabel || false}
+                storageKey={config.value.columnSettingKey}
                 v-model:columns={settingColumns.value}
               />
             )

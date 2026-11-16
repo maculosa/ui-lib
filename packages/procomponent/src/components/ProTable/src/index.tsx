@@ -4,12 +4,14 @@ import {
   NFlex,
   useMessage
 } from 'naive-ui'
-import { computed, defineComponent, provide, ref, watchEffect } from 'vue'
+import { computed, defineComponent, onMounted, provide, ref, watch, watchEffect } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import { ProForm } from '@components/ProForm'
 import { Toolbar } from './components'
-import { renderEmptyCell, estimateColumnWidth } from '@/utils/table'
+import { renderEmptyCell, renderIndexCell, estimateColumnWidth } from '@/utils/table'
 import { useTableColumns } from '@hooks/useTableColumns'
+import { applyColumnState } from './components/ColumnSetting'
+import type { ColumnSettingState } from './components/ColumnSetting'
 import { proTableProps, proTableEmits } from './types'
 import './styles/css'
 
@@ -19,13 +21,41 @@ export default defineComponent({
   emits: proTableEmits,
   setup(props, { emit, expose, slots }) {
     const message = useMessage()
-    const excludeKeys = ['title', 'columns', 'searchConfig', 'toolbarConfig', 'toolbar', 'search', 'columnStorageKey']
+
+    /**
+     * 内部列配置:props.columns 变化时覆盖,
+     * 同时作为 setColumns 的写入目标
+     */
+    const innerColumns = ref(props.columns)
+    watch(
+      () => props.columns,
+      (columns) => {
+        innerColumns.value = columns
+      },
+      { deep: true },
+    )
+
+    const excludeKeys = [
+      'title',
+      'columns',
+      'searchConfig',
+      'toolbarConfig',
+      'toolbar',
+      'search',
+      'columnStorageKey',
+      'request',
+      'onQuery',
+      'params',
+      'searchModel',
+      'autoFlex',
+      'simple',
+      'dataTableStyle',
+      'height',
+    ]
     const tableProps = computed(() => {
-      const p = { ...props }
+      const p: Record<string, any> = { ...props }
       excludeKeys.forEach(key => {
-        if (key in p) {
-          delete (p as Record<string, unknown>)[key]
-        }
+        delete p[key]
       })
 
       if (props.height && !Number.isNaN(props.height)) {
@@ -38,18 +68,13 @@ export default defineComponent({
       return p
     })
 
-    // const searchModel = computed({
-    //   get: () => props.searchModel || {},
-    //   set: (val) => {
-    //     emit('update:searchModel', val)
-    //   }
-    // })
-
     const isRefreshing = ref(false)
+    const requestLoading = ref(false)
+    const innerLoading = ref(false)
     const searchLoading = ref(false)
 
     watchEffect(() => {
-      searchLoading.value = isRefreshing.value ? false : props.loading
+      searchLoading.value = isRefreshing.value ? false : (props.loading || requestLoading.value)
     })
 
     const {
@@ -57,11 +82,15 @@ export default defineComponent({
       settingColumns,
       searchColumns,
       formColumns,
-    } = useTableColumns(props.columns, {
+    } = useTableColumns(innerColumns, {
       searchSort: props.search && props.search?.sort || 'desc',
     })
 
     provide('settingColumns', settingColumns)
+
+    // 列设置面板实例:setColumnsState 通过它同步面板与表格
+    const columnSettingRef = ref()
+    provide('column-setting-ref', columnSettingRef)
 
     // 未配置 columnStorageKey 时的托底 key:每个组件实例生成一次并保持稳定,
     // 保证列设置仍可缓存;注意随机 key 刷新后会变化,偏好无法跨刷新复用,仅作兜底
@@ -79,6 +108,28 @@ export default defineComponent({
         columnSettingKey: props.columnStorageKey || fallbackColumnSettingKey
       }
     })
+
+    const searchConfig = computed<Record<string, any>>(() => {
+      const config = props.search
+      return config && typeof config === 'object' ? config as Record<string, any> : {}
+    })
+
+    // 搜索按钮文案:searchText > submitText > 默认
+    const searchProps = computed(() => ({
+      ...searchConfig.value,
+      searchText: searchConfig.value.searchText ?? searchConfig.value.submitText ?? '搜索',
+    }))
+
+    // 重置目标值:实例创建时的 params/searchModel 快照 + search.defaultValue
+    // 不能直接用实时 searchModelState,否则用户输入后再点重置会「重置为刚输入的值」
+    const initialSearchModel = {
+      ...(props.params || {}),
+      ...(props.searchModel || {}),
+    }
+    const searchDefaults = computed(() => ({
+      ...initialSearchModel,
+      ...(searchConfig.value.defaultValue || {}),
+    }))
 
     type TableSize = 'small' | 'medium' | 'large'
     const size = ref<TableSize>('large')
@@ -117,18 +168,31 @@ export default defineComponent({
       }
     })
 
-    /** 表格自身样式:autoFlex 时由 flex 撑满卡片内容区 */
-    const dataTableStyle = computed(() => {
+    /**
+     * 表格自身样式:
+     * height 生成的 style < dataTableStyle < autoFlex 的 flex 规则,
+     * 保证调用方可覆盖外观而 autoFlex 布局不被破坏。
+     */
+    const mergedTableStyle = computed(() => {
       const baseStyle = (tableProps.value as Record<string, any>).style
+      const userStyle = props.dataTableStyle
 
-      if (!props.autoFlex) return baseStyle
+      if (typeof userStyle === 'string' && !props.autoFlex) return userStyle
 
-      return {
-        ...baseStyle,
-        flex: 1,
-        minHeight: 0
+      let style: Record<string, any> = {}
+      if (baseStyle && typeof baseStyle === 'object') {
+        style = { ...baseStyle }
       }
+      if (userStyle && typeof userStyle === 'object') {
+        style = { ...style, ...userStyle }
+      }
+      if (props.autoFlex) {
+        style = { ...style, flex: 1, minHeight: 0 }
+      }
+
+      return Object.keys(style).length > 0 ? style : undefined
     })
+
     /**
      * 自动计算 scroll-x：
      * 存在固定列且调用方未显式配置 scrollX 时，按可见列宽度求和自动生成，
@@ -148,6 +212,156 @@ export default defineComponent({
       return totalWidth > 0 ? totalWidth : undefined
     })
 
+    // ---------------- 数据状态 ----------------
+
+    const innerData = ref<any[]>(props.data ?? [])
+    watch(
+      () => props.data,
+      (data) => {
+        innerData.value = (data as any[]) ?? []
+      },
+    )
+
+    const effectiveLoading = computed(() => innerLoading.value || props.loading || requestLoading.value)
+
+    // 查询模型:searchModel 优先于 params,并与搜索表单双向同步
+    const searchModelState = ref<Record<string, any>>({
+      ...(props.params || {}),
+      ...(props.searchModel || {}),
+    })
+
+    function isSameModel(a?: Record<string, any>, b?: Record<string, any>) {
+      return JSON.stringify(a ?? {}) === JSON.stringify(b ?? {})
+    }
+
+    watch(
+      [() => props.params, () => props.searchModel],
+      ([params, searchModel]) => {
+        searchModelState.value = {
+          ...(params || {}),
+          ...(searchModel || {}),
+        }
+      },
+      { deep: true },
+    )
+
+    // ---------------- 分页 / 排序 / 筛选 ----------------
+
+    interface PaginationState {
+      current: number
+      pageSize: number
+      itemCount?: number
+    }
+
+    const paginationState = ref<PaginationState>({ current: 1, pageSize: 10 })
+    const paginationTouched = ref(false)
+
+    watch(
+      () => props.pagination,
+      (pagination) => {
+        if (!pagination || typeof pagination !== 'object') return
+        paginationState.value = {
+          current: (pagination as Record<string, any>).page ?? 1,
+          pageSize: (pagination as Record<string, any>).pageSize ?? 10,
+          itemCount: (pagination as Record<string, any>).itemCount,
+        }
+      },
+      { deep: true, immediate: true },
+    )
+
+    const effectivePagination = computed(() => {
+      if (props.pagination === false) return false
+      // 非 request 模式且未主动分页时,保持原有透传行为
+      if (!props.request && !paginationTouched.value) return props.pagination
+
+      const base = props.pagination && typeof props.pagination === 'object'
+        ? props.pagination as Record<string, any>
+        : {}
+      const merged: Record<string, any> = {
+        ...base,
+        page: paginationState.value.current,
+        pageSize: paginationState.value.pageSize,
+      }
+      const itemCount = paginationState.value.itemCount ?? base.itemCount
+      if (typeof itemCount === 'number') merged.itemCount = itemCount
+      return merged
+    })
+
+    const sorterState = ref<any>(null)
+    const filtersState = ref<Record<string, any[] | null>>({})
+
+    function normalizeSorter(sorter: any) {
+      const current = Array.isArray(sorter) ? sorter[0] : sorter
+      if (!current || !current.order || current.order === false) return null
+      return { columnKey: current.columnKey, order: current.order }
+    }
+
+    // ---------------- 选中状态 ----------------
+
+    const checkedRowKeys = ref<(string | number)[]>([])
+    const selectedRows = ref<any[]>([])
+    const rowSelectionState = ref<Record<string, any> | undefined>((props as Record<string, any>).rowSelection)
+
+    watch(
+      () => (props as Record<string, any>).rowSelection,
+      (rowSelection) => {
+        rowSelectionState.value = rowSelection
+      },
+    )
+
+    // ---------------- request 数据请求 ----------------
+
+    let requestSeq = 0
+
+    async function runRequest(options: { resetPage?: boolean } = {}) {
+      if (!props.request) return
+      if (options.resetPage) paginationState.value.current = 1
+
+      const seq = ++requestSeq
+      requestLoading.value = true
+      try {
+        const result = await props.request(
+          {
+            ...(props.params || {}),
+            ...searchModelState.value,
+            current: paginationState.value.current,
+            pageSize: paginationState.value.pageSize,
+          },
+          normalizeSorter(sorterState.value),
+          { ...filtersState.value },
+        )
+        // 丢弃过期响应,避免快速翻页 / 搜索时旧数据覆盖新数据
+        if (seq !== requestSeq) return
+
+        innerData.value = Array.isArray(result?.data) ? result.data : []
+        if (typeof result?.total === 'number') {
+          paginationState.value.itemCount = result.total
+        }
+      } catch (error) {
+        if (seq === requestSeq) {
+          console.error('Request failed:', error)
+          message?.error('加载失败，请重试')
+        }
+      } finally {
+        if (seq === requestSeq) requestLoading.value = false
+      }
+    }
+
+    onMounted(() => {
+      if (props.request) runRequest()
+    })
+
+    // params 变化触发重新加载,并回到第一页
+    watch(
+      () => props.params,
+      () => {
+        if (props.request) runRequest({ resetPage: true })
+      },
+      { deep: true },
+    )
+
+    // ---------------- 工具栏 / 搜索交互 ----------------
+
     /**
      * 加载数据
      * @param page 页码
@@ -157,6 +371,7 @@ export default defineComponent({
     }
 
     const filterData = ref<Record<string, any>>(props.params || {})
+
     /**
      * 刷新数据
      */
@@ -165,7 +380,11 @@ export default defineComponent({
 
       isRefreshing.value = true
       try {
-        await loadData(1)
+        if (props.request) {
+          await runRequest()
+        } else {
+          loadData(1)
+        }
       } catch (error) {
         console.error('Refresh failed:', error)
         message?.error('刷新失败，请重试')
@@ -175,10 +394,9 @@ export default defineComponent({
     }
 
     /**
-     * 搜索表单提交
-     * @param formModel 表单数据
+     * onQuery 回调查询(保留 300ms 防抖)
      */
-    const handleSearch = useDebounceFn(async (formModel: Record<string, any>) => {
+    const queryByCallback = useDebounceFn(async (formModel: Record<string, any>) => {
       if (!props.onQuery) {
         console.warn('ProTable: onQuery prop is required for search functionality')
         return
@@ -191,7 +409,6 @@ export default defineComponent({
         await props.onQuery(formModel)
       } catch (error) {
         console.error('Search failed:', error)
-        // 可以添加错误通知
         message?.error('搜索失败，请重试')
       } finally {
         searchLoading.value = false
@@ -199,16 +416,51 @@ export default defineComponent({
     }, 300)
 
     /**
+     * 搜索表单提交:同步抛出 submit / update:searchModel 后再走查询
+     */
+    function handleSubmit(formModel: Record<string, any>) {
+      searchModelState.value = { ...formModel }
+      filterData.value = { ...formModel }
+      emit('submit', { ...formModel })
+      emit('update:searchModel', { ...formModel })
+
+      if (props.request) {
+        runRequest({ resetPage: true })
+        return
+      }
+      queryByCallback(formModel)
+    }
+
+    /**
+     * 搜索表单数据变化(输入即同步,供 v-model:searchModel)
+     */
+    function handleModelUpdate(value: Record<string, any>) {
+      if (!value || typeof value !== 'object') return
+      if (isSameModel(value, searchModelState.value)) return
+      searchModelState.value = { ...value }
+      emit('update:searchModel', { ...value })
+    }
+
+    /**
      * 重置搜索表单
      */
     async function handleReset(searchParams?: Record<string, any>) {
+      if (searchParams) {
+        searchModelState.value = { ...searchParams }
+        filterData.value = { ...searchParams }
+        emit('update:searchModel', { ...searchParams })
+      }
+      emit('reset', searchParams ? { ...searchParams } : undefined)
+
+      if (props.request) {
+        await runRequest({ resetPage: true })
+        return
+      }
+
       try {
         searchLoading.value = true
-        if (searchFormRef.value && searchParams) {
-          // await loadData(1)
-          await props.onQuery?.(searchParams)
-          filterData.value = searchParams
-          emit('reset')
+        if (searchFormRef.value && searchParams && props.onQuery) {
+          await props.onQuery(searchParams)
         }
       } catch (error) {
         console.error('Reset failed:', error)
@@ -227,24 +479,158 @@ export default defineComponent({
       emit('exportData', filterData.value)
     }
 
+    /** 删除按钮:携带当前选中行 key */
+    function handleDelete() {
+      emit('delete', [...checkedRowKeys.value])
+      checkedRowKeys.value = []
+    }
+
+    /** 打印:抛出事件后交给浏览器打印 */
+    function handlePrint() {
+      emit('print')
+      window.print()
+    }
+
+    /** 导入:文件选择完成后抛出 File */
+    function handleImport(file: File) {
+      emit('import', file)
+    }
+
+    // ---------------- NDataTable 事件转发 ----------------
+
+    function handlePage(page: number) {
+      paginationTouched.value = true
+      paginationState.value.current = page
+      ;(props as Record<string, any>).onUpdatePage?.(page)
+      if (props.request) runRequest()
+    }
+
+    function handlePageSize(pageSize: number) {
+      paginationTouched.value = true
+      paginationState.value.pageSize = pageSize
+      paginationState.value.current = 1
+      ;(props as Record<string, any>).onUpdatePageSize?.(pageSize)
+      if (props.request) runRequest()
+    }
+
+    function handleSorter(sorter: any) {
+      sorterState.value = sorter
+      ;(props as Record<string, any>).onUpdateSorter?.(sorter)
+      if (props.request) runRequest()
+    }
+
+    function handleFilters(filters: Record<string, any> | null) {
+      filtersState.value = filters ?? {}
+      ;(props as Record<string, any>).onUpdateFilters?.(filters)
+      if (props.request) runRequest()
+    }
+
+    function handleCheckedRowKeys(keys: (string | number)[]) {
+      checkedRowKeys.value = Array.isArray(keys) ? keys : []
+      ;(props as Record<string, any>).onUpdateCheckedRowKeys?.(keys)
+    }
+
+    // ---------------- 实例方法 ----------------
+
+    function reload() {
+      if (props.request) return runRequest()
+      loadData(1)
+    }
+
+    function setColumns(columns: any[]) {
+      innerColumns.value = Array.isArray(columns) ? columns : []
+    }
+
+    function setSearch(values: Record<string, any>) {
+      if (!values || typeof values !== 'object') return
+      const next = { ...searchModelState.value, ...values }
+      searchModelState.value = next
+      emit('update:searchModel', { ...next })
+    }
+
+    function setForm(values: Record<string, any>) {
+      setSearch(values)
+    }
+
+    function setPagination(pagination: Record<string, any>) {
+      if (!pagination || typeof pagination !== 'object') return
+      paginationTouched.value = true
+      paginationState.value = {
+        current: pagination.page ?? pagination.current ?? paginationState.value.current,
+        pageSize: pagination.pageSize ?? paginationState.value.pageSize,
+        itemCount: pagination.itemCount ?? paginationState.value.itemCount,
+      }
+      if (props.request) runRequest()
+    }
+
+    function setTableData(data: any[]) {
+      innerData.value = Array.isArray(data) ? data : []
+    }
+
+    function setLoading(loading: boolean) {
+      innerLoading.value = Boolean(loading)
+    }
+
+    function setSelectedRowKeys(keys: (string | number)[]) {
+      checkedRowKeys.value = Array.isArray(keys) ? keys : []
+    }
+
+    function setSelectedRows(rows: any[]) {
+      selectedRows.value = Array.isArray(rows) ? rows : []
+    }
+
+    function setRowSelection(rowSelection: Record<string, any>) {
+      rowSelectionState.value = {
+        ...(rowSelectionState.value || {}),
+        ...(rowSelection || {}),
+      }
+    }
+
+    function setColumnsState(state: ColumnSettingState | null) {
+      if (columnSettingRef.value?.applyState) {
+        columnSettingRef.value.applyState(state)
+        return
+      }
+      settingColumns.value = applyColumnState(innerColumns.value, state)
+        .map(column => (column?.type === 'index' ? renderIndexCell(column) : column))
+    }
+
     expose({
       size,
       searchFormRef,
       searchRef,
+      reload,
+      setColumns,
+      setSearch,
+      setForm,
+      setPagination,
+      setTableData,
+      setLoading,
+      setSelectedRowKeys,
+      setSelectedRows,
+      setRowSelection,
+      setColumnsState,
     })
 
     return () => {
       const OriginDataTable = (
         <NDataTable
           {...tableProps.value}
+          data={innerData.value}
           columns={tableColumns.value}
           size={size.value}
-          loading={props.loading}
-          pagination={props.pagination}
+          loading={effectiveLoading.value}
+          pagination={effectivePagination.value}
           renderCell={renderEmptyCell}
           flexHeight={props.autoFlex || props.height != null}
-          style={dataTableStyle.value}
+          style={mergedTableStyle.value}
+          remote={Boolean(props.request)}
           scrollX={autoScrollX.value ?? props.scrollX}
+          onUpdateCheckedRowKeys={handleCheckedRowKeys}
+          onUpdatePage={handlePage}
+          onUpdatePageSize={handlePageSize}
+          onUpdateSorter={handleSorter}
+          onUpdateFilters={handleFilters}
         />
       )
 
@@ -261,11 +647,13 @@ export default defineComponent({
                 gridCols={3}
                 labelPlacement="left"
                 showFeedback={false}
-                defaultValue={props.params}
+                defaultValue={searchDefaults.value}
+                model={searchModelState.value}
                 loading={searchLoading.value}
-                {...props.search}
-                onSubmit={handleSearch}
+                {...searchProps.value}
+                onSubmit={handleSubmit}
                 onReset={handleReset}
+                onUpdate:model={handleModelUpdate}
               />
             </NCard>
           )}
@@ -283,10 +671,14 @@ export default defineComponent({
                   v-model:size={size.value}
                   title={props.title}
                   config={toolbarCfg.value}
-                  loading={props.loading}
+                  loading={effectiveLoading.value}
                   formColumns={formColumns.value}
+                  deleteDisabled={checkedRowKeys.value.length === 0}
                   onExport={handleExportData}
                   onRefresh={handleRefresh}
+                  onDelete={handleDelete}
+                  onPrint={handlePrint}
+                  onImport={handleImport}
                 >
                   {slots['toolbar']?.()}
                 </Toolbar>

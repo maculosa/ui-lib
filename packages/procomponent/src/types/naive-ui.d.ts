@@ -211,6 +211,10 @@ declare module 'naive-ui' {
     columnSettingButton?: boolean
     /** 表格列设置按钮文本 */
     columnSettingLabel?: string
+    /** 列设置持久化 key */
+    columnSettingKey?: string
+    /** 导入文件选择器的 accept 属性 */
+    importAccept?: string
     /**
      * 表格列设置按钮文本
      * @deprecated `columnSettingButtonText` 将被废弃，请使用 `columnSettingLabel` 代替

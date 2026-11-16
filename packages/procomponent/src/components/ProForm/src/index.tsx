@@ -22,7 +22,7 @@ import {
   NTooltip,
   NUpload,
 } from 'naive-ui'
-import { defineComponent, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { useShowSuffix } from '@/hooks/useShowSuffix'
 // import RemoteCascader from './components/RemoteCascader'
 import initTreeData from '@/utils/buildTree'
@@ -56,14 +56,21 @@ export default defineComponent({
      * @param forceCreate 是否强制创建新的表单结构，不使用缓存
      * @returns 表单数据
      */
-    const createFormData = (forceCreate: boolean = false) => {
+    /**
+     * 创建表单数据
+     * @param forceCreate 是否强制创建新的表单结构，不使用缓存
+     * @param includeModel 是否合并外部实时 model；重置时应传 false，避免「重置成当前输入值」
+     * @returns 表单数据
+     */
+    const createFormData = (forceCreate: boolean = false, includeModel: boolean = true) => {
       const currentHash = getColumnsHash(props.columns)
 
       // 如果columns结构未变化且不强制创建，直接返回缓存的结构的深拷贝
       if (!forceCreate && currentHash === columnsHash.value && Object.keys(cachedFormDataStructure.value).length > 0) {
         const result = JSON.parse(JSON.stringify(cachedFormDataStructure.value))
         if (
-          typeof props.model === 'object'
+          includeModel
+          && typeof props.model === 'object'
           && Object.keys(props.model).length > 0
         ) {
           return {
@@ -106,7 +113,8 @@ export default defineComponent({
       cachedFormDataStructure.value = JSON.parse(JSON.stringify(formData))
 
       if (
-        typeof props.model === 'object'
+        includeModel
+        && typeof props.model === 'object'
         && Object.keys(props.model).length > 0
       ) {
         return {
@@ -173,7 +181,6 @@ export default defineComponent({
             getRemoteServerOptions(item.request, item.key)
           }
         })
-        console.log('columns变化', newVal)
       },
       {
         immediate: true,
@@ -193,6 +200,22 @@ export default defineComponent({
         })
       },
       { deep: true, immediate: true }
+    )
+
+    // 表单数据变化同步给外部 v-model:model,首次初始化不抛事件
+    let lastEmittedModel = ''
+    watch(
+      formData,
+      (value) => {
+        const serialized = JSON.stringify(value)
+        if (serialized === lastEmittedModel) return
+        const isFirst = lastEmittedModel === ''
+        lastEmittedModel = serialized
+        if (!isFirst) {
+          ctx.emit('update:model', { ...value })
+        }
+      },
+      { deep: true },
     )
 
     // 通用表单项属性
@@ -438,11 +461,11 @@ export default defineComponent({
 
     // 重置表单
     const handleReset = () => {
-      if (props.defaultValue && Object.keys(props.defaultValue).length > 0) {
+      if (props.defaultValue && Object.keys(defaultValue).length > 0) {
         formData.value = { ...defaultValue }
       }
       else {
-        formData.value = createFormData(true) // 强制创建新表单结构
+        formData.value = createFormData(true, false) // 强制创建新表单结构,且不保留实时 model
       }
 
       ctx.emit('reset')
@@ -450,12 +473,12 @@ export default defineComponent({
 
     // 重置搜索模型
     const handleResetWithSearchMode = () => {
-      if (props.defaultValue && Object.keys(props.defaultValue).length > 0) {
+      if (props.defaultValue && Object.keys(defaultValue).length > 0) {
         // console.info('有默认值', props.defaultValue)
-        formData.value = { ...createFormData(), ...props.defaultValue }
+        formData.value = { ...createFormData(false, false), ...defaultValue }
       } else {
         // console.info('没有默认值')
-        formData.value = createFormData(true) // 强制创建新表单结构
+        formData.value = createFormData(true, false) // 强制创建新表单结构,且不保留实时 model
       }
 
       ctx.emit('reset', formData.value)
@@ -473,6 +496,9 @@ export default defineComponent({
     const gridCollapsed = ref(props.gridCollapsed)
     const gridCollapsedRows = ref(props.gridCollapsedRows)
 
+    // 隐藏折叠按钮时强制展开,避免搜索项被折叠且无入口展开
+    const collapsed = computed(() => (props.showAdvancedButton === false ? false : gridCollapsed.value))
+
     const { showSuffix } = useShowSuffix(gridRef, props.gridCols)
 
     const handleToggleCollapsed = () => {
@@ -480,7 +506,7 @@ export default defineComponent({
     }
 
     const formPassThrough = computed(() => {
-      const { columns, mode, gridCols, gridCollapsed, gridCollapsedRows, defaultValue, loading, searchText, submitText, resetText, ...rest } = props
+      const { columns, mode, gridCols, gridCollapsed, gridCollapsedRows, defaultValue, loading, searchText, submitText, resetText, showResetButton, showAdvancedButton, ...rest } = props
       return rest
     })
 
@@ -492,7 +518,7 @@ export default defineComponent({
           cols={props.gridCols}
           responsive="screen"
           x-gap={16}
-          collapsed={gridCollapsed.value}
+          collapsed={collapsed.value}
           collapsedRows={gridCollapsedRows.value}
           y-gap={16}
         >
@@ -501,12 +527,14 @@ export default defineComponent({
           {props.mode === 'search' && (
             <NGi suffix>
               <NSpace justify="end" wrap={false}>
-                <NButton onClick={() => handleResetWithSearchMode()}>
-                  {{
-                    icon: () => <BmIconRefresh />,
-                    default: () => props.resetText,
-                  }}
-                </NButton>
+                {props.showResetButton !== false && (
+                  <NButton onClick={() => handleResetWithSearchMode()}>
+                    {{
+                      icon: () => <BmIconRefresh />,
+                      default: () => props.resetText,
+                    }}
+                  </NButton>
+                )}
                 <NButton
                   attr-type="button"
                   type="primary"
@@ -518,7 +546,7 @@ export default defineComponent({
                     default: () => props.searchText,
                   }}
                 </NButton>
-                {showSuffix.value && (
+                {props.showAdvancedButton !== false && showSuffix.value && (
                   <NButton
                     type="info"
                     ghost

@@ -131,7 +131,7 @@ export default defineComponent({
     },
   },
   emits: ["update:columns", "update:state"],
-  setup(props, { emit }) {
+  setup(props, { emit, expose }) {
     /** 由原始列配置 + 已保存状态生成内部列表 */
     function buildList(
       columns: Column[],
@@ -259,6 +259,17 @@ export default defineComponent({
       // 清空保存状态,按原始列配置重新初始化(hideInTable 配置依然生效)
       list.value = buildList(originalColumns.value, null);
     }
+
+    /** 程序化应用列状态(不写 localStorage),同时同步面板与表格列 */
+    function applyState(state: ColumnSettingState | null) {
+      const next = buildList(originalColumns.value, state);
+      // 先把闸门基准同步为新状态,使下面的赋值被判定为“无变化”而不落盘
+      lastState = serializeState(next);
+      hasPersisted = true;
+      list.value = next;
+    }
+
+    expose({ applyState });
 
     return () => (
       <NPopover placement="bottom" trigger="click">

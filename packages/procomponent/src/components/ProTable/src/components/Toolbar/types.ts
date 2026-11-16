@@ -15,6 +15,8 @@ export interface ToolbarProps {
   formColumns: any[]
   /** 表格大小 */
   size: TableSize
+  /** 删除按钮是否禁用(无选中行时) */
+  deleteDisabled?: boolean
 }
 
 export const toolbarProps = {
@@ -38,12 +40,19 @@ export const toolbarProps = {
     type: String as PropType<ToolbarProps['size']>,
     default: 'medium',
   },
+  deleteDisabled: {
+    type: Boolean,
+    default: false,
+  },
 }
 
 export const toolbarEmits = {
   refresh: () => true,
   create: () => true,
   export: () => true,
+  delete: () => true,
+  print: () => true,
+  import: (file: File) => typeof File === 'undefined' || file instanceof File,
   'update:size': (key: TableSize) => ['small', 'medium', 'large'].includes(key),
 }
 
