@@ -184,6 +184,15 @@ desc="Uses the toolbar slot to customize the toolbar content, suitable for scena
 </Demo>
 
 <Demo
+title="Delete and import"
+desc="Enable toolbar.delete / toolbar.import to render the buttons: delete is disabled without selection and emits the selected keys; import emits the chosen File."
+:raw="ToolbarActionsRaw">
+
+<ToolbarActions />
+
+</Demo>
+
+<Demo
 title="Action buttons mode"
 desc="Adds action buttons such as edit and delete to table rows; clicking a button triggers the corresponding event."
 :raw="ActionsDemoRaw">
@@ -208,67 +217,118 @@ desc="Uses a Select Group to carry multi-select filter conditions, suitable for 
 
 </Demo>
 
+### Data request
+
+<Demo
+title="Table-level request"
+desc="With request, searching, paging, sorting and filtering all trigger requests automatically; return { data, total } and ProTable maintains data and pagination."
+:raw="RequestModeRaw">
+
+<RequestMode />
+
+</Demo>
+
+<Demo
+title="Search model binding"
+desc="v-model:searchModel reads and writes the search values; external buttons can set conditions, and @submit carries the form values."
+:raw="SearchModelRaw">
+
+<SearchModel />
+
+</Demo>
+
+### Instance methods
+
+<Demo
+title="Control the table through a ref"
+desc="Call setColumns to add or remove columns, setColumnsState to apply visibility, setSearch to set conditions and setLoading to simulate external loading."
+:raw="InstanceMethodsRaw">
+
+<InstanceMethods />
+
+</Demo>
+
 <div class="table-responsive">
 
 ## API
 
 ### Props
 
-| Prop             | Description                                                                            | Type                                    | Default                    | Version |
-| ---------------- | -------------------------------------------------------------------------------------- | --------------------------------------- | -------------------------- | ------- |
-| simple           | Whether to enable simple mode, which only shows the basic table                        | `boolean`                               | `false`                    |         |
-| title            | Table title, displayed at the top of the table                                         | `string`                                | 数据列表                   |         |
-| columns          | Array of table column configuration descriptors                                        | [ProTableColumn[]](#columns)            | -                          |         |
-| dataSource       | Table data source                                                                      | `any[]`                                 | -                          |         |
-| loading          | Whether to show the loading animation                                                  | `boolean`                               | `false`                    |         |
-| search           | Search configuration; set to `false` to hide the search bar                            | [SearchConfig](#searchConfig)           | `false`                    |         |
-| toolbarConfig    | Toolbar configuration                                                                  | [ToolbarConfig](#toolbarConfig)         | `{ createMode: 'button' }` |         |
-| params           | Extra query parameters, merged with the search form parameters                         | `object`                                | -                          |         |
-| onQuery          | Query callback, triggered when the search or pagination changes                        | `(params: Record<string, any>) => void` | -                          |         |
-| height           | Table height; a scrollbar appears when the table content exceeds it                    | `string`                                | -                          |         |
-| autoFlex         | Flexible table height, calculated automatically from the height of the table container | `boolean`                               | false                      | 0.7.28  |
-| columnStorageKey | Cache key for column settings; make sure it is unique, router.name is recommended      | `string`                                | -                          | v0.7.28 |
+| Prop | Description | Type | Default | Version |
+| --- | --- | --- | --- | --- |
+| simple | Simple mode, only renders the bare table | `boolean` | `false` | |
+| title | Table title, also used for the create form title | `string` | 数据列表 | |
+| columns | Column configuration; replacing the array at runtime updates table and search form | [ProTableColumn[]](#columns) | `[]` | |
+| request | Table-level request. When provided, ProTable owns data, pagination and loading | `ProTableRequest` | - | 0.8.0 |
+| loading | Table loading state, also drives the search button and refresh icon | `boolean` | `false` | |
+| search | Search configuration; set to `false` to hide the search bar | `false \| SearchConfig` | `undefined` (shown) | |
+| searchModel | Search model, supports `v-model:searchModel` | `Record<string, any>` | `{}` | 0.8.0 |
+| toolbar | Toolbar configuration (recommended) | [ToolbarConfig](#toolbarConfig) | `{ createMode: 'button' }` | |
+| toolbarConfig | Deprecated toolbar configuration, overridden by `toolbar` | [ToolbarConfig](#toolbarConfig) | `{ createMode: 'button' }` | |
+| params | Extra request parameters; changes trigger a reload and reset to page 1; also the initial search values (`searchModel` wins) | `Record<string, any>` | - | 0.8.0 |
+| onQuery | Query callback for controlled mode, debounced 300ms; not called in request mode | `(params: Record<string, any>) => Promise<void>` | - | |
+| dataTableStyle | Table `style`, merged with the style generated by `height` | `string \| Record<string, any>` | - | 0.8.0 |
+| height | Table height in px; enables `flex-height` | `number` | - | |
+| autoFlex | Fill the remaining height of a flex container | `boolean` | `false` | 0.7.28 |
+| columnStorageKey | Persistence key for column settings; must be unique | `string` | `''` | 0.7.28 |
+
+`ProTableRequest` signature:
+
+```ts
+type ProTableRequest = (
+  params: { current: number, pageSize: number, [key: string]: any },
+  sorter: { columnKey?: string | number, order?: 'ascend' | 'descend' } | null,
+  filters: Record<string, any[] | null>,
+) => Promise<{ data: any[], total?: number }>
+```
+
+When `request` is provided, data, pagination and loading are managed by ProTable, and requests are sent on mount, search submit/reset, page / page-size / sorter / filter changes, and `params` changes (which reset to page 1).
+
+Resetting restores the values captured when the component was created (`params` / `searchModel`) plus `search.defaultValue`; the current input is discarded, and the `reset` event carries these restored values.
 
 ### SearchConfig
 
-| Prop               | Description                                             | Type                           | Default  |
-| ------------------ | ------------------------------------------------------- | ------------------------------ | -------- |
-| gridCols           | Number of columns in the search form                    | `number`                       | 3        |
-| defaultValue       | Default values of the search form                       | `Record<string, any>`          | -        |
-| formRules          | Validation rules of the search form                     | [FormRules](#formRules)        | -        |
-| formModel          | Form model of the search form, used for two-way binding | `Record<string, any>`          | -        |
-| labelWidth         | Label width of the search form                          | `string`                       | auto     |
-| labelAlign         | Label alignment of the search form                      | `left` \| `right`              | `left`   |
-| labelPlacement     | Label placement of the search form                      | `left` \| `right`              | `left`   |
-| size               | Size of the search form                                 | `large` \| `middle` \| `small` | `middle` |
-| showAdvancedButton | Whether to show the advanced search button              | `boolean`                      | `true`   |
-| showResetButton    | Whether to show the reset button                        | `boolean`                      | `true`   |
-| resetText          | Text of the reset button                                | `string`                       | 重置     |
-| submitText         | Text of the submit button                               | `string`                       | 提交     |
-| searchText         | Text of the search button                               | `string`                       | 搜索     |
-| sort               | Sort direction                                          | `asc` \| `desc`                | -        |
+| Prop | Description | Type | Default |
+| --- | --- | --- | --- |
+| gridCols | Number of columns in the search form | `number` | 3 |
+| gridCollapsed | Whether the search form is collapsed | `boolean` | `false` |
+| defaultValue | Default values of the search form; also the reset target (wins over the initial `params` / `searchModel`) | `Record<string, any>` | - |
+| formRules | Validation rules of the search form | `Record<string, any>` | - |
+| formModel | Form model of the search form | `Record<string, any>` | - |
+| labelWidth | Label width of the search form | `string \| number` | follows NForm |
+| labelAlign | Label alignment | `left` \| `right` | `left` |
+| labelPlacement | Label placement | `left` \| `top` | `left` |
+| size | Size of the search form | `small` \| `medium` \| `large` | `medium` |
+| searchText | Text of the search button (takes precedence over `submitText`) | `string` | 搜索 |
+| submitText | Text of the search button when `searchText` is not set | `string` | - |
+| showResetButton | Whether to show the reset button | `boolean` | `true` |
+| showAdvancedButton | Whether to show the collapse toggle; `false` forces the form expanded | `boolean` | `true` |
+| resetText | Text of the reset button | `string` | 重置 |
+| sort | Sort direction of search fields by `order` | `asc` \| `desc` | `desc` |
 
 ### ToolbarConfig
 
-| Prop               | Description                                | Type                            | Default         |
-| ------------------ | ------------------------------------------ | ------------------------------- | --------------- |
-| create             | Whether to show the create button          | `boolean`                       | `true`          |
-| createLabel        | Text of the create button                  | `string`                        | 新增            |
-| createMode         | Trigger mode of the create button          | `button` \| `modal` \| `drawer` | `button`        |
-| delete             | Whether to show the delete button          | `boolean`                       | `false`         |
-| deleteLabel        | Text of the delete button                  | `string`                        | 删除            |
-| export             | Whether to show the export button          | `boolean`                       | `false`         |
-| exportLabel        | Text of the export button                  | `string`                        | 导出            |
-| print              | Whether to show the print button           | `boolean`                       | `false`         |
-| printLabel         | Text of the print button                   | `string`                        | 打印            |
-| import             | Whether to show the import button          | `boolean`                       | `false`         |
-| importLabel        | Text of the import button                  | `string`                        | 导入            |
-| reload             | Whether to show the reload button          | `boolean`                       | `false`         |
-| reloadLabel        | Text of the reload button                  | `string`                        | 刷新            |
-| density            | Whether to show the density toggle button  | `boolean`                       | `false`         |
-| densityLabel       | Text of the density toggle button          | `string`                        | 密度            |
-| columnSetting      | Whether to show the column settings button | `boolean`                       | `false`         |
-| columnSettingLabel | Text of the column settings button         | `string`                        | 列设置          |
+| Prop | Description | Type | Default |
+| --- | --- | --- | --- |
+| create | Whether to show the create button | `boolean` | `false` |
+| createLabel | Text of the create button, also used as the form title | `string` | 新增 |
+| createMode | Trigger mode of the create button | `button` \| `modal` \| `drawer` | `button` |
+| delete | Whether to show the delete button (disabled when nothing is selected) | `boolean` | `false` |
+| deleteLabel | Text of the delete button | `string` | 删除 |
+| export | Whether to show the export button | `boolean` | `false` |
+| exportLabel | Text of the export button | `string` | 导出Excel |
+| print | Whether to show the print button; calls `window.print()` on click | `boolean` | `false` |
+| printLabel | Text of the print button | `string` | 打印 |
+| import | Whether to show the import button; emits `import` with the selected `File` | `boolean` | `false` |
+| importLabel | Text of the import button | `string` | 导入 |
+| importAccept | `accept` attribute of the file input | `string` | - |
+| reload | Whether to show the reload button (icon only, label as tooltip) | `boolean` | `true` |
+| reloadLabel | Tooltip text of the reload button | `string` | 刷新 |
+| density | Whether to show the density toggle button | `boolean` | `true` |
+| columnSetting | Whether to show the column settings button | `boolean` | `true` |
+| columnSettingLabel | Text of the column settings button; icon only when omitted | `string` | - |
+
+Toolbar configuration is fully reactive: changing it at runtime updates the UI immediately.
 
 ### Columns
 
@@ -300,21 +360,47 @@ desc="Uses a Select Group to carry multi-select filter conditions, suitable for 
 
 ### Events
 
-| Event      | Description                                                  | Callback parameters                      | Version |
-| ---------- | ------------------------------------------------------------ | ---------------------------------------- | ------- |
-| loadData   | Data loading event, used to customize the data loading logic | `(page: number) => void`                 |         |
-| create     | Create button click event                                    | `() => void`                             |         |
-| exportData | Export button click event                                    | `(params?: Record<string, any>) => void` | 0.7.24  |
-| submit     | Search form submit event                                     | `(params: Record<string, any>) => void`  |         |
-| reset      | Search form reset event                                      | `(params?: Record<string, any>) => void` | 0.7.24  |
+| Event | Description | Callback parameters | Version |
+| --- | --- | --- | --- |
+| loadData | Fired only by the toolbar reload button in controlled mode (page is always `1`); not fired in request mode | `(page: number) => void` | |
+| create | Create button click event | `() => void` | |
+| exportData | Export button click event | `(params: Record<string, any>) => void` | 0.7.24 |
+| submit | Search form submitted with valid values | `(values: Record<string, any>) => void` | 0.8.0 |
+| update:searchModel | Search values changed, submitted, reset, or set through `setSearch`; powers `v-model:searchModel` | `(values: Record<string, any>) => void` | 0.8.0 |
+| reset | Search form reset event; carries the reset values | `(values?: Record<string, any>) => void` | 0.7.24 |
+| delete | Toolbar delete button clicked; receives the selected row keys | `(rowKeys: (string \| number)[]) => void` | 0.8.0 |
+| print | Toolbar print button clicked; `window.print()` has already been called | `() => void` | 0.8.0 |
+| import | A file has been selected for import | `(file: File) => void` | 0.8.0 |
+
+Pagination, sorting, filtering and selection events are forwarded from NDataTable. In request mode ProTable calls the provided `onUpdate*` handlers first and then sends the request.
+
+### Expose (Ref API)
+
+| Member | Type | Description |
+| --- | --- | --- |
+| size | `Ref<'small' \| 'medium' \| 'large'>` | Current table density |
+| searchFormRef | `ProFormInstance \| null` | Search form instance (`null` when `search` is `false`) |
+| searchRef | `NCard instance \| null` | Search card instance (`null` when `search` is `false`) |
+| reload | `() => Promise<void> \| void` | Re-request the current page (request mode) or emit `loadData(1)` |
+| setColumns | `(columns: ProTableColumn[]) => void` | Replace columns; table, search form and column setting stay in sync |
+| setSearch | `(values: Record<string, any>) => void` | Merge search values and emit `update:searchModel` |
+| setForm | `(values: Record<string, any>) => void` | Alias of `setSearch` |
+| setPagination | `(pagination: Record<string, any>) => void` | Update pagination and re-request in request mode |
+| setTableData | `(data: any[]) => void` | Replace table data |
+| setLoading | `(loading: boolean) => void` | Set internal loading (OR-ed with the `loading` prop) |
+| setSelectedRowKeys | `(keys: (string \| number)[]) => void` | Track selected keys internally; pass `checked-row-keys` for controlled selection |
+| setSelectedRows | `(rows: any[]) => void` | Store the selected row objects |
+| setRowSelection | `(rowSelection: Record<string, any>) => void` | Stores row-selection state only; use a `{ type: 'selection' }` column for selection |
+| setColumnsState | `(state: { order: string[], hidden: string[] } \| null) => void` | Apply column order/visibility in memory (`null` restores the original columns) |
 
 ### Slots
 
-| Name             | Description                                                                                      | Parameters                                           |
-| ---------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
-| default          | Default slot, used to customize the table content                                                | -                                                    |
-| summary          | Table summary row slot, used to customize the summary content at the bottom of the table         | `{ columns: ProTableColumn[], dataSource: any[] }`   |
-| selection-action | Selected row action bar slot, used to customize the action buttons shown after rows are selected | `{ selectedRowKeys: string[], selectedRows: any[] }` |
-| toolbar          | Toolbar slot, used to customize the toolbar content                                              | -                                                    |
+| Name | Description |
+| --- | --- |
+| toolbar | Custom content at the left of the toolbar |
+| summary | Custom content between the search card and the table card |
+| selection-action | Custom content above the table, usually for batch actions |
+
+Slots do not receive parameters.
 
 </div>

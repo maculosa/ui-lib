@@ -12,16 +12,18 @@ desc: ProTable 是基于 Naive UI DataTable 的高级表格组件，用一份 co
 
 ProTable 是基于 Naive UI `NDataTable` 封装的高级表格组件。它把「搜索栏 + 工具栏 + 表格 + 分页」组合成一个开箱即用的业务表格，并用**同一份 `columns` 配置**同时驱动表格列、搜索表单项和新增表单项，避免同一套字段在三处重复定义。
 
-当前文档对应 `@banmao/procomponent@0.7.31`。
+当前文档对应 `@banmao/procomponent@0.8.0`。
 
 ## 特性
 
 - **一份配置三处复用**：`columns` 通过 `hideInTable` / `hideInSearch` / `hideInForm` 控制在表格、搜索栏、新增表单中的可见性
 - **内置搜索栏**：按 `valueType` 自动渲染控件，支持远程枚举、栅格布局、折叠展开、防抖查询
-- **内置工具栏**：新增（按钮 / 弹窗 / 抽屉三种模式）、导出、刷新、密度切换、列设置
+- **内置工具栏**：新增（按钮 / 弹窗 / 抽屉三种模式）、删除、导出、打印、导入、刷新、密度切换、列设置
+- **表格级 request**：传入 `request` 后由 ProTable 托管数据、分页与 loading，搜索 / 翻页 / 排序 / 筛选自动重新请求
 - **列设置持久化**：拖拽排序 + 勾选显隐，按 `columnStorageKey` 写入 `localStorage`
 - **高度自适应**：`autoFlex` 填充 Flex 容器，或用 `height` / `max-height` 固定高度
 - **固定列自动横向滚动**：存在固定列且未显式配置 `scroll-x` 时自动估算总宽度
+- **实例方法**：`reload` / `setColumns` / `setSearch` / `setTableData` 等，支持外部控制表格
 - **完整透传 NDataTable**：`data`、`pagination`、`row-key`、`remote`、`striped` 等原生属性与分页事件可直接使用
 
 ## 何时使用
@@ -235,7 +237,14 @@ const columns = [
 
 ### 数据加载模型
 
-ProTable 自身不请求数据，三条入口分工明确：
+两种互斥的数据模式，二选一：
+
+| 模式 | 触发条件 | 数据 / 分页 / loading 由谁维护 |
+| --- | --- | --- |
+| 受控模式（默认） | 不传 `request` | 业务侧，通过 `data` / `pagination` / `loading` 与事件自行维护 |
+| 请求模式 | 传入 `request` | ProTable |
+
+**受控模式**：ProTable 自身不请求数据。
 
 | 入口 | 触发时机 | 说明 |
 | --- | --- | --- |
@@ -245,21 +254,51 @@ ProTable 自身不请求数据，三条入口分工明确：
 
 `onQuery` 与刷新过程中抛出的异常会被捕获，并通过 `useMessage` 提示「搜索失败，请重试」/「刷新失败，请重试」。
 
+**请求模式**：传入 `request` 后进入请求模式，ProTable 托管 `data`、分页与 loading，并在以下时机自动调用：
+
+- 组件挂载
+- 搜索提交、搜索重置
+- 翻页、改变每页条数、排序、筛选
+- `params` 变化（自动回到第一页）
+
+```ts
+type ProTableRequest = (
+  params: { current: number, pageSize: number, [key: string]: any },
+  sorter: { columnKey?: string | number, order?: 'ascend' | 'descend' } | null,
+  filters: Record<string, any[] | null>,
+) => Promise<{ data: any[], total?: number }>
+```
+
+- `params` 为 `params` 与 `searchModel` 合并后的查询条件，并附加 `current` / `pageSize`
+- `total` 用于计算分页总条数；`sorter` 未排序时为 `null`
+- 请求失败会通过 `useMessage` 提示「加载失败，请重试」；快速连续请求只保留最后一次响应
+- 工具栏刷新在请求模式下直接调用 `request`，**不再触发** `loadData`
+- `request` 与 `onQuery` 同时存在时，`request` 优先，`onQuery` 不会被调用
+
+> 从 `@banmao/procomponent` 可直接导入 `ProTableRequest`、`ProTableRequestParams`、`ProTableRequestResult`、`ProTableSorter` 类型。
+
 ### 搜索栏
 
 - **默认显示**，只有显式传 `:search="false"` 才会隐藏
 - `search` 传对象时，其字段会覆盖到内部 ProForm 上，因此 ProForm 的 `gridCols`、`gridCollapsed`、`gridCollapsedRows`、`labelWidth` 等属性都可以直接写在这里
 - 搜索栏固定 `showFeedback: false`，即不展示校验错误文案，但校验仍会拦截提交
-- 折叠/展开按钮由内部 overflow 检测自动决定是否出现，**不由 `showAdvancedButton` 控制**
-- 按钮文案：搜索按钮用 `searchText`（默认「搜索」），重置按钮用 `resetText`（默认「重置」）；`submitText` 只作用于 ProForm 的 `normal` 模式，在搜索栏中无效
+- `showAdvancedButton` 为 `false` 时折叠按钮隐藏并强制展开；未配置时由内部 overflow 检测决定是否出现
+- 按钮文案：搜索按钮优先取 `searchText`，其次 `submitText`，默认「搜索」；重置按钮用 `resetText`（默认「重置」）
+- `showResetButton` 为 `false` 时隐藏重置按钮
+- 搜索表单与 `searchModel` 双向同步：输入即触发 `update:searchModel`，提交、重置、`setSearch` 也会同步；外部修改 `searchModel` 会回写到表单
+- 重置目标值取「组件创建时的 `params` / `searchModel` 快照 + `search.defaultValue`」，不会保留当前输入；因此重置事件携带的是回到默认值之后的表单值
 
 ### 工具栏
 
-工具栏位于卡片右上角，从左到右依次是：`toolbar` 插槽内容 → 导出按钮 → 新增按钮 → 刷新 / 密度 / 列设置按钮组。
+工具栏位于卡片右上角，从左到右依次是：`toolbar` 插槽内容 → 新增 → 删除 → 导出 → 打印 → 导入 → 刷新 / 密度 / 列设置按钮组。
 
-- `create`、`export` **默认隐藏**，需要显式开启
+- `create`、`delete`、`export`、`print`、`import` **默认隐藏**，需要显式开启
 - `reload`、`density`、`columnSetting` **默认显示**，需要显式传 `false` 才会隐藏
 - `createMode` 为 `modal` / `drawer` 时，新增按钮会被 `ModalForm` / `DrawerForm` 包裹，表单列取 `formColumns`，标题为 `${createLabel} ${title}`；点击按钮同时触发 `create` 事件
+- 删除按钮在没有选中行时禁用，点击后抛出 `delete`，参数为当前选中行的 key 数组
+- 打印按钮抛出 `print` 后调用浏览器 `window.print()`
+- 导入按钮打开文件选择器，选择文件后抛出 `import`，参数为 `File`；`importAccept` 可限制文件类型
+- 工具栏配置**全部响应式**，运行时修改 `toolbar` 会立即反映到界面
 - 密度切换提供「默认 / 中等 / 紧凑」三档，对应表格 `size` 的 `large` / `medium` / `small`
 
 ### 高度与滚动
@@ -286,6 +325,8 @@ ProTable 自身不请求数据，三条入口分工明确：
 ```
 
 **固定列与横向滚动**：当可见列中存在 `fixed` 且未显式配置 `scroll-x` 时，ProTable 会按列宽估算总宽度并自动设置 `scroll-x`，避免固定列失效。估算规则为：已配置 `width` 直接采用；`selection` / `expand` 按 48px；分组列累加子列；其余按标题字符数估算（中文 16px、其他 8px，含 32px 内边距），下限 140px，并受 `minWidth` / `maxWidth` 约束。显式传入 `scroll-x` 时以传入值为准。
+
+**表格样式**：`dataTableStyle` 会与 `height` 生成的 `style` 合并后传给表格，优先级为 `height` < `dataTableStyle`；使用 `autoFlex` 时 `flex: 1` / `min-height: 0` 最后生效，保证布局不被覆盖。传字符串时仅在不使用 `autoFlex` 时整体生效。
 
 ## 代码示例
 
@@ -382,6 +423,26 @@ desc="搜索栏内的下拉选择与页面外部控件共享同一份查询条�
 
 </Demo>
 
+### 数据请求
+
+<Demo
+title="表格级 request"
+desc="传入 request 后，搜索、翻页、排序、筛选都由 ProTable 自动发起请求；返回 { data, total } 即可，无需再维护 data 与 pagination。"
+:raw="RequestModeRaw">
+
+<RequestMode />
+
+</Demo>
+
+<Demo
+title="搜索模型双向绑定"
+desc="通过 v-model:searchModel 读写查询条件：外部按钮可直接改条件，@submit 在每次提交时携带表单值。"
+:raw="SearchModelRaw">
+
+<SearchModel />
+
+</Demo>
+
 ### 工具栏与新增
 
 <Demo
@@ -412,6 +473,15 @@ desc="toolbar 插槽内容渲染在工具栏最左侧，用于补充导入等自
 </Demo>
 
 <Demo
+title="删除与导入"
+desc="开启 toolbar.delete / import 后按钮自动出现：删除按钮无选中行时禁用，抛出的 delete 携带选中 key；导入选择文件后抛出 File。"
+:raw="ToolbarActionsRaw">
+
+<ToolbarActions />
+
+</Demo>
+
+<Demo
 title="操作按钮模式"
 desc="操作列使用 Actions 组件，超出 showNum 的按钮自动收进下拉菜单。"
 :raw="ActionsDemoRaw">
@@ -431,7 +501,56 @@ desc="用 max-height / min-height 锁定表格高度，数据超出时表体滚�
 
 </Demo>
 
+### 实例方法
+
+<Demo
+title="通过 ref 控制表格"
+desc="调用 setColumns 动态增删列、setColumnsState 应用列显隐、setSearch 设置查询条件，以及 setLoading 模拟外部加载。"
+:raw="InstanceMethodsRaw">
+
+<InstanceMethods />
+
+</Demo>
+
 ## 进阶用法
+
+### 请求模式（request）
+
+传入表格级 `request` 后，ProTable 会自行维护数据、分页与 loading，业务侧只需返回 `{ data, total }`：
+
+```vue
+<script setup>
+import { ProTable } from '@banmao/procomponent'
+import { ref } from 'vue'
+
+const searchParams = ref({})
+
+async function fetchUsers(params, sorter, filters) {
+  // params: { ...searchParams, current, pageSize }
+  const { list, total } = await api.getUsers({
+    page: params.current,
+    pageSize: params.pageSize,
+    name: params.name,
+    sortKey: sorter?.columnKey,
+    sortOrder: sorter?.order,
+    ...filters,
+  })
+  return { data: list, total }
+}
+</script>
+
+<template>
+  <!-- searchParams 变化时自动回到第一页重新请求 -->
+  <ProTable :columns="columns" :request="fetchUsers" :params="searchParams" :row-key="row => row.id" />
+</template>
+```
+
+请求模式下的要点：
+
+- 搜索提交与重置都会回到第一页并重新请求；`onQuery` 不再被调用
+- 翻页 / 改变每页条数 / 排序 / 筛选的 `onUpdate*` 回调仍会先调用，再自动请求，可用于埋点或同步外部状态
+- 分页状态内部维护，传入的 `pagination` 用于初始化页码与附加配置（如 `showSizePicker`）
+- 快速切换条件时旧响应会被丢弃，不会覆盖新数据
 
 ### 远程枚举
 
@@ -541,6 +660,33 @@ function clearSearch() {
   <ProTable ref="tableRef" :columns="columns" :data="dataSource" :on-query="handleQuery" />
 </template>
 ```
+
+### 实例方法与动态列
+
+除了 `searchFormRef`，ProTable 实例还提供一组控制表格的方法：
+
+```ts
+const tableRef = ref(null)
+
+// 替换列配置，表格、搜索栏与列设置面板同步更新
+tableRef.value?.setColumns(nextColumns)
+
+// 应用列顺序与显隐（等价于操作列设置面板，仅内存生效）
+tableRef.value?.setColumnsState({ order: ['name', 'age'], hidden: ['age'] })
+tableRef.value?.setColumnsState(null) // 恢复 columns 的原始顺序与 hideInTable
+
+// 增量设置查询条件（会抛出 update:searchModel）
+tableRef.value?.setSearch({ name: '张三' })
+
+// 直接替换数据 / 控制 loading（受控模式下使用）
+tableRef.value?.setTableData(rows)
+tableRef.value?.setLoading(true)
+
+// 刷新：request 模式重新请求当前页，否则抛出 loadData(1)
+tableRef.value?.reload()
+```
+
+`columns` 支持在运行时整体替换（包括通过 `setColumns`），表格列、搜索栏与列设置都会随之重建，无需再用 `key` 重建组件。
 
 ### 配合 useList
 
@@ -676,18 +822,21 @@ const columns = [
 | --- | --- | --- | --- | --- |
 | simple | 简单模式，仅渲染 NDataTable，不含搜索栏、工具栏与卡片 | `boolean` | `false` | |
 | title | 卡片标题，同时用于新增弹窗标题拼接 | `string` | `'数据列表'` | |
-| columns | 列配置，同时驱动表格、搜索栏与新增表单 | `ProTableColumn[]` | `[]` | |
+| columns | 列配置，同时驱动表格、搜索栏与新增表单；运行时整体替换会同步更新 | `ProTableColumn[]` | `[]` | |
+| request | 表格级请求函数，传入后托管数据、分页与 loading | `ProTableRequest` | - | 0.8.0 |
 | loading | 表格加载态，同时驱动搜索按钮 loading 与刷新图标动画 | `boolean` | `false` | |
 | search | 搜索栏配置，`false` 时隐藏搜索栏 | `false \| SearchConfig` | `undefined`（显示） | |
+| searchModel | 搜索模型，支持 `v-model:searchModel` 双向绑定 | `Record<string, any>` | `{}` | 0.8.0 |
 | toolbar | 工具栏配置，**推荐使用** | `ToolbarConfig` | `{ createMode: 'button' }` | |
-| toolbarConfig | 工具栏配置，已废弃，将在 v0.8.0 移除；与 `toolbar` 同时存在时被 `toolbar` 覆盖 | `ToolbarConfig` | `{ createMode: 'button' }` | |
-| params | 搜索表单初始值，同时作为 `exportData` 的初始参数 | `Record<string, any>` | - | |
-| onQuery | 查询回调，搜索与重置时触发，内部 300ms 防抖 | `(params: Record<string, any>) => Promise<void>` | - | |
+| toolbarConfig | 工具栏配置，已废弃，后续版本移除；与 `toolbar` 同时存在时被 `toolbar` 覆盖 | `ToolbarConfig` | `{ createMode: 'button' }` | |
+| params | 请求模式的额外参数，变化时自动重新加载并回到第一页；同时作为搜索表单初值（`searchModel` 优先） | `Record<string, any>` | - | 0.8.0 |
+| onQuery | 受控模式查询回调，搜索与重置时触发，内部 300ms 防抖；请求模式下不调用 | `(params: Record<string, any>) => Promise<void>` | - | |
+| dataTableStyle | 表格 `style`，与 `height` 生成的样式合并 | `string \| Record<string, any>` | - | 0.8.0 |
 | height | 表格高度（px），设置后自动开启 `flex-height` | `number` | - | |
 | autoFlex | 填充 Flex 容器剩余高度，要求祖先定高且纵向 flex | `boolean` | `false` | 0.7.28 |
 | columnStorageKey | 列设置持久化 key，需全局唯一，推荐用路由 name | `string` | `''` | 0.7.28 |
 
-> `params` **不会**自动合并进 `onQuery` 的参数，也**不会**在其变化后自动重新查询——它只在搜索表单挂载时读取一次。需要「外部参数变化即重查」时，请在业务侧 `watch` 后主动调用查询。
+> 受控模式下 `params` **不会**自动合并进 `onQuery` 的参数，也**不会**在其变化后自动重新查询——它只在搜索表单挂载时读取一次。请求模式下 `params` 会与 `searchModel` 合并进 `request`，并在变化时自动重新请求。
 
 ### 透传的 NDataTable 属性
 
@@ -695,10 +844,10 @@ ProTable 的 props 合并了 naive-ui 的 `dataTableProps`，除上表自有属�
 
 | 属性 / 事件 | 说明 |
 | --- | --- |
-| `data` | 表格数据源（**不是 `dataSource`**） |
-| `pagination` | 分页配置，状态由业务侧维护 |
+| `data` | 表格数据源（**不是 `dataSource`**）；请求模式下由 ProTable 托管，传入值仅作为初始值 |
+| `pagination` | 分页配置；受控模式状态由业务侧维护，请求模式由 ProTable 托管 |
 | `row-key` | 行唯一标识，多选、展开、树形数据必需 |
-| `remote` | 服务端分页/排序/筛选，开启后需自行处理数据切片 |
+| `remote` | 服务端分页/排序/筛选；请求模式下自动为 `true` |
 | `max-height` / `min-height` | 表体最大/最小高度 |
 | `scroll-x` | 横向滚动宽度；存在固定列且未配置时自动估算 |
 | `striped` / `bordered` / `bottom-bordered` / `single-line` | 表格外观 |
@@ -708,6 +857,8 @@ ProTable 的 props 合并了 naive-ui 的 `dataTableProps`，除上表自有属�
 | `@update:checked-row-keys` | 选中项变化 |
 | `@update:sorter` / `@update:filters` | 排序 / 筛选变化 |
 
+请求模式下，上述 `onUpdate*` 回调会先被调用，随后 ProTable 自动发起请求。
+
 以下属性由 ProTable 内部接管，**外部传入会被覆盖**：
 
 | 属性 | 内部行为 |
@@ -716,7 +867,8 @@ ProTable 的 props 合并了 naive-ui 的 `dataTableProps`，除上表自有属�
 | `size` | 由密度按钮控制，初始 `large` |
 | `render-cell` | 固定为空值占位渲染（空值显示 `-`） |
 | `flex-height` | 由 `autoFlex` / `height` 推导 |
-| `style` | `height` 会整体覆盖为 `{ height: 'Npx' }`；`autoFlex` 会追加 `flex: 1` 与 `min-height: 0` |
+| `remote` | 请求模式固定 `true` |
+| `style` | `height` 会覆盖为 `{ height: 'Npx' }`，再与 `dataTableStyle` 合并；`autoFlex` 最后追加 `flex: 1` 与 `min-height: 0` |
 
 ### SearchConfig
 
@@ -726,24 +878,19 @@ ProTable 的 props 合并了 naive-ui 的 `dataTableProps`，除上表自有属�
 | --- | --- | --- | --- |
 | gridCols | 搜索栏每行字段数 | `number` | `3` |
 | gridCollapsed | 是否折叠搜索栏 | `boolean` | `false` |
-| defaultValue | 搜索栏默认值，优先级高于 `params` | `Record<string, any>` | - |
+| defaultValue | 搜索栏默认值，同时作为重置目标值，优先级高于初始的 `params` / `searchModel` | `Record<string, any>` | - |
 | formRules | 表单校验规则（NForm 原生属性） | `Record<string, any>` | - |
 | formModel | 表单模型（NForm 原生属性） | `Record<string, any>` | - |
 | labelWidth | label 宽度 | `string \| number` | 跟随 NForm |
 | labelAlign | label 对齐方式 | `'left' \| 'right'` | `'left'` |
 | labelPlacement | label 位置 | `'left' \| 'top'` | `'left'` |
 | size | 表单尺寸 | `'small' \| 'medium' \| 'large'` | `'medium'` |
-| searchText | 搜索按钮文案 | `string` | `'搜索'` |
+| searchText | 搜索按钮文案，优先级高于 `submitText` | `string` | `'搜索'` |
+| submitText | 搜索按钮文案（`searchText` 未配置时生效） | `string` | - |
+| showResetButton | 是否显示重置按钮 | `boolean` | `true` |
+| showAdvancedButton | 是否显示折叠/展开按钮；`false` 时强制展开 | `boolean` | `true` |
 | resetText | 重置按钮文案 | `string` | `'重置'` |
 | sort | 搜索项按 `order` 的排序方向 | `'asc' \| 'desc'` | `'desc'` |
-
-以下字段在类型中声明，但**当前版本不生效**：
-
-| 属性 | 实际情况 |
-| --- | --- |
-| showAdvancedButton | 折叠按钮由内部 overflow 检测自动决定，无法通过该字段开关 |
-| showResetButton | 搜索栏重置按钮始终渲染 |
-| submitText | 仅作用于 ProForm 的 `normal` 模式，搜索栏按钮文案请用 `searchText` |
 
 ### ToolbarConfig
 
@@ -752,15 +899,22 @@ ProTable 的 props 合并了 naive-ui 的 `dataTableProps`，除上表自有属�
 | create | 是否显示新增按钮 | `boolean` | `false` |
 | createLabel | 新增按钮文案，同时用于弹窗/抽屉标题 | `string` | `'新增'` |
 | createMode | 新增按钮模式 | `'button' \| 'modal' \| 'drawer'` | `'button'` |
+| delete | 是否显示删除按钮；无选中行时禁用 | `boolean` | `false` |
+| deleteLabel | 删除按钮文案 | `string` | `'删除'` |
 | export | 是否显示导出按钮 | `boolean` | `false` |
 | exportLabel | 导出按钮文案 | `string` | `'导出Excel'` |
+| print | 是否显示打印按钮，点击后调用浏览器打印 | `boolean` | `false` |
+| printLabel | 打印按钮文案 | `string` | `'打印'` |
+| import | 是否显示导入按钮，选择文件后抛出 `import` | `boolean` | `false` |
+| importLabel | 导入按钮文案 | `string` | `'导入'` |
+| importAccept | 导入文件选择器的 `accept` 属性 | `string` | - |
 | reload | 是否显示刷新按钮（图标按钮，文案为 tooltip） | `boolean` | `true` |
 | reloadLabel | 刷新按钮 tooltip 文案 | `string` | `'刷新'` |
 | density | 是否显示密度切换按钮 | `boolean` | `true` |
 | columnSetting | 是否显示列设置按钮 | `boolean` | `true` |
 | columnSettingLabel | 列设置按钮文案，不传则只显示图标 | `string` | - |
 
-以下字段在类型中声明，但**当前版本未渲染对应按钮**：`delete` / `deleteLabel`、`print` / `printLabel`、`import` / `importLabel`。需要这些操作请使用 `toolbar` 插槽自行实现。
+> 工具栏配置在运行时修改会立即生效，不需要重建组件。
 
 ### ProTableColumn
 
@@ -817,14 +971,17 @@ ProTable 的 props 合并了 naive-ui 的 `dataTableProps`，除上表自有属�
 
 | 事件名 | 说明 | 回调参数 | 版本 |
 | --- | --- | --- | --- |
-| loadData | **仅点击工具栏刷新按钮时触发**，参数固定为 1 | `(page: number) => void` | |
+| loadData | **仅受控模式点击工具栏刷新按钮时触发**，参数固定为 1；请求模式下不触发 | `(page: number) => void` | |
 | create | 点击新增按钮时触发，三种 `createMode` 均会触发 | `() => void` | |
 | exportData | 点击导出按钮时触发，参数为最近一次搜索条件（初始为 `params`） | `(params: Record<string, any>) => void` | 0.7.24 |
-| reset | 点击搜索栏重置按钮后触发，此时已带默认值重新执行 `onQuery` | `() => void` | 0.7.24 |
+| submit | 搜索表单校验通过并提交时触发，参数为表单当前值 | `(values: Record<string, any>) => void` | 0.8.0 |
+| update:searchModel | 搜索表单值变化、提交、重置或调用 `setSearch` 时触发，可用于 `v-model:searchModel` | `(values: Record<string, any>) => void` | 0.8.0 |
+| reset | 点击搜索栏重置按钮后触发，携带重置后的表单值，此时已带默认值重新执行查询 | `(values?: Record<string, any>) => void` | 0.7.24 |
+| delete | 点击工具栏删除按钮时触发，参数为当前选中行 key（无选中时按钮禁用） | `(rowKeys: (string \| number)[]) => void` | 0.8.0 |
+| print | 点击工具栏打印按钮时触发，同时已调用 `window.print()` | `() => void` | 0.8.0 |
+| import | 导入文件选择完成后触发 | `(file: File) => void` | 0.8.0 |
 
-分页、排序、筛选、多选等事件由 NDataTable 透传，见[透传的 NDataTable 属性](#透传的-ndatatable-属性)。
-
-> `submit` 与 `update:searchModel` 在 emits 中声明，但当前版本**不会触发**；查询请统一使用 `onQuery`。
+分页、排序、筛选、多选等事件由 NDataTable 透传，见[透传的 NDataTable 属性](#透传的-ndatatable-属性)。请求模式下 ProTable 在调用完传入的 `onUpdate*` 后会继续发起请求。
 
 ### Slots
 
@@ -846,6 +1003,22 @@ ProTable 的 props 合并了 naive-ui 的 `dataTableProps`，除上表自有属�
 | searchFormRef | `ProFormInstance \| null` | 搜索表单实例，`search` 为 `false` 时为 `null` |
 | searchRef | `NCard 实例 \| null` | 搜索栏卡片组件实例，`search` 为 `false` 时为 `null` |
 
+实例方法：
+
+| 方法 | 签名 | 说明 |
+| --- | --- | --- |
+| reload | `() => Promise<void> \| void` | 请求模式重新请求当前页；受控模式抛出 `loadData(1)` |
+| setColumns | `(columns: ProTableColumn[]) => void` | 替换列配置，表格、搜索栏、列设置同步更新 |
+| setSearch | `(values: Record<string, any>) => void` | 增量合并搜索模型并抛出 `update:searchModel`，不会自动发起查询 |
+| setForm | `(values: Record<string, any>) => void` | `setSearch` 的别名 |
+| setPagination | `(pagination: Record<string, any>) => void` | 更新分页（`page` / `pageSize` / `itemCount`），请求模式下随即重新请求 |
+| setTableData | `(data: any[]) => void` | 直接替换表格数据 |
+| setLoading | `(loading: boolean) => void` | 设置内部 loading，与 `loading` prop 取或 |
+| setSelectedRowKeys | `(keys: (string \| number)[]) => void` | 同步内部选中 key（用于删除按钮禁用判断），不会反向驱动未受控的表格选中列；受控请传 `checked-row-keys` |
+| setSelectedRows | `(rows: any[]) => void` | 记录选中行数据供业务读取 |
+| setRowSelection | `(rowSelection: Record<string, any>) => void` | 仅记录 rowSelection 状态；naive-ui 无表格级 `rowSelection`，多选请用 `{ type: 'selection' }` 列 |
+| setColumnsState | `(state: { order: string[], hidden: string[] } \| null) => void` | 应用列顺序与显隐，同步列设置面板；仅内存生效，不写 `localStorage`，传 `null` 恢复原始列 |
+
 `searchFormRef` 上可用的方法：
 
 | 方法 | 签名 | 说明 | 版本 |
@@ -859,9 +1032,10 @@ const tableRef = ref<InstanceType<typeof ProTable> | null>(null)
 
 tableRef.value?.searchFormRef?.setFieldValue('name', '张三')
 tableRef.value?.searchFormRef?.submit()
-```
 
-> 类型包中声明的 `ProTableInstance`（`reload` / `setColumns` / `setSearch` 等）尚未实现，请勿使用。
+tableRef.value?.setColumns(nextColumns)
+tableRef.value?.setColumnsState({ order: ['name', 'age'], hidden: ['age'] })
+```
 
 </div>
 
@@ -871,10 +1045,13 @@ tableRef.value?.searchFormRef?.submit()
 列上必须配置 `valueType`，未匹配到渲染分支时表单项为空。同时检查是否被 `hideInSearch`、`type: 'selection' / 'index'`、`key: 'actions'` 过滤掉。
 
 **点击搜索没反应？**
-`onQuery` 是搜索的必要条件，未传时控制台会打印 `ProTable: onQuery prop is required for search functionality`。另外查询有 300ms 防抖，连续点击只会执行最后一次。
+受控模式下 `onQuery` 是搜索的必要条件，未传时控制台会打印 `ProTable: onQuery prop is required for search functionality`；请求模式下请检查是否传入 `request`。另外查询有 300ms 防抖，连续点击只会执行最后一次。
+
+**request 模式拿不到翻页 / 排序回调？**
+可以继续监听 `@update:page` / `@update:sorter` 等事件，ProTable 会先调用传入的 `onUpdate*`，再自动请求；但不要在这些回调里再手动请求，否则会重复调用。
 
 **表格只有表头、内容塌陷？**
-升级到 `0.7.31`。使用 `autoFlex` 时请确认祖先容器有确定高度且为纵向 flex；否则改用 `height` 或 `max-height`。
+升级到 `0.8.0`。使用 `autoFlex` 时请确认祖先容器有确定高度且为纵向 flex；否则改用 `height` 或 `max-height`。
 
 **固定列不生效 / 横向滚动异常？**
 显式配置 `scroll-x` 为各列宽度之和，或给所有列配置 `width` 让自动估算更准确。
@@ -896,16 +1073,12 @@ tableRef.value?.searchFormRef?.submit()
 
 ## 已知限制
 
-当前版本（0.7.31）存在以下限制，使用时请避开：
+当前版本（0.8.0）仍存在以下限制：
 
 | 成员 | 说明 |
 | --- | --- |
-| `request`（表格级 prop） | 未消费；远程枚举请配置在**列**上 |
-| `searchModel` / `update:searchModel` | 双向绑定逻辑未启用；请用 `onQuery` 自行维护查询条件 |
-| `dataTableStyle` | 未消费；表格尺寸请用 `height` / `autoFlex` / `max-height` |
-| `submit` 事件 | 未触发 |
-| `toolbarConfig.delete` / `print` / `import` | 对应按钮未渲染 |
-| `search.showAdvancedButton` / `showResetButton` / `submitText` | 搜索栏中不生效 |
-| `ProTableInstance` | 声明的方法集未实现 |
-| 动态替换 `columns` | 列派生在 setup 时执行一次，**整体替换 `columns` 数组不会更新表格列与搜索栏**；需要动态列时请通过 `key` 重建组件 |
-| 运行时修改 `toolbar` | 工具栏在 setup 时解构配置，`create` / `createMode` / `reload` / `density` / `columnSetting` 及按钮文案**不支持响应式更新**（`export` 除外） |
+| `setRowSelection` | 仅记录状态；naive-ui 没有表格级 `rowSelection`，多选请在列上配置 `{ type: 'selection' }` |
+| `setSelectedRowKeys` / `setSelectedRows` | 只同步内部状态（`setSelectedRowKeys` 影响删除按钮禁用判断），不会反向驱动未受控的表格选中列；需要受控请传 `checked-row-keys` |
+| 多列排序 | 请求模式只向 `request` 传递第一列排序（`sorter` 取数组首项） |
+| `toolbarConfig` | 已废弃，请改用 `toolbar` |
+| 列级 `request` 签名 | 类型声明为 `(params, prop)`，运行时实际无参调用，`defaultValue` 才用于级联补全 |
