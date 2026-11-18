@@ -201,7 +201,7 @@ Everything currently exported from the `@banmao/procomponent` entry is listed be
 | --- | --- |
 | [ProLayout](/procomponent/ProLayout) | Overall layout shell for admin applications |
 | [ProTabs](/en/procomponent/ProTabs) | Tab bar with card / line styles, badges, closing and custom rendering |
-| `Actions` | Action button group for table rows and toolbars |
+| [Actions](/en/procomponent/Actions) | Action button group for table rows and toolbars, with overflow collapsed into a dropdown |
 
 ### Data entry
 

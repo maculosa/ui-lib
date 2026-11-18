@@ -17,19 +17,29 @@ const menus = [
 ]
 
 const useCustomFooter = ref(true)
+const compactFooter = ref(false)
 </script>
 
 <template>
-  <NSpace align="center" class="mb-3" :size="6">
+  <NSpace align="center" class="mb-3" :size="6" wrap>
     <span class="text-xs opacity-70">footer 插槽</span>
     <NSwitch v-model:value="useCustomFooter" size="small" />
     <span class="text-xs opacity-70">{{ useCustomFooter ? '自定义内容' : '默认文案 Footer' }}</span>
+    <span class="ml-2 text-xs opacity-70">紧凑 48px</span>
+    <NSwitch v-model:value="compactFooter" size="small" />
   </NSpace>
 
   <NConfigProvider abstract :theme="darkTheme" :theme-overrides="layoutTheme">
-    <ProLayout title="页脚" :menus="menus" footer :style="{ height: '380px' }">
+    <ProLayout
+      title="页脚"
+      :menus="menus"
+      footer
+      :footer-class="compactFooter ? 'h-12' : undefined"
+      :footer-style="{ background: '#18181b', color: '#d4d4d8' }"
+      :style="{ height: '380px' }"
+    >
       <p class="text-sm opacity-70">
-        footer 是布尔开关，开启后在布局底部渲染一条 64px 高的页脚。
+        footerClass 经 tailwind-merge 合并，h-12 可以覆盖内置的 h-16；footerStyle 直接作用于页脚节点。
       </p>
       <p class="mt-2 text-sm opacity-70">
         不提供 footer 插槽时文案为默认的 Footer；提供插槽后整个页脚内容由插槽接管。

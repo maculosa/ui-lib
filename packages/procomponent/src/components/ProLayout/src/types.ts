@@ -1,4 +1,4 @@
-import type { PropType, ExtractPropTypes, VNodeChild } from "vue";
+import type { PropType, ExtractPropTypes, VNodeChild, CSSProperties } from "vue";
 import type { MenuOption } from "naive-ui";
 
 
@@ -64,9 +64,19 @@ export const proLayoutProps = {
     type: Number,
     default: undefined,
   },
+  breakpointMode: {
+    type: String as PropType<'viewport' | 'container'>,
+    default: 'viewport',
+  },
   footer: {
     type: Boolean,
     default: false,
+  },
+  footerClass: {
+    type: String,
+  },
+  footerStyle: {
+    type: Object as PropType<CSSProperties>,
   },
   menu: {
     type: Object as PropType<MenuConfig>,
@@ -80,6 +90,18 @@ export const proLayoutProps = {
   },
   expandedKeys: {
     type: Array as PropType<(string | number)[]>,
+    default: undefined,
+  },
+  autoExpandSelected: {
+    type: Boolean,
+    default: true,
+  },
+  drawerPlacement: {
+    type: String as PropType<'left' | 'right' | 'top' | 'bottom'>,
+    default: 'left',
+  },
+  drawerWidth: {
+    type: Number,
     default: undefined,
   },
 };

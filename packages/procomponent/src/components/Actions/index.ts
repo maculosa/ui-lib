@@ -10,3 +10,13 @@ export const ActionsPlugin: Plugin = {
 export {
     Actions,
 }
+
+export type {
+    ActionAlign,
+    ActionButton,
+    ActionButtonProps,
+    ActionSize,
+    ActionsEmits,
+    ActionsProps,
+    ActionVariant,
+} from './src/types'

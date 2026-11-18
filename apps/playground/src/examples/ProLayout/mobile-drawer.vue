@@ -88,7 +88,8 @@ function simulateNarrow() {
       :style="{ height: '420px' }"
     >
       <p class="text-sm opacity-70">
-        断点按视口宽度判断，不是容器宽度。点「模拟窄屏」把断点抬到当前视口之上即可看到抽屉形态。
+        默认 breakpointMode="viewport"，按视口宽度判断。点「模拟窄屏」把断点抬到当前视口之上即可看到抽屉形态；
+        需要按容器宽度判断时传 breakpointMode="container"，见「抽屉定制」示例。
       </p>
       <p class="mt-2 text-sm opacity-70">
         当前页面：{{ current?.label ?? menuValue }}（{{ menuValue }}）

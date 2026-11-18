@@ -199,7 +199,7 @@ function handleSubmit(model: Record<string, unknown>) {
 | --- | --- |
 | [ProLayout](/procomponent/ProLayout) | 中后台整体布局骨架 |
 | [ProTabs](/procomponent/ProTabs) | 选项卡条，card / line 两种形态，支持徽标、关闭与自定义渲染 |
-| `Actions` | 操作按钮组，收敛表格行内与工具栏操作 |
+| [Actions](/procomponent/Actions) | 操作按钮组，收敛表格行内与工具栏操作，超出数量自动收进下拉 |
 
 ### 数据录入
 

@@ -107,6 +107,9 @@ declare global {
   export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
+  export type { ProTableRequest, ProTableRequestParams, ProTableRequestResult, ProTableSorter } from './components/ProTable/index'
+  import('./components/ProTable/index')
+  // @ts-ignore
   export type { ProTextProps } from './components/ProText/src/types'
   import('./components/ProText/src/types')
   // @ts-ignore
@@ -115,6 +118,9 @@ declare global {
   // @ts-ignore
   export type { WatermarkProps } from './components/Watermark/src/types'
   import('./components/Watermark/src/types')
+  // @ts-ignore
+  export type { ActionAlign, ActionButton, ActionButtonProps, ActionSize, ActionsEmits, ActionsProps, ActionVariant } from './components/Actions/index'
+  import('./components/Actions/index')
 }
 
 // for vue template auto import

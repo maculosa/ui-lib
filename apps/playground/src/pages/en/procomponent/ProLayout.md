@@ -1,6 +1,6 @@
 ---
 name: ProLayout
-desc: ProLayout is the page skeleton for admin apps — a dark header, a collapsible side menu and a content area, with side / top / mix layouts, header and sidebar customization, a custom footer, built-in content scrolling, controlled menu selection and menu events, remote menu requests, a loading state and an optional mobile drawer menu.
+desc: ProLayout is the page skeleton for admin apps — a dark header, a collapsible side menu and a content area, with side / top / mix layouts, header and sidebar customization, a custom footer, built-in content scrolling, controlled menu selection with auto-expansion, remote menu requests, a loading state, a customizable mobile drawer and instance methods.
 ---
 
 <route lang="yaml">
@@ -10,11 +10,11 @@ meta:
 
 # ProLayout
 
-ProLayout is the **layout skeleton** for admin pages: a header bar + menu + content area, with an optional footer. The menu is generated from the `menus` config (passed straight through to Naive UI `NMenu` as `options`). It supports the `side` / `top` / `mix` layouts and the collapsed state can be controlled from outside. The header can be customized with `logo`, `titleRender`, `headerClass` and the `header-extra` slot; the sidebar and content area with `siderClass`, `siderWidth`, `contentClass` and `contentScroll`; the footer content comes from the `footer` slot; menu selection and expansion can be controlled with `menuValue` and `expandedKeys`; and menus can be fetched from the backend through `menu.request`. Pass `mobileBreakpoint` and narrow viewports drop the sidebar and the horizontal menu in favour of a left drawer opened from a header button.
+ProLayout is the **layout skeleton** for admin pages: a header bar + menu + content area, with an optional footer. The menu is generated from the `menus` config (passed straight through to Naive UI `NMenu` as `options`). It supports the `side` / `top` / `mix` layouts and the collapsed state can be controlled from outside. The header can be customized with `logo`, `titleRender`, `headerClass` and the `header-extra` slot; the sidebar and content area with `siderClass`, `siderWidth`, `contentClass` and `contentScroll`; the footer content comes from the `footer` slot and can be styled with `footerClass` / `footerStyle`; menu selection and expansion can be controlled with `menuValue` and `expandedKeys`, and `autoExpandSelected` expands the selected item's ancestors by default. Menus can be fetched from the backend through `menu.request`. Pass `mobileBreakpoint` and narrow containers drop the sidebar and the horizontal menu in favour of a drawer opened from a header button; the breakpoint can follow the viewport or the container, and the drawer direction, size, slot and open/close methods are configurable.
 
 This document tracks the repository source.
 
-> **Version note**: the following are **not implemented** in the published `0.7.31` and need the next release: `logo`, `titleRender`, `headerClass`, `collapsedTriggerPosition`, `layout`, `menu`, the `footer` slot, `siderClass`, `siderWidth`, `contentClass`, `contentScroll`, `menu.params`, `menu.responsive` and the `expose` methods, `menuValue`, `expandedKeys`, `menuClick`, `topMenuClick`, `update:expandedKeys`, and `mobileBreakpoint` (the mobile drawer). The `locale` field of `MenuConfig` has also been **removed** — it was never consumed in `0.7.31`, the library has no i18n yet, and keeping it only misleads; delete it wherever your TypeScript code sets it. Everything else behaves the same as `0.7.31`.
+> **Version note**: the following are **not implemented** in the published `0.7.31` and need the next release: `logo`, `titleRender`, `headerClass`, `collapsedTriggerPosition`, `layout`, `menu`, the `footer` slot, `footerClass`, `footerStyle`, `siderClass`, `siderWidth`, `contentClass`, `contentScroll`, `menu.params`, `menu.responsive` and the `expose` methods, `menuValue`, `expandedKeys`, `autoExpandSelected`, `menuClick`, `topMenuClick`, `update:expandedKeys`, `mobileBreakpoint`, `breakpointMode`, `drawerPlacement`, `drawerWidth`, the `drawer` slot, and `openDrawer` / `closeDrawer` / `toggleDrawer` / `setMenuValue` / `setExpandedKeys` / `scrollToMenu`. The `locale` field of `MenuConfig` has also been **removed** — it was never consumed in `0.7.31`, the library has no i18n yet, and keeping it only misleads; delete it wherever your TypeScript code sets it. Everything else behaves the same as `0.7.31`.
 
 ## Features
 
@@ -22,13 +22,15 @@ This document tracks the repository source.
 - **Three-part skeleton out of the box**: header (64px) + sidebar (expanded `siderWidth`, 256px by default; configurable collapsed width) + content area, with an optional footer (64px)
 - **Config-driven menu**: `menus` is passed through to `NMenu` as `options`, so icons, nested submenus, groups, dividers and disabled items all work
 - **Controlled menu**: `menuValue` holds the selected key and `expandedKeys` holds the expanded parents; `menuClick` / `topMenuClick` / `update:expandedKeys` report interactions, so you can bind `route.path` directly for router-aware highlighting
+- **Auto-expand the selected item**: `autoExpandSelected` is on by default; the initial value and every later `menuValue` change add the ancestors to the expanded set, so deep routes no longer need hand-written `expandedKeys`
 - **Remote menus**: `menu.request` fetches menus on mount, `menu.params` changes re-fetch automatically, with a built-in loading state and an `onLoadingChange` callback
 - **Collapsible sidebar**: `collapsedTriggerPosition` decides whether the trigger sits in the header or at the bottom of the sidebar, with a 300ms width transition
 - **Externally controlled collapse**: the `collapsed` prop plus the `collapseChange` event, or the `expose` methods
-- **Mobile drawer**: pass `mobileBreakpoint` and narrow viewports hide the sidebar and the horizontal menu, show a hamburger button in the header, and open a left drawer holding the full nested menu; off by default, so omitting it behaves exactly like the previous version
-- **Customizable header**: `logo` image, `titleRender` custom title, `headerClass` to override header styles, and the `header-extra` slot
+- **Mobile drawer**: pass `mobileBreakpoint` and narrow containers hide the sidebar and the horizontal menu and show a hamburger button; the breakpoint can follow the viewport or the container, and the drawer supports direction, size, a custom slot and open/close methods
+- **Customizable header**: `logo` image, `titleRender` custom title, `headerClass` to override header styles (the title and action icons inherit its text color), and the `header-extra` slot
 - **Customizable sidebar and content area**: `siderClass` for the sidebar color, `siderWidth` for the expanded width, `contentClass` to override the content padding, `contentScroll` for built-in scrolling
-- **Custom footer**: the `footer` switch plus the `footer` slot, spanning the full layout width
+- **Custom footer**: the `footer` switch plus the `footer` slot, with `footerClass` / `footerStyle` for height and styling, spanning the full layout width
+- **Instance methods**: set the selected key, set expanded keys, scroll to a menu item, and open / close the mobile drawer in addition to collapse and reload
 - **Horizontal menu overflow**: `menu.responsive` collapses items that do not fit into a "more" submenu under `top` / `mix`
 - **Independent menu scrolling**: the sidebar wraps `NScrollbar`, so long menus scroll on their own
 - **Injectable styles**: `class` / `style` apply to the root node; `class`, `headerClass`, `siderClass` and `contentClass` are merged with `tailwind-merge`, so they can override the built-in classes
@@ -44,7 +46,6 @@ This document tracks the repository source.
 
 The current version is **not a good fit** for the following — compose `NLayout` / `NMenu` / `NDrawer` yourself instead:
 
-- Putting anything other than the menu inside the mobile drawer (the drawer only renders `menus` and has no slot)
 - Built-in multi-tab pages and tab state management (pair it with `ProTabs` yourself, see [Multi-tab pages](#multi-tab-pages))
 
 ## Quick start
@@ -142,10 +143,10 @@ With that in place the menu text contrast is about **10:1**, which meets WCAG AA
 
 ```text
 div  ← root: w-full flex flex-col + class prop; the style prop applies here
-├── header  ← p-4 h-16 flex items-center bg-zinc-800 + headerClass (fixed 64px)
-│   ├── drawer trigger rendered first on narrow viewports, opens the drawer on click
+├── header  ← p-4 h-16 flex items-center text-white bg-zinc-800 + headerClass (64px by default, overridable)
+│   ├── drawer trigger rendered first on narrow viewports, opens the drawer on click, inherits the header color
 │   ├── logo           rendered as <img class="h-8 w-auto mr-2"> when logo has a value
-│   ├── title          titleRender wins, otherwise plain text-white text-lg font-bold
+│   ├── title          titleRender wins, otherwise plain text-lg font-bold, inherits the header color
 │   ├── horizontal menu rendered when not narrow and layout is top / mix, flex-1 min-w-0 mx-4, menu.responsive controls overflow
 │   ├── header-extra   slot (rendered on narrow viewports too)
 │   └── collapse trigger rendered when not narrow, collapsedTriggerPosition="top" and layout is not top
@@ -155,9 +156,10 @@ div  ← root: w-full flex flex-col + class prop; the style prop applies here
 │   │   └── collapse trigger ← rendered for collapsedTriggerPosition="bottom", pinned with mt-auto
 │   └── section ← flex-1 p-4 + contentClass, the default slot renders here
 │                 with contentScroll it gains flex flex-col min-h-0 and wraps an inner NScrollbar
-├── footer  ← rendered when footer is true, p-4 h-16, content from the footer slot, defaulting to Footer
-└── NDrawer ← rendered on narrow viewports, placement="left", width from siderWidth, inner bg-zinc-800 + siderClass
-              → NScrollbar → NMenu (the full menus, unaffected by layout and collapsed)
+├── footer  ← rendered when footer is true, p-4 h-16 + footerClass, footerStyle applies to the node, content from the footer slot
+└── NDrawer ← rendered on narrow containers, placement from drawerPlacement, size from drawerWidth (falling back to siderWidth)
+              ├── default: bg-zinc-800 + siderClass → NScrollbar → NMenu (the full menus)
+              └── drawer slot: takes over the whole drawer, scope is { menus, close }
               NDrawer teleports to body, so it is not inside the root node's DOM subtree
 ```
 
@@ -168,11 +170,11 @@ Dimensions and defaults:
 | Header height | 64px | `h-16`, can be overridden with `headerClass` |
 | Sidebar width (expanded) | 256px | `siderWidth`; inline style, so classes cannot override it |
 | Sidebar width (collapsed) | 64px | `menu.collapsedWidth`, applies to both the sidebar and `NMenu` |
-| Drawer width (narrow) | 256px | Taken from `siderWidth`, **not** from `menu.collapsedWidth` |
+| Drawer size (narrow) | 256px | `drawerWidth`, falling back to `siderWidth`; width for left/right, height for top/bottom |
 | Collapsed icon size | 22px | `menu.collapsedIconSize` |
 | Menu item height | 42px | `NMenu` theme default, override with `Menu.itemHeight` |
 | Content padding | 16px | `p-4`, can be overridden with `contentClass` |
-| Footer height | 64px | `h-16`, not configurable |
+| Footer height | 64px | `h-16`, can be overridden with `footerClass` |
 
 ### Layout modes
 
@@ -245,11 +247,11 @@ The sidebar menu always wraps `NScrollbar`, so overflowing items scroll automati
 | `menuValue` | Key of the selected menu item; supports `v-model:menu-value` |
 | `update:menuValue` | Emits the new key when a menu item is clicked |
 | `expandedKeys` | Array of expanded parent keys; supports `v-model:expanded-keys` |
-| `update:expandedKeys` | Emits the new array when a submenu opens or closes; also the only expansion event |
+| `update:expandedKeys` | Emits the new array when a submenu opens or closes, when auto-expansion adds ancestors, or when `setExpandedKeys` is called |
 | `menuClick` | Emits `(key, item)` when a menu item is clicked — the `side` sidebar, the `top` horizontal menu and the `mix` sidebar all use it |
 | `topMenuClick` | `mix` only: emits `(key, item)` when a top-level header item is clicked; `item` keeps its full `children` |
 
-**Without `menuValue` the menu is uncontrolled**: `NMenu` keeps the highlight itself, clicks still highlight automatically, and `menuClick` / `update:menuValue` are still emitted — the outside just does not own that state. `expandedKeys` works the same way: leave it out and `NMenu` opens and closes submenus on its own.
+`menuValue` and `expandedKeys` both use an **internal state + external sync** model: when omitted, the component owns the state; when passed, external changes sync in. Clicking a menu item, expanding a submenu or auto-expanding ancestors updates the internal state first, then emits `update:menuValue` / `update:expandedKeys`. `v-model` is therefore the recommended form, and a one-way binding still keeps the component responsive.
 
 ```vue
 <script setup lang="ts">
@@ -271,9 +273,10 @@ const expandedKeys = ref<string[]>(['/system'])
 </template>
 ```
 
-Two things to keep in mind once controlled:
+Three things to keep in mind once controlled:
 
-- **A highlight inside a collapsed submenu is invisible**: `menuValue` only decides the highlight, it never expands parents. When the router lands on a deep page, put the ancestor keys into `expandedKeys` as well
+- **Auto-expansion**: `autoExpandSelected` defaults to `true`. The component adds the ancestors for `menuValue` on init and whenever `menuValue` changes from outside, then emits `update:expandedKeys`. Manually collapsing a parent is not undone until the next selection change; pass `false` to restore the old behavior. Use `setMenuValue` / `setExpandedKeys` for imperative control, see [Expose](#expose)
+- **A highlight inside a collapsed submenu is invisible**: with `autoExpandSelected` off, `menuValue` only decides the highlight; when the router lands on a deep page, put the ancestor keys into `expandedKeys` as well
 - **`props.onClick` still does not work**: `NMenu` only reads menu-level `nodeProps`, so an option's `props` never reach the DOM. Use `menuClick` for extra click behavior, or write `label` as a render function
 
 `mix` uses a **single source of value**:
@@ -318,38 +321,59 @@ The trigger position comes from `collapsedTriggerPosition`, and **only one trigg
 
 ### Mobile drawer
 
-Pass `mobileBreakpoint` (in px) to enable narrow-viewport adaptation. **It defaults to `undefined`, i.e. off**: without it the component uses a media query that never matches, so the DOM and the behaviour are identical to the previous version and upgrading causes no regression.
+Pass `mobileBreakpoint` (in px) to enable narrow-container adaptation. **It defaults to `undefined`, i.e. off**: without it the component uses a media query that never matches, so the DOM and the behaviour are identical to the previous version and upgrading causes no regression.
 
 ```vue
-<ProLayout :menus="menus" :mobile-breakpoint="768" :style="{ height: '100vh' }">
+<ProLayout
+  :menus="menus"
+  :mobile-breakpoint="768"
+  breakpoint-mode="container"
+  drawer-placement="right"
+  :drawer-width="320"
+  :style="{ height: '100vh' }"
+>
   <div class="h-full overflow-auto">
     <router-view />
   </div>
 </ProLayout>
 ```
 
-The test is based on **viewport width** (`matchMedia('(max-width: Npx)')`, inclusive), not container width:
+`breakpointMode` decides how the breakpoint is measured; at or below it the component enters the narrow shape:
 
-| Viewport width | Shape |
-| --- | --- |
-| `> mobileBreakpoint` | Desktop shape: sidebar / horizontal menu per `layout` |
-| `≤ mobileBreakpoint` | Narrow shape: neither the sidebar nor the horizontal menu renders, and a hamburger button appears at the far left of the header |
+| Mode | Measured against | Best for |
+| --- | --- | --- |
+| `viewport` (default) | `matchMedia('(max-width: Npx)')`, i.e. viewport width | Full-page layouts |
+| `container` | `ResizeObserver` on the ProLayout root's `clientWidth` | Cards, split panes or micro-frontend containers |
 
-What exactly changes on narrow viewports:
+What exactly changes in the narrow shape:
 
-- **The drawer always holds the full `menus`**: all three `layout` values are treated alike, and `mix` also gets the complete nested menu instead of the active top-level item's children — there is no header top-level menu to click on a narrow viewport, so trimming would make everything below the second level unreachable
-- **The collapsed state is ignored**: the `NMenu` inside the drawer always renders at expanded width, `collapsed` / `menu.collapsed` / `menu.collapsedWidth` take no part, and neither collapse trigger renders; the collapsed state is restored as-is once the viewport widens again
-- **Width and colors reuse the sidebar config**: the drawer width comes from `siderWidth` (**not** `menu.collapsedWidth`), and the inner background is the same `bg-zinc-800` + `siderClass`, so the [Light sidebar](#light-sidebar) recipe works on narrow viewports too
+- **The drawer always holds the full `menus`**: all three `layout` values are treated alike, and `mix` also gets the complete nested menu instead of the active top-level item's children — there is no header top-level menu to click on a narrow container, so trimming would make everything below the second level unreachable
+- **The collapsed state is ignored**: the `NMenu` inside the drawer always renders at expanded width, `collapsed` / `menu.collapsed` / `menu.collapsedWidth` take no part, and neither collapse trigger renders; the collapsed state is restored as-is once the container widens again
+- **Size and colors**: the drawer size comes from `drawerWidth` and falls back to `siderWidth`; `drawerPlacement` accepts `left` / `right` / `top` / `bottom`, and for top/bottom the same value controls the height. The default content keeps `bg-zinc-800` + `siderClass`, so the [Light sidebar](#light-sidebar) recipe works on narrow containers too
+- **The `drawer` slot takes over the content**: its scope is `{ menus, close }`; once provided, the default menu container is not rendered, so you can add user info, a search box or a custom menu
 - **`header-extra` and `footer` still render**, and the content `section` takes the full row width
-- **Selecting closes it**: clicking a leaf item emits `update:menuValue` / `menuClick` first and then closes the drawer; clicking a parent only expands the submenu (emitting `update:expandedKeys`) and keeps the drawer open
-- **Clicking the mask or pressing Esc also closes it** (default `NDrawer` behaviour), and the drawer closes automatically when the viewport widens past the breakpoint
+- **Selecting closes it**: in the default drawer, clicking a leaf item emits `update:menuValue` / `menuClick` first and then closes the drawer; clicking a parent only expands the submenu (emitting `update:expandedKeys`) and keeps the drawer open. With the `drawer` slot you decide when to call `close()`
+- **Clicking the mask or pressing Esc also closes it** (default `NDrawer` behaviour), and the drawer closes automatically when the viewport or container widens past the breakpoint
 - The drawer content uses `NDrawer`'s default `display-directive="if"`, so it is **not rendered while closed** and never exists twice alongside the sidebar menu
 
 Although the drawer teleports to `body`, it stays inside the Vue component tree, so an outer `NConfigProvider abstract :theme="darkTheme"` still injects its theme and the menu text does not fall back to light colors.
 
-> The drawer has **no slot** and can only hold the menu. For user info, a search box and similar content, compose `NDrawer` yourself or put them in `header-extra`.
+```vue
+<template>
+  <ProLayout ref="layoutRef" :menus="menus" :mobile-breakpoint="768">
+    <template #drawer="{ menus, close }">
+      <div class="flex h-full flex-col gap-3 bg-zinc-900 p-4 text-white">
+        <NMenu :options="menus" />
+        <NButton class="mt-auto" @click="close">Close</NButton>
+      </div>
+    </template>
+  </ProLayout>
+</template>
+```
 
-> The media query is viewport-level, so `mobileBreakpoint` only makes sense for a full-page layout. Embedding ProLayout in a narrow container (a documentation demo card, for example) does **not** trigger the narrow shape; to demo it, narrow the browser window or temporarily set the breakpoint above the current viewport width.
+In the narrow shape you can call `openDrawer()` / `closeDrawer()` / `toggleDrawer()` through a `ref`; on desktop these are no-ops so no drawer is rendered out of nowhere.
+
+> `container` mode renders the desktop shape until the root has been measured for the first time. If the container starts with `display: none`, `ResizeObserver` re-evaluates once it becomes visible.
 
 ### Remote menus and loading state
 
@@ -433,6 +457,14 @@ desc="logo renders left of the title, titleRender takes over the whole title nod
 
 </Demo>
 
+<Demo title="Light header inherits the title color"
+desc="The header defaults to text-white and both the title and action icons inherit currentColor; headerClass with bg-white text-zinc-900 makes the title dark without titleRender."
+:raw="HeaderLightRaw">
+
+<HeaderLight />
+
+</Demo>
+
 <Demo title="Header extra slot"
 desc="header-extra renders right of the title and left of the collapse trigger; flex-1 pushes the user area to the right."
 :raw="HeaderExtraRaw">
@@ -441,8 +473,8 @@ desc="header-extra renders right of the title and left of the collapse trigger; 
 
 </Demo>
 
-<Demo title="Footer and the footer slot"
-desc="footer is a boolean switch; when on, a 64px footer appears at the bottom. Without a slot the text is Footer; with the footer slot the content is yours and spans the full layout width."
+<Demo title="Footer, the footer slot and style overrides"
+desc="footer is a boolean switch; when on, a 64px footer appears at the bottom. Without a slot the text is Footer; with the footer slot the content is yours. footerClass can turn h-16 into h-12, and footerStyle adjusts background and text color."
 :raw="FooterLayoutRaw">
 
 <FooterLayout />
@@ -485,6 +517,14 @@ desc="menuValue decides the highlight and expandedKeys decides which parents are
 
 </Demo>
 
+<Demo title="Auto-expand the selected item"
+desc="autoExpandSelected is on by default: both the initial menuValue and later selection changes expand the ancestors and emit update:expandedKeys. Turn it off to restore highlight-only behavior, with expandedKeys fully owning the expansion state."
+:raw="MenuAutoExpandRaw">
+
+<MenuAutoExpand />
+
+</Demo>
+
 <Demo title="Controlled mix and top-level derivation"
 desc="A single source of value: header clicks only switch the top level and emit topMenuClick, sidebar clicks write menuValue; changing menuValue from outside derives the owning top-level item and switches both menus."
 :raw="MenuMixControlledRaw">
@@ -517,6 +557,14 @@ desc="Changes to menu.params (including in-place edits) re-run request and are p
 
 </Demo>
 
+<Demo title="Instance methods for selection, expansion and scrolling"
+desc="Call setMenuValue / setExpandedKeys / scrollToMenu / toggleCollapsed through a ref; each method updates internal state first, then emits update:menuValue, update:expandedKeys or collapseChange. scrollToMenu returns whether the target was found."
+:raw="ExposeControlsRaw">
+
+<ExposeControls />
+
+</Demo>
+
 ### Scrolling
 
 <Demo title="Built-in content scrolling"
@@ -538,10 +586,18 @@ desc="The sidebar menu scrolls automatically through the built-in NScrollbar; wi
 ### Mobile
 
 <Demo title="Mobile drawer menu"
-desc="mobileBreakpoint switches shape by viewport width: on narrow viewports neither the aside nor the horizontal menu renders, a header hamburger opens the left drawer, the drawer always holds the full nested menus, and clicking a leaf closes it. The breakpoint is viewport-level, so use “simulate narrow” to raise it above the current viewport."
+desc="mobileBreakpoint switches shape by viewport width: on narrow viewports neither the aside nor the horizontal menu renders, a header hamburger opens the left drawer, the drawer always holds the full nested menus, and clicking a leaf closes it. Use “simulate narrow” to raise the breakpoint above the current viewport."
 :raw="MobileDrawerRaw">
 
 <MobileDrawer />
+
+</Demo>
+
+<Demo title="Drawer customization: container breakpoint, direction, size and slot"
+desc="breakpointMode=container measures the root width, so switching the container to 360px inside a demo card triggers it; drawerPlacement / drawerWidth control the direction and size, the drawer slot scope is { menus, close }, and the buttons call openDrawer / closeDrawer / toggleDrawer."
+:raw="DrawerCustomRaw">
+
+<DrawerCustom />
 
 </Demo>
 
@@ -752,24 +808,32 @@ Enable `footer` and provide the `footer` slot to take over the content; the foot
 </template>
 ```
 
-The footer height is fixed at 64px (`h-16`) and there is no `footerClass`. For a different height, turn `footer` off and lay out a column inside the content area instead:
+The footer is 64px (`h-16`) by default. `footerClass` goes through `tailwind-merge`, so it can override the height directly, and `footerStyle` applies inline styles:
 
 ```vue
 <template>
-  <ProLayout :menus="menus" :style="{ height: '100vh' }">
-    <div class="h-full flex flex-col">
-      <div class="flex-1 overflow-auto">
-        <router-view />
-      </div>
-      <footer class="h-12 flex items-center justify-center text-xs opacity-60">
-        © 2026 Banmao · Internal admin
-      </footer>
+  <ProLayout
+    :menus="menus"
+    footer
+    footer-class="h-12 border-t border-zinc-700"
+    :footer-style="{ background: '#18181b', color: '#d4d4d8' }"
+    :style="{ height: '100vh' }"
+  >
+    <div class="h-full overflow-auto">
+      <router-view />
     </div>
+
+    <template #footer>
+      <div class="flex w-full items-center justify-between text-xs">
+        <span>© 2026 Banmao · Internal admin</span>
+        <span>Help center</span>
+      </div>
+    </template>
   </ProLayout>
 </template>
 ```
 
-With that approach the footer only spans the content area, and the sidebar runs all the way down.
+If you need a footer that only spans the content area (with the sidebar running all the way down), you can still turn `footer` off and lay out a column inside the default slot.
 
 ### Changing only the menu colors
 
@@ -825,7 +889,14 @@ import { ProLayout } from '@banmao/procomponent'
 </template>
 ```
 
-The header stays dark (its title is `text-white`). To lighten it as well, add `header-class="bg-white border-b border-zinc-200"` and use `titleRender` for a dark title — the built-in title hard-codes `text-white`, so `titleRender` is the most direct route.
+The header defaults to `bg-zinc-800 text-white`, and the title plus the collapse / drawer triggers inherit its text color. To lighten it, put both colors in `header-class`; no `titleRender` is required:
+
+```vue
+<ProLayout
+  :menus="menus"
+  header-class="bg-white text-zinc-900 border-b border-zinc-200"
+/>
+```
 
 > The sidebar width is an inline style, so `w-60` inside `sider-class` has no effect. Use the `sider-width` prop.
 
@@ -860,21 +931,27 @@ When the content area holds a `ProTable`, use `auto-flex` so the table fills the
 | logo | Header logo image URL, rendered as an `h-8 w-auto` `<img>` left of the title | `string` | - |
 | titleRender | Custom title render function; its return value replaces the whole title node | `(title: string) => VNodeChild` | - |
 | menus | Menu config, passed straight through to `NMenu` as `options` and reactive; acts as `defaultMenuData` when `menu.request` is set | `MenuOption[]` | - |
-| menuValue | Key of the selected menu item, controlled; when omitted the inner `NMenu` owns the selection. Supports `v-model:menu-value` | `string \| number` | `undefined` |
-| expandedKeys | Array of expanded parent keys, controlled; when omitted the inner `NMenu` owns the expansion. Supports `v-model:expanded-keys` | `(string \| number)[]` | `undefined` |
+| menuValue | Key of the selected menu item; updates internally first, then emits, and external changes sync in. Supports `v-model:menu-value` | `string \| number` | `undefined` |
+| expandedKeys | Array of expanded parent keys; updates internally first, then emits, and external changes sync in. Supports `v-model:expanded-keys` | `(string \| number)[]` | `undefined` |
+| autoExpandSelected | Adds the ancestors of `menuValue` to the expanded set on init and whenever it changes, emitting `update:expandedKeys`; manual collapse is not undone | `boolean` | `true` |
 | menu | Menu behavior config, see [MenuConfig](#menuconfig) | `MenuConfig` | - |
 | layout | Layout mode, see [Layout modes](#layout-modes) | `'side' \| 'top' \| 'mix'` | `'side'` |
-| mobileBreakpoint | Narrow-viewport breakpoint in px, tested against the **viewport width**; at `≤` this value the sidebar and horizontal menu are replaced by a drawer. Omit it to keep the feature off, see [Mobile drawer](#mobile-drawer) | `number` | `undefined` |
+| mobileBreakpoint | Narrow breakpoint in px, measured according to `breakpointMode`; at `≤` this value the sidebar and horizontal menu are replaced by a drawer. Omit it to keep the feature off, see [Mobile drawer](#mobile-drawer) | `number` | `undefined` |
+| breakpointMode | How the breakpoint is measured: `viewport` for viewport width, `container` for the root's width (`ResizeObserver`) | `'viewport' \| 'container'` | `'viewport'` |
+| drawerPlacement | Direction the narrow drawer opens from | `'left' \| 'right' \| 'top' \| 'bottom'` | `'left'` |
+| drawerWidth | Narrow drawer size in px; width for left/right, height for top/bottom. Falls back to `siderWidth` | `number` | `undefined` |
 | collapsed | Sidebar collapsed state; changes sync into the internal state, internal flips do not write back. When omitted, the initial value comes from `menu.collapsed` | `boolean` | `undefined` |
 | collapsedTriggerPosition | Trigger position; only one is rendered at a time, and none under `layout="top"` | `'top' \| 'bottom'` | `'bottom'` |
 | class | Class appended to the root node, merged with `tailwind-merge`; **strings only** | `string` | - |
-| headerClass | Class appended to the `header`, merged with `tailwind-merge`, so it can override built-ins such as `bg-zinc-800` | `string` | - |
+| headerClass | Class appended to the `header`, merged with `tailwind-merge`; the title and action icons inherit its text color | `string` | - |
 | siderClass | Class appended to the `aside`, merged with `tailwind-merge`, so it can override the sidebar color; the width is an inline style, so `w-*` has no effect | `string` | - |
 | siderWidth | Expanded sidebar width in px; when collapsed the width still comes from `menu.collapsedWidth` | `number` | `256` |
 | contentClass | Class appended to the content `section`, merged with `tailwind-merge`, so it can override `p-4` | `string` | - |
 | contentScroll | Whether the content area scrolls internally; when on, the `section` gains `flex flex-col min-h-0` and wraps an inner `NScrollbar` | `boolean` | `false` |
 | style | Inline style on the root node, usually used to set the height | `Record<string, string \| number>` | - |
 | footer | Whether to render the footer; its content comes from the `footer` slot and defaults to `Footer` | `boolean` | `false` |
+| footerClass | Class appended to the `footer`, merged with `tailwind-merge`, so it can override `h-16` / `p-4` | `string` | - |
+| footerStyle | Inline style for the footer | `CSSProperties` | - |
 
 All of the above are consumed. The `MenuConfig` type is not exported from the package entry — declare a structurally identical type yourself when you need annotations.
 
@@ -883,8 +960,8 @@ All of the above are consumed. The `MenuConfig` type is not exported from the pa
 | Event | Description | Callback parameters |
 | --- | --- | --- |
 | collapseChange | Fired after clicking the header or sidebar-bottom trigger; the argument is the flipped state | `(collapsed: boolean) => void` |
-| update:menuValue | Fired when a menu item is clicked; pairs with `menuValue` for `v-model:menu-value` | `(key: string \| number) => void` |
-| update:expandedKeys | Fired when a submenu opens or closes; pairs with `expandedKeys` for `v-model:expanded-keys`, and is the only expansion event | `(keys: (string \| number)[]) => void` |
+| update:menuValue | Fired when a menu item is clicked or `setMenuValue` is called; pairs with `menuValue` for `v-model:menu-value` | `(key: string \| number) => void` |
+| update:expandedKeys | Fired when a submenu opens or closes, when auto-expansion adds ancestors, or when `setExpandedKeys` is called; pairs with `expandedKeys` for `v-model:expanded-keys` | `(keys: (string \| number)[]) => void` |
 | menuClick | Fired when a menu item is clicked (the `side` sidebar, the `top` horizontal menu, the `mix` sidebar); `item` is the original `MenuOption` | `(key: string \| number, item: MenuOption) => void` |
 | topMenuClick | `mix` only: fired when a top-level header item is clicked; it **does not write** `menuValue`, and `item` keeps its full `children` | `(key: string \| number, item: MenuOption) => void` |
 
@@ -901,8 +978,9 @@ All of the above are consumed. The `MenuConfig` type is not exported from the pa
 | default | The content area on the right, rendered inside `section.flex-1.p-4`; with `contentScroll` on it renders inside the inner `NScrollbar` | None |
 | header-extra | The region right of the header title (right of the horizontal menu under `top` / `mix`) and left of the collapse trigger | None |
 | footer | Footer content, rendered only when `footer` is `true`; defaults to `Footer` when the slot is absent | None |
+| drawer | Narrow drawer content; when provided it fully replaces the default menu container | `{ menus: MenuOption[], close: () => void }` |
 
-None of the three slots **receives parameters**. There are no `menu` / `title` / `logo` slots (use the `titleRender` and `logo` props instead), and the narrow-viewport drawer has no slot either — it can only hold the menu.
+`default` / `header-extra` / `footer` receive no parameters; `drawer` receives `{ menus, close }`. There are no `menu` / `title` / `logo` slots (use the `titleRender` and `logo` props instead).
 
 > `header-extra` shares a `flex items-center` container with the title and the collapse trigger. To push content to the right, use `flex-1` or `ml-auto` inside the slot.
 
@@ -971,13 +1049,19 @@ const menu = {
 
 ### Expose
 
-A `ref` gives you three methods:
+A `ref` gives you nine methods:
 
 | Method | Signature | Description |
 | --- | --- | --- |
 | reloadMenus | `() => Promise<void>` | Runs `menu.request` again immediately; a no-op when no `request` is configured |
 | setCollapsed | `(value: boolean) => void` | Writes the collapsed state and emits `collapseChange` |
 | toggleCollapsed | `() => void` | Flips the collapsed state and emits `collapseChange` |
+| setMenuValue | `(key: string \| number) => void` | Writes the selection, expands its ancestors and emits `update:menuValue` |
+| setExpandedKeys | `(keys: (string \| number)[]) => void` | Replaces the expanded keys and emits `update:expandedKeys` |
+| scrollToMenu | `(key: string \| number) => Promise<boolean>` | Expands ancestors, then scrolls the item into view; resolves `false` when the node is not found (for example with a custom `#drawer` slot) |
+| openDrawer | `() => void` | Opens the mobile drawer; a no-op on desktop |
+| closeDrawer | `() => void` | Closes the mobile drawer |
+| toggleDrawer | `() => void` | Toggles the mobile drawer; a no-op on desktop |
 
 ```vue
 <script setup lang="ts">
@@ -989,6 +1073,11 @@ const layoutRef = ref<InstanceType<typeof ProLayout> | null>(null)
 function reload() {
   layoutRef.value?.reloadMenus()
 }
+
+function jumpTo(key: string) {
+  layoutRef.value?.setMenuValue(key)
+  layoutRef.value?.scrollToMenu(key)
+}
 </script>
 
 <template>
@@ -996,7 +1085,9 @@ function reload() {
 </template>
 ```
 
-Both collapse methods take the same path as clicking the trigger, so you still need to write `collapsed` back from `collapseChange` to stay in sync. There are no methods for menu selection or expansion — write `menuValue` / `expandedKeys` directly; no scroll-to-item method is exposed either.
+`setCollapsed` / `setMenuValue` / `setExpandedKeys` mirror a user click: they update the internal state first and then emit the corresponding update event. Like clicking the trigger, you still need to write the value back to the prop to keep it controlled; see [Expose](#expose).
+
+Note that with a custom `#drawer` slot the component cannot find the menu node, so `scrollToMenu` resolves `false`; scroll your own content in that case.
 
 </div>
 
@@ -1018,13 +1109,13 @@ There is no `update:collapsed` event. Use `:collapsed` plus `@collapse-change` a
 Use `@menu-click`, whose arguments are `(key, item)`; `mix` top-level header items go through `@top-menu-click`. An option's `props.onClick` does not work, and expanding / collapsing a submenu emits `@update:expanded-keys`.
 
 **The menu highlight is lost after a refresh?**
-Bind `route.path` to `menu-value` and use route paths as menu keys — the highlight then follows the router, including refreshes and direct hits on nested routes. For deep routes, also write the ancestor keys into `expanded-keys`; see [Linking menus to the router](#linking-menus-to-the-router).
+Bind `route.path` to `menu-value` and use route paths as menu keys — the highlight then follows the router, including refreshes and direct hits on nested routes. Ancestors are expanded automatically via `autoExpandSelected`; see [Linking menus to the router](#linking-menus-to-the-router).
 
 **Clicking a menu does not highlight it once `menu-value` is passed?**
-In controlled mode the component never changes the selection on its own. Use `v-model:menu-value`, or assign the value yourself inside `@update:menu-value`. Passing only `:menu-value` without listening to the event freezes the highlight on the key you passed in.
+The component now updates its internal state first and then emits `update:menu-value`, so the highlight follows the click even in a plain `:menu-value` binding. The event is still the source of truth for your own state — bind `v-model:menu-value` or assign the value inside `@update:menu-value` if you keep a copy elsewhere.
 
 **The selected item sits in a submenu and I cannot see the highlight?**
-`menuValue` only decides the highlight; it does not expand parents automatically. Write the ancestor keys into `expandedKeys` (in router scenarios, derive them segment by segment from the path).
+With the default `auto-expand-selected` the ancestors are expanded automatically. Set `:auto-expand-selected="false"` when you want the old behavior and write the ancestor keys into `expandedKeys` yourself.
 
 **Why does `menuValue` stay unchanged when I click the header under `mix`?**
 That is the single value source by design: a header click only switches the top-level item and emits `topMenuClick`, while only a sidebar click writes `menuValue`. Otherwise clicking the header would overwrite the selection with a top-level key and the sidebar highlight would be lost. When a top-level item is itself a page, write the value or navigate inside `topMenuClick`.
@@ -1036,7 +1127,7 @@ That is the single value source by design: a header click only switches the top-
 When the active top-level item has no `children`, the sidebar is not rendered at all. Click a top-level header item that has children to see it.
 
 **The drawer does not show up on a narrow viewport?**
-First make sure you passed `mobile-breakpoint` — without it the feature is off entirely. Then remember the breakpoint is tested against the **viewport width**, not the container width: putting ProLayout in a 400px-wide card while the browser viewport is 1440px still gives the desktop shape. To demo it, narrow the window or set the breakpoint above the current viewport width — see [Mobile drawer](#mobile-drawer).
+First make sure you passed `mobile-breakpoint` — without it the feature is off entirely. By default the breakpoint is tested against the **viewport width**; for a narrow card inside a wide viewport set `breakpoint-mode="container"` so the component measures its own width with a `ResizeObserver` — see [Mobile drawer](#mobile-drawer).
 
 **Why isn't the drawer showing the current `mix` second-level menu?**
 By design: there is no header top-level menu to click on a narrow viewport, so trimming to the active item would make every other branch unreachable. The drawer renders the full `menus` under all three `layout` values.
@@ -1047,8 +1138,11 @@ Narrow viewports render no sidebar, so neither collapse trigger renders and the 
 **Why doesn't clicking a parent item in the drawer close it?**
 A parent only expands / collapses its submenu (emitting `update:expandedKeys`); only a leaf writes the selection and closes the drawer. Clicking the mask and pressing Esc also close it.
 
-**How do I change the drawer width and colors?**
-The width comes from `siderWidth` (not `menu.collapsedWidth`) and the colors from `siderClass` — the same config as the sidebar.
+**How do I change the drawer width, placement and colors?**
+Use `drawer-width` for the size (falling back to `sider-width`), `drawer-placement` for the side (`left` by default, plus `right` / `top` / `bottom`), and `siderClass` for the colors. For a fully custom panel use the `#drawer` slot — see [Mobile drawer](#mobile-drawer).
+
+**How do I call the drawer from my own toolbar?**
+Grab a `ref` and call `openDrawer()` / `closeDrawer()` / `toggleDrawer()`; they are no-ops on desktop, so you can wire them unconditionally.
 
 **When does `menu.request` run?**
 Once on mount, then again whenever the `menus` array reference changes or `menu.params` changes (deep-watched, so in-place edits count). You can also call the exposed `reloadMenus()`. The first argument is `menu.params` (default `{}`) and the second is `menus`. Changing only the `menu.request` function does not re-fetch.
@@ -1062,23 +1156,20 @@ The sidebar width is an inline style, which outranks classes. Use the `sider-wid
 **Too many horizontal menu items overflow?**
 Pass `:menu="{ responsive: true }"` and `NMenu` will collapse whatever does not fit into a trailing "more" submenu. It only affects the horizontal header menu under `top` / `mix`.
 
-**How do I change the footer text?**
-Enable `footer` and provide the `footer` slot — see [Custom footer](#custom-footer). The footer height is fixed at 64px and there is no `footerClass`.
+**How do I change the footer text and height?**
+Enable `footer` and provide the `footer` slot — see [Custom footer](#custom-footer). `footerClass` is merged with `tailwind-merge`, so `footer-class="h-12"` beats the built-in `h-16`, and `footerStyle` handles inline colors.
 
 **`headerClass` did not change the background color?**
 Classes are merged with `tailwind-merge`, so later classes win — `header-class="bg-orange-600"` does override the built-in `bg-zinc-800`. But the CSS must actually exist: with build-time-scanned Tailwind, class names have to appear literally in the source; concatenated class names are never generated.
+
+**The title is invisible on a light header?**
+The built-in title inherits the header text color; there is no hard-coded white. Pass `header-class="bg-white text-zinc-900"` and both the title and the header icons follow it — no `titleRender` needed. See [Header and footer](#header-and-footer).
 
 **Why doesn't a `menu.loading` change trigger `onLoadingChange`?**
 That callback only reflects the internal request state. An externally supplied `menu.loading` feeds rendering directly and never goes through the callback.
 
 ## Known limitations
 
-Footer content, sidebar color, sidebar width, content padding and scrolling, horizontal menu overflow, menu query params, instance methods, menu selection state, menu events and the mobile drawer are all implemented now. Multi-tab pages are not built in, but you can compose them with `ProTabs` (see [Multi-tab pages](#multi-tab-pages)). The following capabilities are still missing — plan around them:
+Auto-expansion, footer height, header title color, drawer customization and the `expose` scope are all implemented now: `autoExpandSelected` handles deep selections, `footerClass` / `footerStyle` size and color the footer, the title inherits the `headerClass` text color, the drawer supports container breakpoints, placement, size, a slot and open / close methods, and the instance methods cover selection, expansion and scrolling.
 
-| Member / capability | Notes |
-| --- | --- |
-| Auto-expanding to the selection | `menuValue` only decides the highlight and never expands ancestors; compute `expandedKeys` yourself for deep routes |
-| Footer height | Fixed at 64px with no `footerClass`; for another height turn `footer` off and lay it out yourself |
-| Header title color | The built-in title hard-codes `text-white`; use `titleRender` when lightening the header |
-| Drawer customization | The breakpoint is viewport-only (no container queries); the drawer always slides in from the left, has no slot, takes its width from `siderWidth` only, and exposes no method to open or close it |
-| `expose` scope | Only `reloadMenus` / `setCollapsed` / `toggleCollapsed`; write `menuValue` / `expandedKeys` for selection and expansion, and no scroll-to-item method |
+The only remaining gap is that **multi-tab pages are not built in**; compose them with `ProTabs` when you need tab state management — see [Multi-tab pages](#multi-tab-pages).

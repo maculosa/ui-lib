@@ -51,7 +51,7 @@ const proRaw: RawItem[] = [
     children: [
       { key: 'sidebar.proLayout', url: '/procomponent/ProLayout', mirrored: true },
       { key: 'sidebar.proTabs', url: '/procomponent/ProTabs', mirrored: true },
-      { key: 'sidebar.actions', planned: true },
+      { key: 'sidebar.actions', url: '/procomponent/Actions', mirrored: true },
     ],
   },
   {

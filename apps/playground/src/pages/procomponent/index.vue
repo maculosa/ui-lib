@@ -140,6 +140,7 @@ const catalog: CatalogItem[] = [
     name: 'Actions',
     descKey: 'actions',
     category: 'layout',
+    url: '/procomponent/Actions',
     tags: ['Actions'],
   },
   {
