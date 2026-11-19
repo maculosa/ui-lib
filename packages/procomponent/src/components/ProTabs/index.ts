@@ -10,3 +10,20 @@ export const ProTabsPlugin: Plugin = {
 export {
   ProTabs,
 }
+
+export type {
+  ContextMenuCommand,
+  PanelLoader,
+  ProTabsContextMenuLabels,
+  ProTabsDragGroup,
+  ProTabsEmits,
+  ProTabsInstance,
+  ProTabsProps,
+  ProTabsRouter,
+  ProTabsSize,
+  ProTabsTransferPayload,
+  TabBadge,
+  TabOption,
+} from './src/types'
+
+export type { VirtualWindow } from './src/virtual'

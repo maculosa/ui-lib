@@ -110,6 +110,9 @@ declare global {
   export type { ProTableRequest, ProTableRequestParams, ProTableRequestResult, ProTableSorter } from './components/ProTable/index'
   import('./components/ProTable/index')
   // @ts-ignore
+  export type { ContextMenuCommand, PanelLoader, ProTabsContextMenuLabels, ProTabsDragGroup, ProTabsEmits, ProTabsInstance, ProTabsProps, ProTabsRouter, ProTabsSize, ProTabsTransferPayload, TabBadge, TabOption, VirtualWindow } from './components/ProTabs/index'
+  import('./components/ProTabs/index')
+  // @ts-ignore
   export type { ProTextProps } from './components/ProText/src/types'
   import('./components/ProText/src/types')
   // @ts-ignore
