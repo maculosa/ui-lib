@@ -627,10 +627,11 @@ pro-table:column-setting:<columnStorageKey>
 存储内容为 `{ order: string[], hidden: string[] }`。要点：
 
 - **key 必须全局唯一**，推荐直接用路由 name，例如 `column-storage-key="user-list"`
-- 未配置时会退化为每个实例随机生成的 key，**刷新后偏好丢失**，开发环境会打印告警
+- 未配置时优先使用当前路由名（`$route.name`）作为 key，**刷新后偏好保留**；非 vue-router 环境或匿名路由退回随机 key（刷新后丢失）
+- 同一路由下有多个表格时请显式传入唯一的 `columnStorageKey`，否则会共用同一份偏好、互相覆盖，开发环境会打印告警
 - 面板中的「重置」会删除该 key 的存储，并回到 `columns` 的原始顺序与 `hideInTable` 配置
-- 列的标识取 `key`，缺失时回退到 `type`，再回退到位置索引；**建议每列都写 `key`**，否则增删列会导致偏好错位
-- 后续新增的列（存储中没有记录）按 `hideInTable` 决定显隐，并排在末尾
+- 列的标识依次取 `key`、`type`、字符串 `title`，最后才回退到位置索引；**建议每列都写 `key`**。无 `key` 时优先用标题，中途插入新列不会让旧偏好错位
+- 后续新增的列（存储中没有记录）按 `hideInTable` 决定显隐，并插入到其在 `columns` 中的声明位置，而不是一律排到末尾
 
 ### 外部控制搜索表单
 
@@ -834,7 +835,7 @@ const columns = [
 | dataTableStyle | 表格 `style`，与 `height` 生成的样式合并 | `string \| Record<string, any>` | - | 0.8.0 |
 | height | 表格高度（px），设置后自动开启 `flex-height` | `number` | - | |
 | autoFlex | 填充 Flex 容器剩余高度，要求祖先定高且纵向 flex | `boolean` | `false` | 0.7.28 |
-| columnStorageKey | 列设置持久化 key，需全局唯一，推荐用路由 name | `string` | `''` | 0.7.28 |
+| columnStorageKey | 列设置持久化 key，需全局唯一；未配置时取当前路由名，非路由环境退回随机 key | `string` | 当前路由名 | 0.7.28 |
 
 > 受控模式下 `params` **不会**自动合并进 `onQuery` 的参数，也**不会**在其变化后自动重新查询——它只在搜索表单挂载时读取一次。请求模式下 `params` 会与 `searchModel` 合并进 `request`，并在变化时自动重新请求。
 
@@ -1057,7 +1058,7 @@ tableRef.value?.setColumnsState({ order: ['name', 'age'], hidden: ['age'] })
 显式配置 `scroll-x` 为各列宽度之和，或给所有列配置 `width` 让自动估算更准确。
 
 **列设置刷新后丢失？**
-配置唯一且稳定的 `columnStorageKey`。未配置时使用随机 key，仅在当前实例生命周期内有效。
+配置唯一且稳定的 `columnStorageKey`。未配置时优先使用当前路由名；非路由环境退回随机 key，仅在当前实例生命周期内有效。
 
 **传入的 size 不起作用？**
 表格密度由工具栏密度按钮接管，初始为 `large`。如需固定密度，传 `:toolbar="{ density: false }"` 隐藏按钮，并通过 ref 修改 `size`。
