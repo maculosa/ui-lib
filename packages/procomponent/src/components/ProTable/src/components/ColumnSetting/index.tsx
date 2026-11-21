@@ -16,9 +16,33 @@ export interface ColumnSettingState {
   hidden: string[];
 }
 
-/** 稳定取列 key:key 缺失时依次回退 type / 位置索引 */
+/**
+ * 稳定取列 key:key 缺失时依次回退 type / 标题 / 位置索引。
+ * 标题比位置索引稳定:中间插入新列不会让旧偏好的 key 错位到别的列上。
+ */
 export function getColumnKey(column: Column, index: number): string {
-  return String(column.key ?? (column as any).type ?? `__col_${index}`);
+  const explicit = column.key ?? (column as any).type;
+  if (explicit != null && explicit !== "") return String(explicit);
+  const title = (column as any).title;
+  if (typeof title === "string" && title) return `__title_${title}`;
+  return `__col_${index}`;
+}
+
+/**
+ * 合并已保存顺序与当前列声明顺序:
+ * 已保存的列沿用用户排序,新增列(保存中不存在)保留声明位置而不是排到末尾。
+ */
+export function orderColumns<T extends { key: string }>(
+  items: T[],
+  savedOrder: string[],
+): T[] {
+  if (savedOrder.length === 0) return items;
+  const orderMap = new Map(savedOrder.map((k, i) => [k, i]));
+  const known = items
+    .filter((item) => orderMap.has(item.key))
+    .sort((a, b) => orderMap.get(a.key)! - orderMap.get(b.key)!);
+  let cursor = 0;
+  return items.map((item) => (orderMap.has(item.key) ? known[cursor++] : item));
 }
 
 const STORAGE_PREFIX = "pro-table:column-setting:";
@@ -65,15 +89,12 @@ export function applyColumnState(
 ): Column[] {
   if (!state) return columns;
   const hidden = new Set(state.hidden);
-  const orderMap = new Map(state.order.map((k, i) => [k, i]));
+  const items = columns.map((column, index) => ({
+    column,
+    key: getColumnKey(column, index),
+  }));
 
-  return columns
-    .map((column, index) => ({ column, key: getColumnKey(column, index) }))
-    .sort(
-      (a, b) =>
-        (orderMap.get(a.key) ?? Number.MAX_SAFE_INTEGER) -
-        (orderMap.get(b.key) ?? Number.MAX_SAFE_INTEGER),
-    )
+  return orderColumns(items, state.order)
     .filter(({ key }) => !hidden.has(key))
     .map(({ column }) => column);
 }
@@ -141,32 +162,26 @@ export default defineComponent({
       const orderMap = new Map(order.map((k, i) => [k, i]));
       const hiddenSet = new Set(saved?.hidden ?? []);
 
-      return (
-        columns
-          .map((column, index) => {
-            const key = getColumnKey(column, index);
-            // saved.order 里存在 → 用户操作过该列,以保存的偏好为准
-            // 不存在(新加的列)→ 回退到列配置本身的 hideInTable
-            const known = orderMap.has(key);
-            const checked = known
-              ? !hiddenSet.has(key)
-              : column.hideInTable !== true;
-            return {
-              key,
-              originKey: column.key,
-              title: (column as any).title ?? key,
-              type: (column as any).type,
-              checked,
-              column,
-            };
-          })
-          // 按保存的顺序排;没记录顺序的(新列)排最后
-          .sort(
-            (a, b) =>
-              (orderMap.get(a.key) ?? Number.MAX_SAFE_INTEGER) -
-              (orderMap.get(b.key) ?? Number.MAX_SAFE_INTEGER),
-          )
-      );
+      const items = columns.map((column, index) => {
+        const key = getColumnKey(column, index);
+        // saved.order 里存在 → 用户操作过该列,以保存的偏好为准
+        // 不存在(新加的列)→ 回退到列配置本身的 hideInTable
+        const known = orderMap.has(key);
+        const checked = known
+          ? !hiddenSet.has(key)
+          : column.hideInTable !== true;
+        return {
+          key,
+          originKey: column.key,
+          title: (column as any).title ?? key,
+          type: (column as any).type,
+          checked,
+          column,
+        };
+      });
+
+      // 已保存的列按用户排序,新列保留声明位置
+      return orderColumns(items, order);
     }
     // ---- 原始列配置快照 ----
     // 只在「真正的外部变更」时更新;

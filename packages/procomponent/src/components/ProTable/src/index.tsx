@@ -4,7 +4,17 @@ import {
   NFlex,
   useMessage
 } from 'naive-ui'
-import { computed, defineComponent, onMounted, provide, ref, watch, watchEffect } from 'vue'
+import {
+  computed,
+  defineComponent,
+  getCurrentInstance,
+  onMounted,
+  onUnmounted,
+  provide,
+  ref,
+  watch,
+  watchEffect,
+} from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import { ProForm } from '@components/ProForm'
 import { Toolbar } from './components'
@@ -14,6 +24,34 @@ import { applyColumnState } from './components/ColumnSetting'
 import type { ColumnSettingState } from './components/ColumnSetting'
 import { proTableProps, proTableEmits } from './types'
 import './styles/css'
+
+/**
+ * 读取 vue-router 挂在全局属性上的当前路由名。
+ * 不直接 import vue-router,保持组件库对路由零依赖;非路由环境返回 null。
+ */
+function resolveRouteName(): string | null {
+  const proxy = getCurrentInstance()?.proxy as any
+  const name = proxy?.$route?.name
+  return typeof name === 'string' && name ? name : null
+}
+
+/** 同一路由下未配置 columnStorageKey 的表格会共用一份偏好 */
+const fallbackKeyUsage = new Map<string, number>()
+
+function trackFallbackKeyUsage(key: string) {
+  const count = fallbackKeyUsage.get(key) ?? 0
+  fallbackKeyUsage.set(key, count + 1)
+  if (count === 1) {
+    console.warn(
+      `[ProTable] 当前路由下有多个 ProTable 使用路由名 "${key}" 作为列设置 key,偏好会互相覆盖;请为每个表格显式传入唯一的 columnStorageKey。`,
+    )
+  }
+  onUnmounted(() => {
+    const left = (fallbackKeyUsage.get(key) ?? 1) - 1
+    if (left > 0) fallbackKeyUsage.set(key, left)
+    else fallbackKeyUsage.delete(key)
+  })
+}
 
 export default defineComponent({
   name: 'ProTable',
@@ -92,13 +130,19 @@ export default defineComponent({
     const columnSettingRef = ref()
     provide('column-setting-ref', columnSettingRef)
 
-    // 未配置 columnStorageKey 时的托底 key:每个组件实例生成一次并保持稳定,
-    // 保证列设置仍可缓存;注意随机 key 刷新后会变化,偏好无法跨刷新复用,仅作兜底
-    const fallbackColumnSettingKey = `auto-${Math.random().toString(36).slice(2, 10)}`
+    // 未配置 columnStorageKey 时的兜底 key:
+    // 优先当前路由名,使未显式配置 key 的表格也能跨刷新保留偏好;
+    // 非 vue-router 环境(或匿名路由)退回随机 key,仅当前实例有效
+    const routeFallbackKey = resolveRouteName()
+    const fallbackColumnSettingKey = routeFallbackKey || `auto-${Math.random().toString(36).slice(2, 10)}`
     if (Boolean((import.meta as any).env?.DEV) && !props.columnStorageKey) {
-      console.warn(
-        `[ProTable] 未配置 columnStorageKey,列设置将使用随机 key "${fallbackColumnSettingKey}" 缓存,刷新后偏好不会保留。`,
-      )
+      if (routeFallbackKey) {
+        trackFallbackKeyUsage(routeFallbackKey)
+      } else {
+        console.warn(
+          `[ProTable] 未配置 columnStorageKey,列设置将使用随机 key "${fallbackColumnSettingKey}" 缓存,刷新后偏好不会保留。`,
+        )
+      }
     }
 
     const toolbarCfg = computed(() => {

@@ -59,6 +59,7 @@ function exposedApi(wrapper: ReturnType<typeof mountTable>['wrapper']) {
 
 afterEach(() => {
   document.body.replaceChildren()
+  localStorage.clear()
   vi.restoreAllMocks()
   vi.unstubAllGlobals()
 })
@@ -369,5 +370,33 @@ describe('ProTable instance API', () => {
 
     expect(wrapper.text()).toContain('姓名')
     expect(wrapper.findAll('th').some(th => th.text() === '年龄')).toBe(false)
+  })
+})
+
+describe('ProTable column storage fallback', () => {
+  function mountWithGlobals(global: Record<string, any>) {
+    return mount(
+      defineComponent({
+        render: () => h(NMessageProvider, null, { default: () => h(ProTable as any, { columns: baseColumns }) }),
+      }),
+      { attachTo: document.body, global },
+    )
+  }
+
+  it('uses the current route name when columnStorageKey is omitted', async () => {
+    // 与 vue-router 安装方式一致:$route 挂在全局属性上
+    mountWithGlobals({ config: { globalProperties: { $route: { name: 'user-list' } } } })
+    await flushPromises()
+
+    expect(localStorage.getItem('pro-table:column-setting:user-list')).toBeTruthy()
+  })
+
+  it('falls back to a random key outside a router', async () => {
+    mountWithGlobals({})
+    await flushPromises()
+
+    const keys = Object.keys(localStorage).filter(key => key.startsWith('pro-table:column-setting:'))
+    expect(keys).toHaveLength(1)
+    expect(keys[0]).toMatch(/^pro-table:column-setting:auto-/)
   })
 })
