@@ -1,7 +1,7 @@
 import { NButton, NModal, NSpace } from 'naive-ui'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { ProForm } from '@components/ProForm'
-import { modalFormProps, modalFormEmits, type ModalFormExpose } from './types'
+import { modalFormProps, modalFormEmits, type ModalFormExpose, type ModalFormFooterScope } from './types'
 
 interface FormValues {
   [key: string]: any
@@ -9,10 +9,53 @@ interface FormValues {
 
 export default defineComponent({
   name: 'ModalForm',
+  inheritAttrs: false,
   props: modalFormProps,
   emits: modalFormEmits,
-  setup(props, { emit, slots, attrs, expose }) {
-    const visible = ref(false)
+  setup(props, { attrs, emit, expose, slots }) {
+    const innerVisible = ref(props.defaultShow)
+    const visible = computed(() => (props.show === undefined ? innerVisible.value : props.show))
+
+    function setVisible(value: boolean) {
+      if (value === visible.value) return
+      if (props.show === undefined) innerVisible.value = value
+      emit('update:show', value)
+    }
+
+    watch(visible, (value, oldValue) => {
+      if (value !== oldValue) emit(value ? 'open' : 'close')
+    })
+
+    function open() {
+      setVisible(true)
+    }
+
+    function close() {
+      setVisible(false)
+    }
+
+    const formRef = ref()
+
+    function submit() {
+      formRef.value?.submit()
+    }
+
+    function reset() {
+      formRef.value?.reset()
+    }
+
+    function setFieldValue(key: string, value: any) {
+      formRef.value?.setFieldValue(key, value)
+    }
+
+    expose<ModalFormExpose>({
+      open,
+      close,
+      submit,
+      reset,
+      setFieldValue,
+      form: formRef,
+    })
 
     const columns = computed(() => {
       return props.columns.filter(col =>
@@ -20,81 +63,110 @@ export default defineComponent({
       )
     })
 
-    const width = computed(() => {
-      return typeof props.width === 'number' ? `${props.width}px` : (props.width || '640px')
+    const modalWidth = computed(() => {
+      return typeof props.width === 'number' ? `${props.width}px` : props.width
     })
 
-    function handleVisible() {
-      visible.value = true
-    }
+    const modalAttrs = computed(() => ({
+      preset: 'card' as const,
+      // card preset renders the `title` prop and ignores the header slot
+      title: () => (slots.header ? slots.header!() : props.title),
+      closable: props.closable,
+      maskClosable: props.maskClosable,
+      closeOnEsc: props.closeOnEsc,
+      blockScroll: props.blockScroll,
+      autoFocus: props.autoFocus,
+      trapFocus: props.trapFocus,
+      displayDirective: props.displayDirective,
+      zIndex: props.zIndex,
+      draggable: props.draggable,
+      style: { width: modalWidth.value },
+    }))
 
-    function close() {
-      visible.value = false
-    }
-
-    const formRef = ref()
-
-    async function handleSubmit(values: FormValues) {
-      try {
-        await emit('submit', values)
-        close()
-      } catch (error) {
-        console.error('Form submit failed:', error)
-      }
+    function handleSubmit(values: FormValues) {
+      emit('submit', values)
+      if (props.closeOnSubmit) close()
     }
 
     function handleReset() {
       emit('reset')
     }
 
-    function _submit() {
-      formRef.value?.submit()
+    function handleUpdateModel(values: Record<string, any>) {
+      emit('update:model', values)
     }
 
-    function _reset() {
-      formRef.value?.reset()
+    function renderTrigger() {
+      if (!props.showTrigger) return null
+      return (
+        <div class="bm-modal-form-trigger" style="display: inline-block" onClick={open}>
+          {slots.trigger
+            ? slots.trigger()
+            : slots.default
+              ? slots.default()
+              : <NButton size="small" type="primary">打开</NButton>}
+        </div>
+      )
     }
 
-    expose<ModalFormExpose>({
-      submit: _submit,
-      reset: _reset,
-    })
+    function renderForm() {
+      if (slots.form) return slots.form()
+      return (
+        <ProForm
+          ref={formRef}
+          {...attrs}
+          {...{
+            model: props.model,
+            'onUpdate:model': handleUpdateModel,
+            onSubmit: handleSubmit,
+            onReset: handleReset,
+          }}
+          mode="modal"
+          columns={columns.value}
+          defaultValue={props.defaultValue}
+        />
+      )
+    }
+
+    function renderFooter() {
+      if (props.hideFooter) return null
+      if (slots.footer) {
+        return slots.footer({
+          close,
+          reset,
+          submit,
+          confirmLoading: props.confirmLoading,
+        } satisfies ModalFormFooterScope)
+      }
+      return (
+        <NSpace justify="end" wrap={false}>
+          <NButton onClick={reset}>{props.resetText}</NButton>
+          <NButton onClick={close}>{props.cancelText}</NButton>
+          <NButton
+            type="primary"
+            loading={props.confirmLoading}
+            disabled={props.confirmLoading}
+            onClick={submit}
+          >
+            {props.submitText}
+          </NButton>
+        </NSpace>
+      )
+    }
 
     return () => (
       <>
-        <div class="modal-trigger" style="display: inline-block">
-          { slots.default?.() || (
-            <NButton size="small" type="primary" onClick={handleVisible}>
-              { props.title ?? '打开' }
-            </NButton>
-          )}
-        </div>
+        {renderTrigger()}
 
         <NModal
-          v-model:show={visible.value}
-          preset="card"
-          title={props.title}
-          style={{ width: width.value }}
+          {...modalAttrs.value}
+          show={visible.value}
+          {...{ 'onUpdate:show': setVisible }}
         >
           {{
-            default: () => (
-              <ProForm
-                ref={formRef}
-                columns={columns.value}
-                mode="modal"
-                model={props.model}
-                {...attrs}
-                onSubmit={handleSubmit}
-                onReset={handleReset}
-              />
-            ),
-            footer: () => (
-              <NSpace justify="end" wrap={false}>
-                <NButton onClick={close}>取消</NButton>
-                <NButton type="primary" onClick={_submit}>确定</NButton>
-                <NButton onClick={_reset}>重置</NButton>
-              </NSpace>
-            ),
+            default: renderForm,
+            ...(slots['header-extra'] ? { 'header-extra': slots['header-extra'] } : {}),
+            ...(props.hideFooter ? {} : { footer: renderFooter }),
           }}
         </NModal>
       </>

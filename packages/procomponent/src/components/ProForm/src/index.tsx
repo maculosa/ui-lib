@@ -484,9 +484,22 @@ export default defineComponent({
       ctx.emit('reset', formData.value)
     }
 
+    // 校验通过 resolve(true)，失败 resolve(false)，不抛错，便于组合组件按需分支
+    const validate = () => new Promise<boolean>((resolve) => {
+      if (!formRef.value) {
+        resolve(true)
+        return
+      }
+      formRef.value.validate()
+        .then(() => resolve(true))
+        .catch(() => resolve(false))
+    })
+
     ctx.expose({
       reset: handleReset,
       submit: handleSubmit,
+      validate,
+      getValues: () => ({ ...formData.value }),
       setFieldValue: (key: string, value: any) => {
         formData.value[key] = value
       },

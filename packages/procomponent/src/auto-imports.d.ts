@@ -36,6 +36,8 @@ declare global {
   const ProTextPlugin: typeof import('./components/ProText/index')['ProTextPlugin']
   const QueryFilter: typeof import('./components/QueryFilter/index')['QueryFilter']
   const QueryFilterPlugin: typeof import('./components/QueryFilter/index')['QueryFilterPlugin']
+  const StepsForm: typeof import('./components/StepsForm/index')['StepsForm']
+  const StepsFormPlugin: typeof import('./components/StepsForm/index')['StepsFormPlugin']
   const Watermark: typeof import('./components/Watermark/index')['Watermark']
   const WatermarkPlugin: typeof import('./components/Watermark/index')['WatermarkPlugin']
   const computed: typeof import('vue')['computed']
@@ -107,6 +109,15 @@ declare global {
   export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
+  export type { DrawerFormColumn, DrawerFormEmits, DrawerFormExpose, DrawerFormFooterScope, DrawerFormProps } from './components/DrawerForm/index'
+  import('./components/DrawerForm/index')
+  // @ts-ignore
+  export type { LiteFilterValueType, LiteFilterColumn, LiteFilterFieldScope, LiteFilterActionsScope, LiteFilterFormConfig, LiteFilterProps, LiteFilterEmits, LiteFilterExpose } from './components/LiteFilter/src/types'
+  import('./components/LiteFilter/src/types')
+  // @ts-ignore
+  export type { ModalFormColumn, ModalFormEmits, ModalFormExpose, ModalFormFooterScope, ModalFormProps } from './components/ModalForm/index'
+  import('./components/ModalForm/index')
+  // @ts-ignore
   export type { ProTableRequest, ProTableRequestParams, ProTableRequestResult, ProTableSorter } from './components/ProTable/index'
   import('./components/ProTable/index')
   // @ts-ignore
@@ -116,8 +127,11 @@ declare global {
   export type { ProTextProps } from './components/ProText/src/types'
   import('./components/ProText/src/types')
   // @ts-ignore
-  export type { FormConfig, QueryFilterColumn, QueryFilterProps } from './components/QueryFilter/src/types'
+  export type { FormConfig, QueryFilterValueType, QueryFilterColumn, QueryFilterFieldScope, QueryFilterActionsScope, QueryFilterProps, QueryFilterEmits, QueryFilterExpose } from './components/QueryFilter/src/types'
   import('./components/QueryFilter/src/types')
+  // @ts-ignore
+  export type { StepsFormColumn, StepsFormEmits, StepsFormExpose, StepsFormFooterScope, StepsFormProps, StepsFormStep, StepsFormStepScope } from './components/StepsForm/index'
+  import('./components/StepsForm/index')
   // @ts-ignore
   export type { WatermarkProps } from './components/Watermark/src/types'
   import('./components/Watermark/src/types')
@@ -161,6 +175,8 @@ declare module 'vue' {
     readonly ProTextPlugin: UnwrapRef<typeof import('./components/ProText/index')['ProTextPlugin']>
     readonly QueryFilter: UnwrapRef<typeof import('./components/QueryFilter/index')['QueryFilter']>
     readonly QueryFilterPlugin: UnwrapRef<typeof import('./components/QueryFilter/index')['QueryFilterPlugin']>
+    readonly StepsForm: UnwrapRef<typeof import('./components/StepsForm/index')['StepsForm']>
+    readonly StepsFormPlugin: UnwrapRef<typeof import('./components/StepsForm/index')['StepsFormPlugin']>
     readonly Watermark: UnwrapRef<typeof import('./components/Watermark/index')['Watermark']>
     readonly WatermarkPlugin: UnwrapRef<typeof import('./components/Watermark/index')['WatermarkPlugin']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>

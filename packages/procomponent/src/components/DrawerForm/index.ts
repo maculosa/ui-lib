@@ -10,3 +10,11 @@ export const DrawerFormPlugin: Plugin = {
 export {
   DrawerForm,
 }
+
+export type {
+  DrawerFormColumn,
+  DrawerFormEmits,
+  DrawerFormExpose,
+  DrawerFormFooterScope,
+  DrawerFormProps,
+} from './src/types'

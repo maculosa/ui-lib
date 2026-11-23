@@ -10,3 +10,11 @@ export const ModalFormPlugin: Plugin = {
 export {
   ModalForm,
 }
+
+export type {
+  ModalFormColumn,
+  ModalFormEmits,
+  ModalFormExpose,
+  ModalFormFooterScope,
+  ModalFormProps,
+} from './src/types'

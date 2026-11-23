@@ -11,6 +11,7 @@ export * from "./ProTable";
 export * from "./ProTabs";
 export * from "./ProText";
 export * from "./QueryFilter";
+export * from "./StepsForm";
 export * from "./Watermark";
 export * from "./ProLayout";
 export * from './Actions';
