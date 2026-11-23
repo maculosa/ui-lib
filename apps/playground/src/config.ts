@@ -58,11 +58,11 @@ const proRaw: RawItem[] = [
     key: 'sidebar.groupEntry',
     children: [
       { key: 'sidebar.proForm', url: '/procomponent/ProForm', mirrored: true },
-      { key: 'sidebar.modalForm', planned: true },
-      { key: 'sidebar.drawerForm', planned: true },
-      { key: 'sidebar.stepsForm', planned: true },
-      { key: 'sidebar.queryFilter', planned: true },
-      { key: 'sidebar.liteFilter', planned: true },
+      { key: 'sidebar.modalForm', url: '/procomponent/ModalForm', mirrored: true },
+      { key: 'sidebar.drawerForm', url: '/procomponent/DrawerForm', mirrored: true },
+      { key: 'sidebar.stepsForm', url: '/procomponent/StepsForm', mirrored: true },
+      { key: 'sidebar.queryFilter', url: '/procomponent/QueryFilter', mirrored: true },
+      { key: 'sidebar.liteFilter', url: '/procomponent/LiteFilter', mirrored: true },
     ],
   },
   {
