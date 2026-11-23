@@ -7,6 +7,7 @@ export const LiteFilterPlugin: Plugin = {
   },
 }
 
+export * from './src/types'
 export {
   LiteFilter,
 }

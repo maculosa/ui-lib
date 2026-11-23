@@ -1,311 +1,529 @@
-import type { SelectOption } from 'naive-ui'
+import type { PropType } from 'vue'
+import type {
+  LiteFilterColumn,
+  LiteFilterFieldScope,
+  LiteFilterProps,
+  LiteFilterValueType,
+} from './types'
 import {
-  NAutoComplete,
   NButton,
   NCard,
-  NCascader,
-  NCheckbox,
-  NColorPicker,
-  NDatePicker,
-  NDynamicTags,
   NForm,
-  NFormItemGi,
-  NGi,
-  NGrid,
-  NInput,
-  NInputNumber,
-  NSelect,
+  NFormItem,
+  NPopover,
   NSpace,
-  NSwitch,
-  NTimePicker,
   NTooltip,
-  NTreeSelect,
 } from 'naive-ui'
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  shallowRef,
-  toRefs,
-  watch,
-} from 'vue'
-import type { PropType } from 'vue'
-import { useShowSuffix } from '@hooks/useShowSuffix'
+import { cloneDeep } from 'lodash-es'
+import { computed, defineComponent, onBeforeUnmount, onMounted, nextTick, ref, watch } from 'vue'
 import BmIconInfoCircle from '~icons/bm-icon/info-circle'
 import BmIconRefresh from '~icons/bm-icon/refresh'
 import BmIconSearch from '~icons/bm-icon/search'
 import BmIconArrowDown from '~icons/bm-icon/arrow-down'
 import BmIconArrowUp from '~icons/bm-icon/arrow-up'
+import {
+  createFieldModel,
+  getInitialValue,
+  orderSearchColumns,
+  renderFieldControl,
+  useFieldOptions,
+} from '../../shared/field'
+
 import './styles/css'
 
-const formFieldMaps: Record<string, any> = {
-  text: NInput,
-  select: NSelect,
-  date: NDatePicker,
-  time: NTimePicker,
-  cascader: NCascader,
-  autoComplete: NAutoComplete,
-  colorPicker: NColorPicker,
-  checkbox: NCheckbox,
-  switch: NSwitch,
-  dynamicTags: NDynamicTags,
-  digit: NInputNumber,
-  treeSelect: NTreeSelect,
+const fieldWidthMaps: Partial<Record<LiteFilterValueType, number>> = {
+  text: 180,
+  autoComplete: 180,
+  dynamicTags: 220,
+  select: 160,
+  cascader: 160,
+  treeSelect: 160,
+  date: 150,
+  dateRange: 260,
+  time: 140,
+  digit: 140,
+  colorPicker: 120,
 }
 
-const placeholderMaps: Record<string, string> = {
-  text: '请输入',
-  select: '请选择',
-  date: '请选择日期',
-  time: '请选择时间',
-  cascader: '请选择',
-  autoComplete: '请输入',
-  colorPicker: '请选择',
-  checkbox: '请选择',
-  switch: '请选择',
-  dynamicTags: '请输入',
-  digit: '请输入',
-  treeSelect: '请选择',
+const rowHeightMaps = {
+  small: 34,
+  medium: 40,
+  large: 46,
+} as const
+
+const ADVANCED_POPOVER_WIDTH = 280
+
+function toCssSize(value: number | string | undefined) {
+  if (typeof value === 'number')
+    return `${value}px`
+
+  return value || undefined
 }
 
-function getDefaultPlaceholder(type: string, title?: string) {
-  if (type === 'date' || type === 'time')
-    return placeholderMaps[type]
+function resolveFieldWidth(column: LiteFilterColumn) {
+  const fromProps = toCssSize(column.formItemProps?.style?.width)
+  if (fromProps)
+    return fromProps
 
-  return placeholderMaps[type] + title
+  const fromColumn = toCssSize(column.width)
+  if (fromColumn)
+    return fromColumn
+
+  const preset = fieldWidthMaps[column.valueType]
+
+  return preset ? `${preset}px` : undefined
+}
+
+function pickFormProps(config: LiteFilterProps['formConfig']) {
+  return { ...(config ?? {}) }
 }
 
 export default defineComponent({
   name: 'LiteFilter',
-  emits: ['search', 'reset'],
   props: {
     columns: {
-      type: Array as PropType<any[]>,
+      type: Array as PropType<LiteFilterColumn[]>,
       default: () => [],
     },
     defaultValue: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       default: () => ({}),
     },
-    gridCols: {
-      type: Number,
-      default: 3,
-    },
     formConfig: {
-      type: Object as PropType<{
-        gridCollapsed?: boolean
-        gridCollapsedRows?: number
-      }>,
-      default: () => ({
-        gridCollapsed: true,
-        gridCollapsedRows: 1,
-      }),
+      type: Object as PropType<LiteFilterProps['formConfig']>,
+      default: () => ({}),
+    },
+    card: {
+      type: Boolean,
+      default: false,
+    },
+    defaultCollapsed: {
+      type: Boolean,
+      default: true,
+    },
+    collapsedRows: {
+      type: Number,
+      default: 1,
+    },
+    collapsed: {
+      type: Boolean,
+      default: undefined,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    beforeSearch: {
+      type: Function as PropType<LiteFilterProps['beforeSearch']>,
+      default: undefined,
+    },
+    searchText: {
+      type: String,
+      default: '查询',
+    },
+    resetText: {
+      type: String,
+      default: '重置',
+    },
+    expandText: {
+      type: String,
+      default: '展开',
+    },
+    collapseText: {
+      type: String,
+      default: '折叠',
+    },
+    showResetButton: {
+      type: Boolean,
+      default: true,
+    },
+    showSearchButton: {
+      type: Boolean,
+      default: false,
+    },
+    searchDebounce: {
+      type: Number,
+      default: 300,
+    },
+    showAdvancedButton: {
+      type: Boolean,
+      default: true,
+    },
+    searchOnReset: {
+      type: Boolean,
+      default: false,
+    },
+    showLabel: {
+      type: Boolean,
+      default: false,
+    },
+    advancedPopover: {
+      type: Boolean,
+      default: true,
+    },
+    advancedText: {
+      type: String,
+      default: '高级筛选',
+    },
+    gap: {
+      type: Number,
+      default: 12,
     },
   },
-  setup(props, { emit }) {
-    const { columns } = toRefs(props)
-    const gridRef = shallowRef()
-    const transformColumns = computed(() => {
-      return columns.value.filter(i => !i.hideInSearch)
+  emits: [
+    'search',
+    'reset',
+    'update:collapsed',
+    'options-loaded',
+    'options-error',
+  ],
+  setup(props, { emit, expose, slots }) {
+    const controlSize = computed(() => props.formConfig?.size ?? 'small')
+    const collapsedRows = computed(() => Math.max(1, props.collapsedRows ?? 1))
+    const collapsed = ref(props.collapsed ?? props.defaultCollapsed)
+    const advancedVisible = ref(false)
+    const rowRef = ref<HTMLElement>()
+    const overflowing = ref(false)
+
+    const collapsedHeight = computed(() => {
+      const height = rowHeightMaps[controlSize.value as keyof typeof rowHeightMaps] ?? rowHeightMaps.small
+
+      return collapsedRows.value * height + (collapsedRows.value - 1) * props.gap
     })
 
-    // 默认折叠
-    const gridCollapsed = ref(props.formConfig.gridCollapsed)
-    // 默认折叠后的行数
-    const gridCollapsedRows = ref(props.formConfig.gridCollapsedRows)
-    // 显示隐藏的节点
-    const { showSuffix } = useShowSuffix(gridRef, props.gridCols)
-
-    // 切换折叠
-    function handleToggleCollapsed() {
-      gridCollapsed.value = !gridCollapsed.value
+    function measure() {
+      const row = rowRef.value
+      if (!row)
+        return
+      overflowing.value = row.scrollHeight > collapsedHeight.value + 1
     }
 
-    /** 搜索栏各select options */
-    const options = reactive<{ [key: string]: SelectOption[] }>({})
+    let observer: ResizeObserver | undefined
 
-    // 获取远程服务器枚举
-    function getRemoteServerEnum(fn: any, prop: string) {
-    // 获取当前有选择表单的列的key值
-      const cOptsKey = columns.value.filter(item => item.key === prop)[0].key
+    onMounted(() => {
+      measure()
+      if (typeof ResizeObserver !== 'undefined' && rowRef.value) {
+        observer = new ResizeObserver(() => measure())
+        observer.observe(rowRef.value)
+      }
+    })
 
-      if (!fn)
-        return []
+    onBeforeUnmount(() => {
+      observer?.disconnect()
+      observer = undefined
+      clearTimeout(debounceTimer)
+    })
 
-      if (!prop)
-        return []
-
-      fn().then((res: any[]) => {
-        options[cOptsKey] = res
-      })
-    }
+    const sortedColumns = computed(() => orderSearchColumns(props.columns))
+    const advancedColumns = computed(() =>
+      props.advancedPopover ? sortedColumns.value.filter(column => column.advanced) : [],
+    )
+    const mainColumns = computed(() =>
+      sortedColumns.value.filter(column => !(props.advancedPopover && column.advanced)),
+    )
+    const showAdvanced = computed(() => props.showAdvancedButton && overflowing.value)
 
     watch(
-      () => columns.value,
-      (newVal) => {
-        newVal.forEach((item) => {
-          if (item.request)
-            getRemoteServerEnum(item.request, item.key)
-        })
+      () => [props.columns, props.gap, props.collapsedRows, props.showLabel, controlSize.value, props.advancedPopover],
+      () => {
+        void nextTick(measure)
       },
-      {
-        deep: true,
-        immediate: true,
+      { deep: true },
+    )
+
+    watch(
+      () => props.collapsed,
+      (value) => {
+        if (typeof value === 'boolean')
+          collapsed.value = value
       },
     )
 
-    // 搜索表单数据
-    const searchFormData = ref<{ [key: string]: any }>({})
+    watch(
+      () => props.advancedPopover,
+      () => {
+        advancedVisible.value = false
+      },
+    )
 
-    // 创建搜索表单数据
-    function createSearchFormData() {
-    // if (Object.keys(defaultFormData.value).length > 0)
-    //   return { ...defaultFormData.value }
-      let formData = {} as any
-
-      columns.value.forEach((column) => {
-        if (column.valueType === 'select')
-          formData[column.key] = null
-        else if (column.valueType === 'date')
-          formData[column.key] = null
-        else
-          formData[column.key] = ''
-      })
-      if (typeof props.defaultValue === 'object' && Object.keys(props.defaultValue).length > 0)
-        formData = { ...formData, ...props.defaultValue }
-
-      return formData
+    function toggleCollapsed(force?: boolean) {
+      const next = typeof force === 'boolean' ? force : !collapsed.value
+      if (next === collapsed.value)
+        return
+      collapsed.value = next
+      emit('update:collapsed', next)
     }
 
-    onMounted(() => {
-      searchFormData.value = createSearchFormData()
+    function createFormData() {
+      return createFieldModel(props.columns, props.defaultValue)
+    }
+
+    const searchFormData = ref(createFormData())
+
+    watch(
+      () => props.defaultValue,
+      (value) => {
+        if (value && typeof value === 'object')
+          searchFormData.value = { ...searchFormData.value, ...value }
+      },
+      { deep: true },
+    )
+
+    function getValues() {
+      return cloneDeep(searchFormData.value)
+    }
+
+    function setFieldValue(key: string, value: any) {
+      searchFormData.value[key] = value
+    }
+
+    const pending = ref(false)
+    const isLoading = computed(() => props.loading || pending.value)
+
+    async function handleSearch() {
+      if (pending.value)
+        return
+
+      const values = getValues()
+      if (props.beforeSearch) {
+        pending.value = true
+        try {
+          const allowed = await props.beforeSearch(values)
+          if (allowed === false)
+            return
+        }
+        catch (error) {
+          console.error('LiteFilter beforeSearch failed:', error)
+          return
+        }
+        finally {
+          pending.value = false
+        }
+      }
+
+      emit('search', values)
+    }
+
+    function handleReset() {
+      searchFormData.value = createFormData()
+      emit('reset', getValues())
+      if (props.searchOnReset)
+        void handleSearch()
+    }
+
+    function resetAdvancedFields() {
+      advancedColumns.value.forEach((column) => {
+        searchFormData.value[column.key] = props.defaultValue?.[column.key] ?? getInitialValue(column)
+      })
+      emit('reset', getValues())
+      if (props.searchOnReset)
+        void handleSearch()
+    }
+
+    let debounceTimer: ReturnType<typeof setTimeout> | undefined
+
+    watch(
+      searchFormData,
+      () => {
+        if (props.showSearchButton)
+          return
+
+        clearTimeout(debounceTimer)
+        debounceTimer = setTimeout(() => {
+          void handleSearch()
+        }, Math.max(0, props.searchDebounce ?? 300))
+      },
+      { deep: true },
+    )
+
+    const { optionsLoading, refreshOptions, getColumnOptions } = useFieldOptions(
+      () => props.columns,
+      {
+        label: 'LiteFilter',
+        onLoaded: (key, loadedOptions) => emit('options-loaded', key, loadedOptions),
+        onError: (key, error) => emit('options-error', key, error),
+      },
+    )
+
+    function renderField(column: LiteFilterColumn) {
+      const customSlot = slots[`field-${column.key}`] as
+        | ((scope: LiteFilterFieldScope) => any)
+        | undefined
+      if (customSlot) {
+        return customSlot({
+          column,
+          value: searchFormData.value[column.key],
+          setValue: value => setFieldValue(column.key, value),
+        })
+      }
+
+      return renderFieldControl({
+        column,
+        model: searchFormData.value,
+        options: getColumnOptions(column),
+        loading: Boolean(optionsLoading[column.key]),
+      })
+    }
+
+    function renderLabel(column: LiteFilterColumn) {
+      return (
+        <div class="flex gap-2 items-center">
+          <span>{column.title}</span>
+          <NTooltip trigger="hover">
+            {{
+              trigger: () => <BmIconInfoCircle />,
+              default: () => column.tooltip,
+            }}
+          </NTooltip>
+        </div>
+      )
+    }
+
+    function renderFormItem(column: LiteFilterColumn, forceLabel = false, width?: string) {
+      const labelVisible = forceLabel || props.showLabel || Boolean(column.tooltip)
+      return (
+        <NFormItem
+          key={column.key}
+          label={labelVisible ? column.title : undefined}
+          path={column.key}
+          showLabel={labelVisible}
+          style={{ flex: '0 0 auto', width: width ?? resolveFieldWidth(column) }}
+        >
+          {{
+            default: () => renderField(column),
+            ...(column.tooltip ? { label: () => renderLabel(column) } : {}),
+          }}
+        </NFormItem>
+      )
+    }
+
+    function renderAdvancedForm() {
+      return (
+        <div class="bm-lite-filter-advanced" style={{ width: `${ADVANCED_POPOVER_WIDTH}px`, maxWidth: '90vw' }}>
+          <NForm
+            labelPlacement="top"
+            showFeedback={false}
+            showRequireMark={false}
+            size={controlSize.value as any}
+            model={searchFormData.value}
+          >
+            <div
+              class="bm-lite-filter-row"
+              style={{ display: 'flex', flexDirection: 'column', gap: `${props.gap}px` }}
+            >
+              {advancedColumns.value.map(column => renderFormItem(column, true, '100%'))}
+            </div>
+          </NForm>
+          {props.showResetButton && (
+            <div class="mt-4 flex justify-end gap-2">
+              <NButton size={controlSize.value as any} disabled={isLoading.value} onClick={resetAdvancedFields}>
+                {props.resetText}
+              </NButton>
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    expose({
+      refreshOptions,
     })
 
-    // 重置搜索表单数据
-    function handleReset() {
-      searchFormData.value = { ...createSearchFormData() }
-      emit('reset', searchFormData.value)
-    }
-
-    function handleSearch() {
-      emit('search', searchFormData.value)
-    }
-
-    return () => (
-      <NCard hoverable size="small">
+    return () => {
+      const form = (
         <NForm
+          class="bm-lite-filter"
           labelPlacement="left"
           labelWidth="auto"
           showFeedback={false}
           showRequireMark={false}
-          v-bind={props.formConfig}
+          size={controlSize.value as any}
           model={searchFormData.value}
+          {...pickFormProps(props.formConfig)}
         >
-          <NGrid
-            ref={gridRef}
-            item-responsive
-            cols={props.gridCols}
-            x-gap={16}
-            y-gap={16}
-            collapsed={gridCollapsed.value}
-            collapsed-rows={gridCollapsedRows.value}
+          <div
+            ref={rowRef}
+            class="bm-lite-filter-row"
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: `${props.gap}px`,
+              maxHeight: collapsed.value ? `${collapsedHeight.value}px` : undefined,
+              overflow: collapsed.value ? 'hidden' : undefined,
+            }}
           >
-            {
-              transformColumns.value.map(item => (
-                <NFormItemGi>
-                  {{
-                    label: () => {
-                      return item.tooltip && (
-                        <div class="bm-form-label">
-                          <span>{ item.title }</span>
-                          <NTooltip trigger="hover">
-                            {{
-                              trigger: () => (
-                                <BmIconInfoCircle />
-                              ),
-                              default: () => item.tooltip,
-                            }}
+            {mainColumns.value.map(column => renderFormItem(column))}
 
-                          </NTooltip>
-                        </div>
-                      )
-                    },
-                    default: () => {
-                      const elementItem: any[] = []
-                      if (item.valueType === 'date') {
-                        elementItem.push((
-                          <NDatePicker
-                            v-model:value={searchFormData.value[item.key]}
-                            type={item.valueType}
-                            style="width: 100%"
-                            placeholder={getDefaultPlaceholder(item.valueType, item.title)}
-                            clearable
-                            value-format="yyyy-MM-dd"
-                            {...item?.formItemProps}
-                          />
-                        ))
-                      }
-                      else {
-                        const Field = formFieldMaps[item.valueType]
-                        elementItem.push(
-                          <Field
-                            v-model:value={searchFormData.value[item.key]}
-                            options={item.options || options[item.key]}
-                            placeholder={getDefaultPlaceholder(item.valueType, item.title)}
-                            clearable
-                            style={{ width: '100%' }}
-                            {...item?.formItemProps}
-                          />,
-                        )
-                      }
-                      return [
-                        ...elementItem,
-                        <slot />,
-                      ]
-                    },
-                  }}
-                </NFormItemGi>
-              ))
-            }
-            <NGi suffix>
-              <NSpace justify="end" wrap={false}>
-                <NButton onClick={handleReset}>
-                  {{
-                    icon: () => <BmIconRefresh />,
-                    default: () => '重置',
-                  }}
-                </NButton>
-                <NButton type="primary" onClick={handleSearch}>
-                  {{
-                    icon: () => <BmIconSearch />,
-                    default: () => '查询',
-                  }}
-                </NButton>
-                { showSuffix.value && (
-                  <NButton
-                    text
-                    type="primary"
-                    onClick={handleToggleCollapsed}
-                  >
+            <div class="bm-lite-filter-actions" style={{ flex: '0 0 auto' }}>
+              <NSpace justify="start" wrap={false} size={8}>
+                {props.showResetButton && (
+                  <NButton size={controlSize.value as any} disabled={isLoading.value} onClick={handleReset}>
                     {{
-                      icon: () => {
-                        if (gridCollapsed.value) {
-                          return <BmIconArrowDown />
-                        }
-                        return <BmIconArrowUp />
-                      },
-                      default: () => gridCollapsed.value ? '展开' : '折叠',
+                      icon: () => <BmIconRefresh />,
+                      default: () => props.resetText,
                     }}
                   </NButton>
                 )}
+                {props.showSearchButton && (
+                  <NButton
+                    size={controlSize.value as any}
+                    type="primary"
+                    loading={isLoading.value}
+                    disabled={isLoading.value}
+                    onClick={handleSearch}
+                  >
+                    {{
+                      icon: () => <BmIconSearch />,
+                      default: () => props.searchText,
+                    }}
+                  </NButton>
+                )}
+                {showAdvanced.value && (
+                  <NButton size={controlSize.value as any} text type="primary" onClick={() => toggleCollapsed()}>
+                    {{
+                      icon: () => collapsed.value ? <BmIconArrowDown /> : <BmIconArrowUp />,
+                      default: () => collapsed.value ? props.expandText : props.collapseText,
+                    }}
+                  </NButton>
+                )}
+                {advancedColumns.value.length > 0 && (
+                  <NPopover
+                    trigger="click"
+                    placement="bottom-end"
+                    show={advancedVisible.value}
+                    onUpdate:show={(value: boolean) => {
+                      advancedVisible.value = value
+                    }}
+                  >
+                    {{
+                      trigger: () => (
+                        <NButton size={controlSize.value as any} text type="primary">
+                          {{
+                            icon: () => advancedVisible.value ? <BmIconArrowUp /> : <BmIconArrowDown />,
+                            default: () => props.advancedText,
+                          }}
+                        </NButton>
+                      ),
+                      default: () => renderAdvancedForm(),
+                    }}
+                  </NPopover>
+                )}
+                {slots.actions?.({
+                  search: handleSearch,
+                  reset: handleReset,
+                  toggleCollapsed: () => toggleCollapsed(),
+                  collapsed: collapsed.value,
+                  loading: isLoading.value,
+                })}
+                {slots.default?.()}
               </NSpace>
-            </NGi>
-
-          </NGrid>
+            </div>
+          </div>
         </NForm>
-      </NCard>
-    )
+      )
+
+      return props.card ? <NCard size="small" hoverable>{form}</NCard> : form
+    }
   },
 })
