@@ -8,7 +8,7 @@ declare module '~icons/bm-icon/*' {
 }
 
 declare module 'virtual:generated-layouts' {
-  export function setupLayouts(routes: RouteRecordRaw[]): RouteRecordRaw[]
+  export function setupLayouts(routes: readonly RouteRecordRaw[]): RouteRecordRaw[]
 }
 
 declare module 'virtual:search-index' {

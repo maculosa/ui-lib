@@ -50,7 +50,7 @@ export default defineConfig(({ mode }) => {
         autoInstall: true,
         customCollections: {
           'bm-icon': FileSystemIconLoader(
-            './src/assets/icons',
+            resolve(import.meta.dirname, 'src/assets/icons'),
             svg => svg.replace(/^<svg\s/, '<svg fill="currentColor" width="1em" height="1em" ')
           )
         },

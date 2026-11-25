@@ -63,7 +63,8 @@ export default defineConfig({
         ],
       ],
       markdownItSetup(md) {
-        md.use(markdownItAnchor, {
+        // unplugin-vue-markdown 32 改用 markdown-exit，与 markdown-it 插件类型不完全一致，运行时兼容
+        md.use(markdownItAnchor as any, {
           permalinkBefore: true,
           permalinkSymbol: "",
           permalinkAttrs: () => ({ "aria-hidden": true }),
@@ -107,23 +108,21 @@ export default defineConfig({
       routeBlockLang: "yaml",
     }),
     Layouts({
-      pagesDirs: ["src/docs", "src/pages"],
+      // v3 起只负责布局包装，路由由 unplugin-vue-router 生成
+      layoutsDirs: "src/layouts",
       extensions: ["vue", "md"],
       defaultLayout: "default",
-      exclude: [
-        "**/layouts/layout/**", // 排除layout子目录
-        "**/layouts/logo/**", // 排除logo子目录
-        "**/layouts/nav/**", // 排除nav子目录
-        "**/layouts/sidebar/**", // 排除sidebar子目录
-      ],
+      // 排除模式相对 layoutsDir 匹配，header 只是普通组件而非布局
+      exclude: ["header/**"],
     }),
     Inspect(),
     Icons({
       compiler: "vue3",
       autoInstall: true,
       customCollections: {
-        "bm-icon": FileSystemIconLoader("./src/assets/icons", (svg) =>
-          svg.replace(/^<svg /, '<svg fill="currentColor" ')
+        "bm-icon": FileSystemIconLoader(
+          resolve(import.meta.dirname, "./src/assets/icons"),
+          (svg) => svg.replace(/^<svg /, '<svg fill="currentColor" ')
         ),
       },
     }),
@@ -139,6 +138,8 @@ export default defineConfig({
         },
       ],
       dts: "types/auto-imports.d.ts",
+      // 仅处理业务源码，避免向依赖产物（如 @banmao/blocks 的 dist）注入 import
+      exclude: [/node_modules/, /[\\/]dist[\\/]/],
     }),
     Components({
       include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
@@ -155,14 +156,19 @@ export default defineConfig({
     },
   },
   build: {
-    // 启用代码分割
+    // 启用代码分割（Vite 8 / Rolldown：manualChunks 对象写法已移除）
     rollupOptions: {
       output: {
-        manualChunks: {
-          "vue-vendor": ["vue", "vue-router"],
-          "naive-ui": ["naive-ui"],
-          echarts: ["echarts", "vue-echarts"],
-          "highlight": ["highlight.js", "@highlightjs/vue-plugin"],
+        codeSplitting: {
+          groups: [
+            { name: "vue-vendor", test: /[\\/]node_modules[\\/](vue|vue-router)[\\/]/ },
+            { name: "naive-ui", test: /[\\/]node_modules[\\/]naive-ui[\\/]/ },
+            { name: "echarts", test: /[\\/]node_modules[\\/](echarts|vue-echarts)[\\/]/ },
+            {
+              name: "highlight",
+              test: /[\\/]node_modules[\\/](highlight\.js|@highlightjs)[\\/]/,
+            },
+          ],
         },
       },
     },
