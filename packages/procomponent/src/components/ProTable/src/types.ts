@@ -1,4 +1,4 @@
-import type { PropType, ExtractPropTypes } from 'vue'
+import type { PropType, ExtractPropTypes, Ref } from 'vue'
 import type { ProTableColumn } from 'naive-ui'
 import { dataTableProps } from 'naive-ui'
 
@@ -244,3 +244,35 @@ export const proTableProps = {
 }
 
 export type ProTableProps = typeof proTableProps
+
+/** ProTable 通过 expose 暴露给父组件的实例 API */
+export interface ProTableInstance {
+  /** 表格尺寸 */
+  size: Ref<'small' | 'medium' | 'large'>
+  /** 搜索区域容器引用 */
+  searchRef: Ref<any>
+  /** 搜索表单实例 */
+  searchFormRef: Ref<any>
+  /** 重新加载数据（request 模式会重新发起请求） */
+  reload: () => void
+  /** 覆盖当前列配置 */
+  setColumns: (columns: any[]) => void
+  /** 回填搜索条件 */
+  setSearch: (values: Record<string, any>) => void
+  /** 回填表单值（等价于 setSearch） */
+  setForm: (values: Record<string, any>) => void
+  /** 设置分页信息 */
+  setPagination: (pagination: Record<string, any>) => void
+  /** 覆盖表格数据 */
+  setTableData: (data: any[]) => void
+  /** 设置 loading 状态 */
+  setLoading: (loading: boolean) => void
+  /** 设置选中行的 key */
+  setSelectedRowKeys: (keys: (string | number)[]) => void
+  /** 设置选中行数据 */
+  setSelectedRows: (rows: any[]) => void
+  /** 合并行选择配置 */
+  setRowSelection: (rowSelection: Record<string, any>) => void
+  /** 应用列状态（顺序 / 隐藏），传 null 重置 */
+  setColumnsState: (state: { order: string[]; hidden: string[] } | null) => void
+}

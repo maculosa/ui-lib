@@ -16,4 +16,5 @@ export type {
   ProTableRequestParams,
   ProTableRequestResult,
   ProTableSorter,
+  ProTableInstance,
 } from './src/types'

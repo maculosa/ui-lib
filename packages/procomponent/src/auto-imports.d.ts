@@ -118,7 +118,7 @@ declare global {
   export type { ModalFormColumn, ModalFormEmits, ModalFormExpose, ModalFormFooterScope, ModalFormProps } from './components/ModalForm/index'
   import('./components/ModalForm/index')
   // @ts-ignore
-  export type { ProTableRequest, ProTableRequestParams, ProTableRequestResult, ProTableSorter } from './components/ProTable/index'
+  export type { ProTableRequest, ProTableRequestParams, ProTableRequestResult, ProTableSorter, ProTableInstance } from './components/ProTable/index'
   import('./components/ProTable/index')
   // @ts-ignore
   export type { ContextMenuCommand, PanelLoader, ProTabsContextMenuLabels, ProTabsDragGroup, ProTabsEmits, ProTabsInstance, ProTabsProps, ProTabsRouter, ProTabsSize, ProTabsTransferPayload, TabBadge, TabOption, VirtualWindow } from './components/ProTabs/index'

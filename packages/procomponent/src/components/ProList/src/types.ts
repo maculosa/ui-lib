@@ -1,4 +1,5 @@
 import type { PaginationProps } from 'naive-ui'
+import type { PropType } from 'vue'
 
 export interface ProListProps {
   /**
@@ -51,7 +52,7 @@ export const listProps = {
     default: false,
   },
   renderItem: {
-    type: Function as PropType<(item: ListData) => any>,
+    type: Function as PropType<(item: any) => any>,
     default: () => {
       return () => {}
     }

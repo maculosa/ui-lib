@@ -1,3 +1,4 @@
+import type { PropType } from 'vue'
 
 export interface ProTextProps {
   /**

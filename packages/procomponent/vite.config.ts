@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => {
       vue(),
       vueJSX(),
       dts({
-        tsconfigPath: "./tsconfig.lib.json"
+        tsconfigPath: "./tsconfig.dts.json"
       }),
       tailwindcss(),
       libInjectCss(),

@@ -1,8 +1,11 @@
 import { formProps } from 'naive-ui'
 import type { PropType, ExtractPropTypes } from 'vue'
 
+/** naive-ui 的 NForm 自带原生 onSubmit 属性，会遮蔽 ProForm 自定义的 submit 事件类型，构造 props 时剔除 */
+const { onSubmit: _nativeOnSubmit, ...naiveFormProps } = formProps
+
 export const proFormProps = {
-    ...formProps,
+    ...naiveFormProps,
     gridCols: {
         type: Number,
         default: 1,
