@@ -2,7 +2,8 @@ import {
   NCard,
   NDataTable,
   NFlex,
-  useMessage
+  useMessage,
+  useThemeVars,
 } from 'naive-ui'
 import {
   computed,
@@ -15,13 +16,15 @@ import {
   watch,
   watchEffect,
 } from 'vue'
-import { useDebounceFn } from '@vueuse/core'
+import { useDebounceFn, useElementSize, useEventListener, useWindowSize } from '@vueuse/core'
 import { ProForm } from '@components/ProForm'
 import { Toolbar } from './components'
 import { renderEmptyCell, renderIndexCell, estimateColumnWidth } from '@/utils/table'
 import { useTableColumns } from '@hooks/useTableColumns'
 import { applyColumnState } from './components/ColumnSetting'
 import type { ColumnSettingState } from './components/ColumnSetting'
+import { isEmptyFilterValue } from './components/FilterButton'
+import type { ToolbarSortState } from './components/SortButton'
 import { proTableProps, proTableEmits } from './types'
 import './styles/css'
 
@@ -59,6 +62,7 @@ export default defineComponent({
   emits: proTableEmits,
   setup(props, { emit, expose, slots }) {
     const message = useMessage()
+    const themeVars = useThemeVars()
 
     /**
      * 内部列配置:props.columns 变化时覆盖,
@@ -164,6 +168,28 @@ export default defineComponent({
       searchText: searchConfig.value.searchText ?? searchConfig.value.submitText ?? '搜索',
     }))
 
+    const { width: windowWidth } = useWindowSize()
+    /** 表格容器(根节点)引用,用于读取实际可用宽度 */
+    const containerRef = ref<any>(null)
+    const { width: containerWidth } = useElementSize(containerRef)
+
+    /**
+     * 搜索栏列数:未显式配置 search.gridCols 时,按表格容器实际宽度自适应。
+     * 以容器宽度而非窗口宽度为基准,可自然扣除侧边栏、页面留白等占用;
+     * 容器首次测量前回退到窗口宽度,避免首帧列数抖动。
+     * 断点按「视口宽度 - 侧边栏」的常见取值设定,覆盖 1080P / 2K / 4K。
+     * searchProps 中的 gridCols 仍可覆盖
+     */
+    const searchGridCols = computed(() => {
+      const width = containerWidth.value || windowWidth.value
+      if (width >= 3400) return 6 // 4K(含侧边栏)
+      if (width >= 2200) return 5 // 2K(含侧边栏)
+      if (width >= 1680) return 4 // 1920 视口(含侧边栏)
+      if (width >= 1080) return 3
+      if (width >= 700) return 2
+      return 1
+    })
+
     // 重置目标值:实例创建时的 params/searchModel 快照 + search.defaultValue
     // 不能直接用实时 searchModelState,否则用户输入后再点重置会「重置为刚输入的值」
     const initialSearchModel = {
@@ -177,8 +203,16 @@ export default defineComponent({
 
     type TableSize = 'small' | 'medium' | 'large'
     const size = ref<TableSize>('large')
+    /** 是否处于放大(全屏)状态 */
+    const fullscreen = ref(false)
     const searchFormRef = ref<InstanceType<typeof ProForm> | null>(null)
     const searchRef = ref(null)
+
+    /**
+     * 全屏时也按 flex 高度布局处理,使卡片与表格铺满可视区域;
+     * 退出全屏后自动回到调用方原本的 autoFlex 行为
+     */
+    const isFlexLayout = computed(() => Boolean(props.autoFlex || fullscreen.value))
 
     /**
      * autoFlex 下表格高度完全交给 flex 布局:
@@ -186,7 +220,7 @@ export default defineComponent({
      * 不再用 JS 读取卡片高度回写像素值,避免「表格高度 -> 卡片内容高度 -> 卡片高度」的循环依赖。
      */
     const flexHeightStyles = computed(() => {
-      if (props.autoFlex) {
+      if (isFlexLayout.value) {
         return {
           flex: 1,
           // 不置 0 时会取内容最小高度,导致窗口放大后再缩小无法收缩
@@ -198,11 +232,40 @@ export default defineComponent({
     })
 
     /**
+     * 放大(全屏)样式:以 fixed 覆盖浏览器可视区域,
+     * 不依赖原生 Fullscreen API,关闭后页面布局自动还原
+     */
+    const fullscreenStyles = computed<Record<string, any>>(() => {
+      if (!fullscreen.value) return {}
+      return {
+        position: 'fixed',
+        inset: 0,
+        zIndex: 1000,
+        padding: '12px',
+        overflow: 'auto',
+        backgroundColor: themeVars.value.bodyColor,
+      }
+    })
+
+    /** 根节点样式:常规 flex 高度规则 + 全屏覆盖层 */
+    const rootStyles = computed(() => {
+      const base = typeof flexHeightStyles.value === 'object' ? flexHeightStyles.value : {}
+      return { ...base, ...fullscreenStyles.value }
+    })
+
+    // 全屏时支持 Esc 还原,与浏览器全屏交互保持一致
+    if (typeof window !== 'undefined') {
+      useEventListener(window, 'keydown', (event: KeyboardEvent) => {
+        if (event.key === 'Escape' && fullscreen.value) fullscreen.value = false
+      })
+    }
+
+    /**
      * autoFlex 时卡片及其内容区共用同一套 flex 布局:
      * 卡片自身纵向排列,内容区占满表头之外的空间,表格再填充内容区
      */
     const cardFlexStyles = computed(() => {
-      if (!props.autoFlex) return undefined
+      if (!isFlexLayout.value) return undefined
 
       return {
         flex: 1,
@@ -221,7 +284,7 @@ export default defineComponent({
       const baseStyle = (tableProps.value as Record<string, any>).style
       const userStyle = props.dataTableStyle
 
-      if (typeof userStyle === 'string' && !props.autoFlex) return userStyle
+      if (typeof userStyle === 'string' && !isFlexLayout.value) return userStyle
 
       let style: Record<string, any> = {}
       if (baseStyle && typeof baseStyle === 'object') {
@@ -230,7 +293,7 @@ export default defineComponent({
       if (userStyle && typeof userStyle === 'object') {
         style = { ...style, ...userStyle }
       }
-      if (props.autoFlex) {
+      if (isFlexLayout.value) {
         style = { ...style, flex: 1, minHeight: 0 }
       }
 
@@ -334,6 +397,93 @@ export default defineComponent({
     const sorterState = ref<any>(null)
     const filtersState = ref<Record<string, any[] | null>>({})
 
+    // ---------------- 工具栏排序 / 筛选 ----------------
+
+    const toolbarSorter = ref<ToolbarSortState | null>(null)
+    const toolbarFilters = ref<Record<string, any>>({})
+
+    /** 工具栏可排序 / 筛选的列:取当前显示列中带 key 与文本标题的数据列,排除操作列 */
+    const toolbarColumns = computed(() =>
+      (tableColumns.value as any[])
+        .filter((column) => {
+          if (!column?.key || column?.type || typeof column?.title !== 'string') return false
+          // 操作列不参与排序 / 筛选
+          const key = String(column.key).toLowerCase()
+          return key !== 'action' && key !== 'actions'
+        })
+        .map(column => ({
+          key: column.key,
+          title: column.title,
+          options: column.options,
+          // 透传字段类型,供筛选弹层渲染日期 / 时间等专用控件
+          valueType: column.valueType,
+        })),
+    )
+
+    /** 本地筛选匹配:多选值命中其一即可,字符串按包含匹配(忽略大小写) */
+    function matchFilterValue(cellValue: any, expect: any) {
+      if (Array.isArray(expect)) {
+        if (Array.isArray(cellValue)) return cellValue.some(item => expect.includes(item))
+        return expect.includes(cellValue)
+      }
+      return String(cellValue ?? '').toLowerCase().includes(String(expect).toLowerCase())
+    }
+
+    /** 本地排序比较:空值始终排最后,数字按大小,其余按本地化字符串比较 */
+    function compareCellValue(a: any, b: any, direction: number) {
+      if (a == null && b == null) return 0
+      if (a == null) return 1
+      if (b == null) return -1
+      if (typeof a === 'number' && typeof b === 'number') return (a - b) * direction
+      return String(a).localeCompare(String(b), 'zh-Hans-CN', { numeric: true }) * direction
+    }
+
+    /** 本地筛选:日期范围按区间比较,其余按包含 / 命中匹配 */
+    function matchToolbarFilter(row: any, key: string, expect: any) {
+      const column = toolbarColumns.value.find(item => item.key === key)
+      const cellValue = row?.[key]
+      const isRange = column?.valueType === 'dateRange'
+      if (isRange && Array.isArray(expect) && expect.length === 2) {
+        const [start, end] = expect
+        const value = String(cellValue ?? '')
+        return value >= String(start ?? '') && value <= String(end ?? '')
+      }
+      return matchFilterValue(cellValue, expect)
+    }
+
+    /** 表格实际展示数据:request 模式由服务端排序筛选,本地数据在此计算 */
+    const displayData = computed(() => {
+      if (props.request) return innerData.value
+      let rows = innerData.value
+      const entries = Object.entries(toolbarFilters.value).filter(([, value]) => !isEmptyFilterValue(value))
+      if (entries.length > 0) {
+        rows = rows.filter(row => entries.every(([key, expect]) => matchToolbarFilter(row, key, expect)))
+      }
+      const sorter = toolbarSorter.value
+      if (sorter) {
+        const direction = sorter.order === 'descend' ? -1 : 1
+        // 排序前复制数组,避免修改调用方传入的 data
+        rows = [...rows].sort((a, b) => compareCellValue(a?.[sorter.key], b?.[sorter.key], direction))
+      }
+      return rows
+    })
+
+    /** 工具栏排序 / 筛选变更后的统一处理:本地分页回到第一页,request 模式重新拉取 */
+    function handleToolbarQueryChange() {
+      if (paginationTouched.value) paginationState.value.current = 1
+      if (props.request) runRequest({ resetPage: true })
+    }
+
+    function handleToolbarSort(payload: ToolbarSortState | null) {
+      toolbarSorter.value = payload
+      handleToolbarQueryChange()
+    }
+
+    function handleToolbarFilter(payload: Record<string, any>) {
+      toolbarFilters.value = payload || {}
+      handleToolbarQueryChange()
+    }
+
     function normalizeSorter(sorter: any) {
       const current = Array.isArray(sorter) ? sorter[0] : sorter
       if (!current || !current.order || current.order === false) return null
@@ -364,6 +514,14 @@ export default defineComponent({
       const seq = ++requestSeq
       requestLoading.value = true
       try {
+        // 工具栏排序优先于列头排序;筛选条件合并,空值不回传
+        const sorter = toolbarSorter.value
+          ? { columnKey: toolbarSorter.value.key, order: toolbarSorter.value.order }
+          : normalizeSorter(sorterState.value)
+        const filters: Record<string, any> = { ...filtersState.value }
+        Object.entries(toolbarFilters.value).forEach(([key, value]) => {
+          if (!isEmptyFilterValue(value)) filters[key] = value
+        })
         const result = await props.request(
           {
             ...(props.params || {}),
@@ -371,8 +529,8 @@ export default defineComponent({
             current: paginationState.value.current,
             pageSize: paginationState.value.pageSize,
           },
-          normalizeSorter(sorterState.value),
-          { ...filtersState.value },
+          sorter,
+          filters,
         )
         // 丢弃过期响应,避免快速翻页 / 搜索时旧数据覆盖新数据
         if (seq !== requestSeq) return
@@ -660,13 +818,13 @@ export default defineComponent({
       const OriginDataTable = (
         <NDataTable
           {...tableProps.value}
-          data={innerData.value}
+          data={displayData.value}
           columns={tableColumns.value}
           size={size.value}
           loading={effectiveLoading.value}
           pagination={effectivePagination.value}
           renderCell={renderEmptyCell}
-          flexHeight={props.autoFlex || props.height != null}
+          flexHeight={isFlexLayout.value || props.height != null}
           style={mergedTableStyle.value}
           remote={Boolean(props.request)}
           scrollX={autoScrollX.value ?? props.scrollX}
@@ -681,14 +839,14 @@ export default defineComponent({
       if (props.simple !== false) return OriginDataTable
 
       return (
-        <NFlex vertical style={flexHeightStyles.value}>
+        <NFlex ref={containerRef} vertical style={rootStyles.value}>
           {props.search !== false && (
             <NCard ref={searchRef}>
               <ProForm
                 ref={searchFormRef}
                 columns={searchColumns.value}
                 mode="search"
-                gridCols={3}
+                gridCols={searchGridCols.value}
                 labelPlacement="left"
                 showFeedback={false}
                 defaultValue={searchDefaults.value}
@@ -713,6 +871,12 @@ export default defineComponent({
               'header-extra': () => (
                 <Toolbar
                   v-model:size={size.value}
+                  v-model:fullscreen={fullscreen.value}
+                  tableColumns={toolbarColumns.value}
+                  sortState={toolbarSorter.value}
+                  filterState={toolbarFilters.value}
+                  onSort={handleToolbarSort}
+                  onFilter={handleToolbarFilter}
                   title={props.title}
                   config={toolbarCfg.value}
                   loading={effectiveLoading.value}

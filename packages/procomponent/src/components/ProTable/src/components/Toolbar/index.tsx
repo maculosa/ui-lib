@@ -1,7 +1,7 @@
 import { computed, defineComponent, inject, ref, toRefs } from 'vue'
 import { NButton, NButtonGroup, NSpace } from 'naive-ui'
 import { DrawerForm, ModalForm } from '@components/index'
-import { ColumnSetting, DensityButton, RefreshButton } from '../index'
+import { ColumnSetting, DensityButton, FilterButton, FullscreenButton, RefreshButton, SortButton } from '../index'
 import { toolbarProps, toolbarEmits } from './types'
 import type { TableSize } from './types'
 import BmIconDelete from '~icons/bm-icon/delete'
@@ -47,7 +47,7 @@ export default defineComponent({
      * 新增按钮点击事件
      */
     function handleCreate() {
-      onCreate && onCreate()
+      onCreate?.()
     }
 
     /**
@@ -196,6 +196,26 @@ export default defineComponent({
 
         <NButtonGroup>
           {
+            // 排序按钮(默认隐藏,需显式开启 toolbar.sort)
+            config.value.sort === true && props.tableColumns.length > 0 && (
+              <SortButton
+                columns={props.tableColumns}
+                value={props.sortState}
+                onChange={(payload: any) => emit('sort', payload)}
+              />
+            )
+          }
+          {
+            // 筛选按钮(默认隐藏,需显式开启 toolbar.filter)
+            config.value.filter === true && props.tableColumns.length > 0 && (
+              <FilterButton
+                columns={props.tableColumns}
+                value={props.filterState}
+                onChange={(payload: Record<string, any>) => emit('filter', payload)}
+              />
+            )
+          }
+          {
             // 刷新按钮
             (config.value.reload !== false) && (
               <RefreshButton
@@ -210,6 +230,15 @@ export default defineComponent({
             (config.value.density !== false) && (
               <DensityButton
                 onUpdate:select={handleSelectForTableSize}
+              />
+            )
+          }
+          {
+            // 切换全屏按钮
+            (config.value.fullscreen !== false) && (
+              <FullscreenButton
+                active={props.fullscreen}
+                onClick={() => emit('update:fullscreen', !props.fullscreen)}
               />
             )
           }

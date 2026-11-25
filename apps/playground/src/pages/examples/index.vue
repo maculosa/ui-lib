@@ -88,8 +88,8 @@ function createColumns() {
       width: 180,
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: 'Action',
+      key: 'action',
       fixed: 'right',
       width: 148,
       render(row: any) {

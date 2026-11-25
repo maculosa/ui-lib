@@ -17,6 +17,14 @@ export interface ToolbarProps {
   size: TableSize
   /** 删除按钮是否禁用(无选中行时) */
   deleteDisabled?: boolean
+  /** 是否处于放大(全屏)状态 */
+  fullscreen?: boolean
+  /** 可用于排序 / 筛选的列(当前显示的列) */
+  tableColumns?: any[]
+  /** 当前工具栏排序状态 */
+  sortState?: { key: string; order: 'ascend' | 'descend' } | null
+  /** 当前工具栏筛选条件 */
+  filterState?: Record<string, any>
 }
 
 export const toolbarProps = {
@@ -44,6 +52,22 @@ export const toolbarProps = {
     type: Boolean,
     default: false,
   },
+  fullscreen: {
+    type: Boolean,
+    default: false,
+  },
+  tableColumns: {
+    type: Array as PropType<ToolbarProps['tableColumns']>,
+    default: () => [],
+  },
+  sortState: {
+    type: Object as PropType<ToolbarProps['sortState']>,
+    default: null,
+  },
+  filterState: {
+    type: Object as PropType<ToolbarProps['filterState']>,
+    default: () => ({}),
+  },
 }
 
 export const toolbarEmits = {
@@ -54,6 +78,10 @@ export const toolbarEmits = {
   print: () => true,
   import: (file: File) => typeof File === 'undefined' || file instanceof File,
   'update:size': (key: TableSize) => ['small', 'medium', 'large'].includes(key),
+  'update:fullscreen': (value: boolean) => typeof value === 'boolean',
+  sort: (payload: { key: string; order: 'ascend' | 'descend' } | null) =>
+    payload === null || (typeof payload.key === 'string' && ['ascend', 'descend'].includes(payload.order)),
+  filter: (payload: Record<string, any>) => typeof payload === 'object' && payload !== null,
 }
 
 export type ToolbarEmits = typeof toolbarEmits

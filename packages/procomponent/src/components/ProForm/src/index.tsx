@@ -512,7 +512,7 @@ export default defineComponent({
     // 隐藏折叠按钮时强制展开,避免搜索项被折叠且无入口展开
     const collapsed = computed(() => (props.showAdvancedButton === false ? false : gridCollapsed.value))
 
-    const { showSuffix } = useShowSuffix(gridRef, props.gridCols)
+    const { showSuffix } = useShowSuffix(gridRef, () => props.gridCols)
 
     const handleToggleCollapsed = () => {
       gridCollapsed.value = !gridCollapsed.value

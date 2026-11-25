@@ -123,6 +123,12 @@ export interface ToolbarConfig {
   /** 表格列设置按钮文本 */
   columnSettingLabel?: string
   columnSettingKey?: string
+  /** 表格全屏按钮 */
+  fullscreen?: boolean
+  /** 工具栏排序按钮,默认关闭 */
+  sort?: boolean
+  /** 工具栏筛选按钮,默认关闭 */
+  filter?: boolean
 }
 
 /**

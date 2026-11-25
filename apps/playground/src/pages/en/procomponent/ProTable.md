@@ -16,8 +16,8 @@ ProTable is a powerful advanced table component extended from the base Table com
 
 - 🎨 **Works out of the box**: many common table features are built in, no need to develop them again
 - 📋 **Flexible configuration**: a rich set of options to meet the needs of different scenarios
-- 🔍 **Smart search**: supports advanced search, form validation and dynamic column configuration
-- 🛠️ **Powerful toolbar**: built-in create, delete, export, print and other common actions
+- 🔍 **Smart search**: supports advanced search, form validation and dynamic column configuration; the search grid adapts its column count to the container width
+- 🛠️ **Powerful toolbar**: built-in create, delete, export, print, sorting, filtering, fullscreen, density and column settings
 - 📱 **Responsive design**: adapts to different screen sizes for a good mobile experience
 - 🎯 **Type safe**: complete TypeScript type support to improve development efficiency
 
@@ -217,6 +217,26 @@ desc="Uses a Select Group to carry multi-select filter conditions, suitable for 
 
 </Demo>
 
+### Toolbar sorting & filtering
+
+<Demo
+title="Sorting and filtering"
+desc="Enable them with toolbar.sort / toolbar.filter. In controlled mode the toolbar sorting and filtering only affect the loaded data: sorting works on visible columns, while filter conditions are added on demand with controls matched to each field type."
+:raw="ToolbarSortFilterRaw">
+
+<ToolbarSortFilter />
+
+</Demo>
+
+<Demo
+title="Fullscreen"
+desc="Click the fullscreen icon to enlarge the search bar, toolbar and table to fill the browser viewport; click again or press Esc to restore."
+:raw="ToolbarFullscreenRaw">
+
+<ToolbarFullscreen />
+
+</Demo>
+
 ### Data request
 
 <Demo
@@ -286,11 +306,19 @@ When `request` is provided, data, pagination and loading are managed by ProTable
 
 Resetting restores the values captured when the component was created (`params` / `searchModel`) plus `search.defaultValue`; the current input is discarded, and the `reset` event carries these restored values.
 
+### Toolbar sort, filter and fullscreen
+
+- **Sort**: hidden by default, enable it with `toolbar.sort: true`. The popover lists all sortable columns plus a default "综合排序" entry that clears sorting. Clicking a column applies ascending order immediately; the direction list switches asc/desc. Selecting the current value again does not re-trigger a request.
+- **Filter**: hidden by default, enable it with `toolbar.filter: true`. The popover starts empty and only shows an "add filter condition" button. Each row is `field select + value control + remove`. Value controls follow `valueType`: date / dateRange / datetime use a date picker, time uses a time picker, columns with `options` use a multi select, everything else uses a keyword input. Conditions are drafts until "确定" is clicked.
+- **Data flow**: without `request`, sorting and filtering run locally on `data` (multi-select matches any value, text matches by contains, `dateRange` compares by range). With `request`, sorting is passed as the second argument and filters are merged into the third argument, then the first page is requested again.
+- **Selectable columns**: only visible data columns with a string `title` are listed; `selection` / `index` / `expand` columns and `action` / `actions` keys are excluded.
+- **Fullscreen**: implemented with fixed positioning (not the native Fullscreen API); it reuses the `autoFlex` height chain so the table body scrolls inside the viewport. Toggle it off or press `Esc` to restore.
+
 ### SearchConfig
 
 | Prop | Description | Type | Default |
 | --- | --- | --- | --- |
-| gridCols | Number of columns in the search form | `number` | 3 |
+| gridCols | Number of columns in the search form; adapts to the container width when omitted | `number` | auto |
 | gridCollapsed | Whether the search form is collapsed | `boolean` | `false` |
 | defaultValue | Default values of the search form; also the reset target (wins over the initial `params` / `searchModel`) | `Record<string, any>` | - |
 | formRules | Validation rules of the search form | `Record<string, any>` | - |
@@ -327,6 +355,9 @@ Resetting restores the values captured when the component was created (`params` 
 | density | Whether to show the density toggle button | `boolean` | `true` |
 | columnSetting | Whether to show the column settings button | `boolean` | `true` |
 | columnSettingLabel | Text of the column settings button; icon only when omitted | `string` | - |
+| sort | Whether to show the sorting button; hidden by default, enable it explicitly | `boolean` | `false` |
+| filter | Whether to show the filtering button; hidden by default, enable it explicitly | `boolean` | `false` |
+| fullscreen | Whether to show the fullscreen button | `boolean` | `true` |
 
 Toolbar configuration is fully reactive: changing it at runtime updates the UI immediately.
 

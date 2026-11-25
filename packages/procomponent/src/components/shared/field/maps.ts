@@ -10,9 +10,15 @@ import {
   NTimePicker,
   NTreeSelect,
 } from 'naive-ui'
+import type { Component } from 'vue'
 import type { FieldColumn } from './types'
 
-export const valueFieldMaps = {
+/**
+ * valueType 到表单控件组件的映射
+ * 显式标注 Component 而非依赖推断,避免声明文件生成时
+ * 引用 naive-ui 的传递依赖(seemly/treemate/vueuc)导致 TS2742
+ */
+export const valueFieldMaps: Record<string, Component> = {
   text: NInput,
   select: NSelect,
   time: NTimePicker,
@@ -23,7 +29,7 @@ export const valueFieldMaps = {
   digit: NInputNumber,
   treeSelect: NTreeSelect,
   switch: NSwitch,
-} as const
+}
 
 export const placeholderMaps: Record<string, string> = {
   text: '请输入',

@@ -17,8 +17,8 @@ ProTable 是基于 Naive UI `NDataTable` 封装的高级表格组件。它把「
 ## 特性
 
 - **一份配置三处复用**：`columns` 通过 `hideInTable` / `hideInSearch` / `hideInForm` 控制在表格、搜索栏、新增表单中的可见性
-- **内置搜索栏**：按 `valueType` 自动渲染控件，支持远程枚举、栅格布局、折叠展开、防抖查询
-- **内置工具栏**：新增（按钮 / 弹窗 / 抽屉三种模式）、删除、导出、打印、导入、刷新、密度切换、列设置
+- **内置搜索栏**：按 `valueType` 自动渲染控件，支持远程枚举、栅格布局、按容器宽度自适应列数、折叠展开、防抖查询
+- **内置工具栏**：新增（按钮 / 弹窗 / 抽屉三种模式）、删除、导出、打印、导入、排序、筛选、全屏放大、刷新、密度切换、列设置
 - **表格级 request**：传入 `request` 后由 ProTable 托管数据、分页与 loading，搜索 / 翻页 / 排序 / 筛选自动重新请求
 - **列设置持久化**：拖拽排序 + 勾选显隐，按 `columnStorageKey` 写入 `localStorage`
 - **高度自适应**：`autoFlex` 填充 Flex 容器，或用 `height` / `max-height` 固定高度
@@ -206,7 +206,7 @@ loadData()
 
 ### 一份 columns 驱动三处
 
-`columns` 会被拆成四组派生列：
+`columns` 会被拆成五组派生列：
 
 | 派生列 | 用途 | 过滤规则 |
 | --- | --- | --- |
@@ -214,13 +214,15 @@ loadData()
 | `searchColumns` | 搜索栏表单项 | 排除 `type: 'selection'`、`type: 'index'`、`key` 为 `action` / `actions`、`hideInSearch: true`；按 `order` 排序 |
 | `formColumns` | 新增弹窗/抽屉的表单项 | 排除 `hideInForm: true`、`type: 'selection'`、`type: 'index'`、`key: 'actions'` |
 | `settingColumns` | 列设置面板的候选列 | 排除 `hideInTable: true` |
+| `toolbarColumns` | 工具栏排序 / 筛选的可选字段 | 取当前显示列中带 `key`、`title` 为字符串的数据列；排除 `selection` / `index` / `expand` 等 `type` 列，以及 `key` 为 `action` / `actions` 的列 |
 
 由此得到几条实践约定：
 
-- **操作列固定用 `key: 'actions'`**，这样它不会污染搜索栏和新增表单
+- **操作列固定用 `key: 'actions'`**，这样它不会污染搜索栏、新增表单，也不会出现在工具栏排序 / 筛选的可选项里
 - **只想查询、不想展示的字段**（如日期区间）设 `hideInTable: true`
 - **只想展示、不想查询的字段**设 `hideInSearch: true`
 - **搜索栏排序**由 `order` 权重 + `search.sort` 决定，默认 `desc`，即权重大的靠前
+- **工具栏排序 / 筛选的可选列随列设置变化**：列设置面板中隐藏的列会自动从工具栏下拉中移除
 
 ```ts
 const columns = [
@@ -270,7 +272,8 @@ type ProTableRequest = (
 ```
 
 - `params` 为 `params` 与 `searchModel` 合并后的查询条件，并附加 `current` / `pageSize`
-- `total` 用于计算分页总条数；`sorter` 未排序时为 `null`
+- `sorter` 优先取工具栏排序（`{ columnKey, order }`），其次取列头排序；未排序时为 `null`
+- `filters` 为列头筛选与工具栏筛选的合并结果，工具栏筛选同名字段优先，空值不会传入
 - 请求失败会通过 `useMessage` 提示「加载失败，请重试」；快速连续请求只保留最后一次响应
 - 工具栏刷新在请求模式下直接调用 `request`，**不再触发** `loadData`
 - `request` 与 `onQuery` 同时存在时，`request` 优先，`onQuery` 不会被调用
@@ -281,6 +284,7 @@ type ProTableRequest = (
 
 - **默认显示**，只有显式传 `:search="false"` 才会隐藏
 - `search` 传对象时，其字段会覆盖到内部 ProForm 上，因此 ProForm 的 `gridCols`、`gridCollapsed`、`gridCollapsedRows`、`labelWidth` 等属性都可以直接写在这里
+- **栅格列数默认自适应**：未显式配置 `search.gridCols` 时，按表格容器的实际宽度自动选择列数（窄屏 1 → 宽屏最多 6），容器宽度通过 `ResizeObserver` 监听，侧边栏折叠、窗口缩放、全屏切换后会自动重算；显式传 `gridCols` 时以传入值为准
 - 搜索栏固定 `showFeedback: false`，即不展示校验错误文案，但校验仍会拦截提交
 - `showAdvancedButton` 为 `false` 时折叠按钮隐藏并强制展开；未配置时由内部 overflow 检测决定是否出现
 - 按钮文案：搜索按钮优先取 `searchText`，其次 `submitText`，默认「搜索」；重置按钮用 `resetText`（默认「重置」）
@@ -290,16 +294,52 @@ type ProTableRequest = (
 
 ### 工具栏
 
-工具栏位于卡片右上角，从左到右依次是：`toolbar` 插槽内容 → 新增 → 删除 → 导出 → 打印 → 导入 → 刷新 / 密度 / 列设置按钮组。
+工具栏位于卡片右上角，从左到右依次是：`toolbar` 插槽内容 → 新增 → 删除 → 导出 → 打印 → 导入 → 排序 / 筛选 / 刷新 / 密度 / 全屏 / 列设置按钮组。
 
 - `create`、`delete`、`export`、`print`、`import` **默认隐藏**，需要显式开启
-- `reload`、`density`、`columnSetting` **默认显示**，需要显式传 `false` 才会隐藏
+- `sort`、`filter` **默认隐藏**，需要显式开启：`:toolbar="{ sort: true, filter: true }"`；当前没有可选列时即使开启也不会显示
+- `reload`、`density`、`fullscreen`、`columnSetting` **默认显示**，需要显式传 `false` 才会隐藏
 - `createMode` 为 `modal` / `drawer` 时，新增按钮会被 `ModalForm` / `DrawerForm` 包裹，表单列取 `formColumns`，标题为 `${createLabel} ${title}`；点击按钮同时触发 `create` 事件
 - 删除按钮在没有选中行时禁用，点击后抛出 `delete`，参数为当前选中行的 key 数组
 - 打印按钮抛出 `print` 后调用浏览器 `window.print()`
 - 导入按钮打开文件选择器，选择文件后抛出 `import`，参数为 `File`；`importAccept` 可限制文件类型
 - 工具栏配置**全部响应式**，运行时修改 `toolbar` 会立即反映到界面
 - 密度切换提供「默认 / 中等 / 紧凑」三档，对应表格 `size` 的 `large` / `medium` / `small`
+- 全屏按钮把整个 ProTable（搜索栏 + 工具栏 + 表格）放大铺满浏览器视口，**使用 CSS 固定定位实现，不调用浏览器原生 Fullscreen API**；再次点击按钮或按 `Esc` 还原，放大状态下复用 `autoFlex` 的高度链路，表体内部滚动
+- 排序 / 筛选按钮的状态变化后，受控模式回第一页并只对当前数据生效；请求模式会自动重新调用 `request`
+
+#### 工具栏排序
+
+排序按钮默认隐藏，需通过 `toolbar.sort: true` 开启。点击排序图标打开的弹层包含「排序字段」与「排序方向」两部分：
+
+- 字段列表首项固定为「综合排序」，代表不排序、按数据原始顺序展示；其余为当前可排序的列
+- 点击列名立即生效，默认升序；方向可选升序 / 降序，选中项以对号标识，**不展示选中底色**
+- 再次点击当前已选列或当前方向不会重复触发请求；切换列时沿用当前方向
+- 工具的排序状态与列头视觉无关：按钮高亮、tooltip 显示「列名 + 方向」
+
+排序结果的处理方式：
+
+| 模式 | 行为 |
+| --- | --- |
+| 受控模式（无 `request`） | 直接对当前 `data` 排序后渲染：数字按大小、其余按 `localeCompare(numeric)`，空值始终排最后；排序前复制数组，不修改传入数据 |
+| 请求模式（有 `request`） | 作为 `request` 的第二个参数 `sorter` 传入 `{ columnKey, order }`，并回到第一页重新请求 |
+
+#### 工具栏筛选
+
+筛选按钮默认隐藏，需通过 `toolbar.filter: true` 开启。点击筛选图标打开的弹层默认**没有任何条件**，只显示一个「添加筛选条件」按钮：
+
+- 点击按钮新增一行，行内为「字段选择 + 值输入 + 删除」；字段下拉会排除其他行已使用的列，全部列用完后添加按钮自动隐藏
+- 值控件按字段类型自动选择：`date` / `dateRange` / `datetime` 用日期选择器、`time` 用时间选择器、带 `options` 的字段用多选、其余为关键字输入
+- 条件为草稿态，点击「确定」后才生效；「重置」清空全部条件并立即生效；切换字段会清空该行已填的值
+- 提交前会剔除未选择字段或值为空的条件，**空值不会回传给服务端**
+- 表头 tooltip 会显示当前生效的条件数量，例如「筛选(2)」
+
+筛选结果的处理方式：
+
+| 模式 | 行为 |
+| --- | --- |
+| 受控模式（无 `request`） | 对当前 `data` 做本地筛选：多选条件命中其一即可，文本按包含匹配（忽略大小写），`dateRange` 按区间比较 |
+| 请求模式（有 `request`） | 合并进 `request` 的第三个参数 `filters`，与列头筛选结果合并，工具栏筛选同名字段优先；并回到第一页重新请求 |
 
 ### 高度与滚动
 
@@ -487,6 +527,26 @@ desc="操作列使用 Actions 组件，超出 showNum 的按钮自动收进下�
 :raw="ActionsDemoRaw">
 
 <ActionsDemo />
+
+</Demo>
+
+### 工具栏排序、筛选与全屏
+
+<Demo
+title="排序与筛选"
+desc="需通过 toolbar.sort / toolbar.filter 开启。受控模式下，工具栏的排序、筛选只作用于当前 data：排序支持按显示列升降序，筛选按需添加条件并自动匹配日期、时间、选项等控件。"
+:raw="ToolbarSortFilterRaw">
+
+<ToolbarSortFilter />
+
+</Demo>
+
+<Demo
+title="全屏放大"
+desc="点击工具栏全屏图标，搜索栏、工具栏与表格一起放大铺满浏览器视口；再次点击或按 Esc 还原。"
+:raw="ToolbarFullscreenRaw">
+
+<ToolbarFullscreen />
 
 </Demo>
 
@@ -877,7 +937,7 @@ ProTable 的 props 合并了 naive-ui 的 `dataTableProps`，除上表自有属�
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| gridCols | 搜索栏每行字段数 | `number` | `3` |
+| gridCols | 搜索栏每行字段数；不传时按表格容器宽度自适应 | `number` | 自动 |
 | gridCollapsed | 是否折叠搜索栏 | `boolean` | `false` |
 | defaultValue | 搜索栏默认值，同时作为重置目标值，优先级高于初始的 `params` / `searchModel` | `Record<string, any>` | - |
 | formRules | 表单校验规则（NForm 原生属性） | `Record<string, any>` | - |
@@ -914,6 +974,9 @@ ProTable 的 props 合并了 naive-ui 的 `dataTableProps`，除上表自有属�
 | density | 是否显示密度切换按钮 | `boolean` | `true` |
 | columnSetting | 是否显示列设置按钮 | `boolean` | `true` |
 | columnSettingLabel | 列设置按钮文案，不传则只显示图标 | `string` | - |
+| sort | 是否显示排序按钮；默认隐藏，无可排序列时即使开启也不显示 | `boolean` | `false` |
+| filter | 是否显示筛选按钮；默认隐藏，无可筛选列时即使开启也不显示 | `boolean` | `false` |
+| fullscreen | 是否显示全屏放大按钮 | `boolean` | `true` |
 
 > 工具栏配置在运行时修改会立即生效，不需要重建组件。
 
@@ -1072,6 +1135,15 @@ tableRef.value?.setColumnsState({ order: ['name', 'age'], hidden: ['age'] })
 **重置后日期控件显示异常？**
 默认值请给 `null` 而非 `''` 或 `undefined`，详见[代码示例](#代码示例)开头的默认值约定。
 
+**工具栏看不到排序 / 筛选按钮？**
+这两个按钮依赖「可排序 / 可筛选的列」：列需要有 `key`，`title` 为字符串，且不是 `selection` / `index` / `expand` 等 `type` 列，`key` 为 `action` / `actions` 的列也会被排除；同时检查 `toolbar.sort` / `toolbar.filter` 是否被显式设为 `false`。
+
+**工具栏排序后列头没有箭头变化？**
+工具栏排序与 NDataTable 列头排序是两套独立状态：列头箭头只反映 `@update:sorter`，工具栏排序状态体现在按钮高亮与 tooltip 文案上。两者同时启用时，受控模式的最终显示顺序以列头排序为准。
+
+**筛选日期范围没有生效？**
+受控模式按字符串区间比较（`>= 开始 && <= 结束`），数据里的日期需要是可直接比较的格式（如 `yyyy-MM-dd`）。时间戳或自定义格式请使用请求模式，把条件交给服务端处理。
+
 ## 已知限制
 
 当前版本（0.8.0）仍存在以下限制：
@@ -1080,6 +1152,7 @@ tableRef.value?.setColumnsState({ order: ['name', 'age'], hidden: ['age'] })
 | --- | --- |
 | `setRowSelection` | 仅记录状态；naive-ui 没有表格级 `rowSelection`，多选请在列上配置 `{ type: 'selection' }` |
 | `setSelectedRowKeys` / `setSelectedRows` | 只同步内部状态（`setSelectedRowKeys` 影响删除按钮禁用判断），不会反向驱动未受控的表格选中列；需要受控请传 `checked-row-keys` |
-| 多列排序 | 请求模式只向 `request` 传递第一列排序（`sorter` 取数组首项） |
+| 多列排序 | 请求模式只向 `request` 传递第一列排序（`sorter` 取数组首项）；工具栏排序优先于列头排序 |
+| 工具栏排序与列头排序 | 受控模式下两者都会生效：列头 `sorter` 由 NDataTable 本地排序，工具栏排序作用于传入的 `data`，同一列同时启用时分页/排序结果以列头为准，建议只保留一种 |
 | `toolbarConfig` | 已废弃，请改用 `toolbar` |
 | 列级 `request` 签名 | 类型声明为 `(params, prop)`，运行时实际无参调用，`defaultValue` 才用于级联补全 |
