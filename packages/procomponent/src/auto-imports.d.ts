@@ -136,6 +136,9 @@ declare global {
   export type { WatermarkProps } from './components/Watermark/src/types'
   import('./components/Watermark/src/types')
   // @ts-ignore
+  export type { ProLayoutInstance } from './components/ProLayout/index'
+  import('./components/ProLayout/index')
+  // @ts-ignore
   export type { ActionAlign, ActionButton, ActionButtonProps, ActionSize, ActionsEmits, ActionsProps, ActionVariant } from './components/Actions/index'
   import('./components/Actions/index')
 }
