@@ -34,7 +34,7 @@ onMounted(load)
     <span class="text-xs opacity-70">非受控、未传 default-active，options 异步到达</span>
   </NSpace>
 
-  <ProTabs :options="tabs" @update:active="key => pushLog(`update:active → ${key}`)" />
+  <ProTabs :options="tabs" @update:active="(key: string) => pushLog(`update:active → ${key}`)" />
 
   <ul class="mt-3 space-y-1 font-mono text-xs opacity-70">
     <li v-for="(log, i) in logs" :key="i">{{ log }}</li>

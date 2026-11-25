@@ -1,5 +1,6 @@
 <script setup lang="tsx">
 import { ProTable } from '@banmao/procomponent'
+import type { ProTableInstance } from '@banmao/procomponent'
 import { useList } from '@banmao/hooks'
 import { NButton, NSpace } from 'naive-ui'
 import { computed, ref, watchEffect } from 'vue'
@@ -145,7 +146,7 @@ async function handleQuery(params: any) {
   loadData()
 }
 
-const tableRef = ref<InstanceType<typeof ProTable> | null>(null)
+const tableRef = ref<ProTableInstance | null>(null)
 const searchHeight = ref<number>(0)
 
 watchEffect(() => {

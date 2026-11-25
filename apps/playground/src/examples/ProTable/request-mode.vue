@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ProTable } from '@banmao/procomponent'
 import type { ProTableRequest } from '@banmao/procomponent'
-import type { ProTableColumn } from 'naive-ui'
 
 interface User {
   id: number
@@ -25,7 +24,8 @@ const allUsers: User[] = Array.from({ length: 47 }, (_, index) => ({
   status: index % 4 === 0 ? 0 : 1,
 }))
 
-const columns: ProTableColumn<User>[] = [
+/** 列配置：valueType / hideInSearch / filter 等是 ProTable 的扩展字段 */
+const columns = [
   { type: 'selection' },
   { type: 'index' },
   { title: '姓名', key: 'name', valueType: 'text', minWidth: 120 },
@@ -45,9 +45,14 @@ const columns: ProTableColumn<User>[] = [
     width: 120,
     filter: true,
     filterOptions: statusOptions,
-    render: row => statusOptions.find(option => option.value === row.status)?.label,
+    render: (row: User) => statusOptions.find(option => option.value === row.status)?.label,
   },
 ]
+
+/** 行 key 取值 */
+function getRowKey(row: User) {
+  return row.id
+}
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -80,7 +85,7 @@ const request: ProTableRequest<User> = async (params, sorter, filters) => {
   <ProTable
     :columns="columns"
     :request="request"
-    :row-key="row => row.id"
+    :row-key="getRowKey"
     :pagination="{ pageSize: 10, showSizePicker: true, pageSizes: [10, 20, 30] }"
   />
 </template>

@@ -60,7 +60,7 @@ function record(event: string) {
       label-placement="left"
       @open="record('open')"
       @close="record('close')"
-      @step-change="(current, previous) => record(`step ${previous} → ${current}`)"
+      @step-change="(current: number, previous: number) => record(`step ${previous} → ${current}`)"
       @submit="() => record('submit')"
     />
 

@@ -4,7 +4,7 @@ import { NButton, NSpace, useMessage } from 'naive-ui'
 import { computed, ref } from 'vue'
 
 const columns = ref([
-  { type: 'index' },
+  { type: 'index', key: 'index' },
   {
     title: '姓名',
     key: 'name',
@@ -109,7 +109,7 @@ const pagination = ref({
   showQuickJumper: true,
   showSizePicker: true,
   pageSizes: [10, 20, 30, 40],
-  prefix: ({ itemCount }: { itemCount: number }) => `共 ${itemCount} 条数据`,
+  prefix: ({ itemCount }: { itemCount?: number }) => `共 ${itemCount} 条数据`,
 })
 
 const loading = ref(false)

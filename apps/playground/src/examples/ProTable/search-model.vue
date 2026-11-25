@@ -36,7 +36,7 @@ const dataSource = computed(() => {
   })
 })
 
-function handleQuery(params: Record<string, any>) {
+async function handleQuery(params: Record<string, any>) {
   query.value = params
 }
 

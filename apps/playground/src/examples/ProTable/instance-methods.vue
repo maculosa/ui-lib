@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ProTable } from '@banmao/procomponent'
+import type { ProTableInstance } from '@banmao/procomponent'
 import { NButton, NSpace, useMessage } from 'naive-ui'
 import { computed, nextTick, ref } from 'vue'
 
 const message = useMessage()
-const tableRef = ref<InstanceType<typeof ProTable> | null>(null)
+const tableRef = ref<ProTableInstance | null>(null)
 
 const columns = [
   { title: '姓名', key: 'name', valueType: 'text', minWidth: 120 },
@@ -32,7 +33,7 @@ const dataSource = computed(() => {
   })
 })
 
-function handleQuery(params: Record<string, any>) {
+async function handleQuery(params: Record<string, any>) {
   query.value = params
 }
 

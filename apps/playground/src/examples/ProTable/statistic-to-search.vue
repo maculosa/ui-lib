@@ -207,7 +207,7 @@ const pagination = ref({
   showQuickJumper: true,
   showSizePicker: true,
   pageSizes: [10, 20, 30, 40],
-  prefix: ({ itemCount }: { itemCount: number }) => `共 ${itemCount} 条数据`,
+  prefix: ({ itemCount }: { itemCount?: number }) => `共 ${itemCount} 条数据`,
 })
 
 const loading = ref(false)

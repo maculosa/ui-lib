@@ -46,13 +46,18 @@ const dataSource = ref([
   { id: 8, name: '周婷', age: 24, gender: 'female', status: 'active', joinDate: '2024-04-18' },
 ])
 
+/** 行 key 取值 */
+function getRowKey(row: { id: number }) {
+  return row.id
+}
+
 const pagination = ref({
   page: 1,
   pageSize: 5,
   itemCount: dataSource.value.length,
   showSizePicker: true,
   pageSizes: [5, 10, 20],
-  prefix: ({ itemCount }: { itemCount: number }) => `共 ${itemCount} 条`,
+  prefix: ({ itemCount }: { itemCount?: number }) => `共 ${itemCount} 条`,
 })
 </script>
 
@@ -62,7 +67,7 @@ const pagination = ref({
     :columns="columns"
     :data="dataSource"
     :pagination="pagination"
-    :row-key="row => row.id"
+    :row-key="getRowKey"
     :toolbar="{ sort: true, filter: true }"
   />
   <p style="margin-top: 8px; color: #888; font-size: 13px">

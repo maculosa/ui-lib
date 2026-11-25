@@ -24,11 +24,16 @@ const dataSource = ref(
   })),
 )
 
+/** 行 key 取值 */
+function getRowKey(row: { id: number }) {
+  return row.id
+}
+
 const pagination = ref({
   page: 1,
   pageSize: 10,
   itemCount: dataSource.value.length,
-  prefix: ({ itemCount }: { itemCount: number }) => `共 ${itemCount} 条`,
+  prefix: ({ itemCount }: { itemCount?: number }) => `共 ${itemCount} 条`,
 })
 </script>
 
@@ -40,7 +45,7 @@ const pagination = ref({
       :columns="columns"
       :data="dataSource"
       :pagination="pagination"
-      :row-key="row => row.id"
+      :row-key="getRowKey"
       :toolbar="{ createMode: 'button' }"
     />
   </div>

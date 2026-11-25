@@ -2,7 +2,6 @@
 import { ProTable } from '@banmao/procomponent'
 import { useMessage } from 'naive-ui'
 import { ref } from 'vue'
-
 const message = useMessage()
 
 const columns = [
@@ -20,6 +19,11 @@ const dataSource = ref([
   { id: 4, name: '刘洋', age: 35, department: '运营部' },
 ])
 
+/** 行 key 取值 */
+function getRowKey(row: { id: number }) {
+  return row.id
+}
+
 function handleDelete(rowKeys: (string | number)[]) {
   dataSource.value = dataSource.value.filter(row => !rowKeys.includes(row.id))
   message.success(`已删除 ${rowKeys.length} 条`)
@@ -34,7 +38,7 @@ function handleImport(file: File) {
   <ProTable
     :columns="columns"
     :data="dataSource"
-    :row-key="row => row.id"
+    :row-key="getRowKey"
     :toolbar="{ delete: true, import: true, importAccept: '.csv,.xlsx' }"
     @delete="handleDelete"
     @import="handleImport"

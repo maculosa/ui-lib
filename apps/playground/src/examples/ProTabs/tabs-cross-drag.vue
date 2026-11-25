@@ -42,7 +42,7 @@ function move(payload: ProTabsTransferPayload, target: 'left' | 'right') {
         :options="left"
         draggable
         drag-group="ticket-board"
-        @transfer="payload => move(payload, 'right')"
+        @transfer="(payload: ProTabsTransferPayload) => move(payload, 'right')"
       />
     </div>
     <div class="min-w-0">
@@ -52,7 +52,7 @@ function move(payload: ProTabsTransferPayload, target: 'left' | 'right') {
         :options="right"
         draggable
         drag-group="ticket-board"
-        @transfer="payload => move(payload, 'left')"
+        @transfer="(payload: ProTabsTransferPayload) => move(payload, 'left')"
       />
     </div>
   </div>

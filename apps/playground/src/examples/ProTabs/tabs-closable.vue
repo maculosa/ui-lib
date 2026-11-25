@@ -38,7 +38,7 @@ function closeTab(key: string) {
     default-active="tab-1"
     closable
     inset
-    @update:active="key => { active = key; pushLog(`update:active → ${key}`) }"
+    @update:active="(key: string) => { active = key; pushLog(`update:active → ${key}`) }"
     @close="closeTab"
   />
 

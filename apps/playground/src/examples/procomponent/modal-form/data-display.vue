@@ -6,6 +6,7 @@ import { ref } from 'vue'
 const columns = ref([
   {
     type: 'selection',
+    key: 'selection',
   },
   {
     title: '姓名',

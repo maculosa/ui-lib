@@ -20,7 +20,17 @@ function makeCityRequest(round: number) {
   })
 }
 
-const columns = ref([
+/** select 列配置，request 用于异步加载选项 */
+interface AsyncSelectColumn {
+  title: string
+  key: string
+  valueType: string
+  request?: () => Promise<SelectOption[]>
+  formItemProps?: { placeholder: string }
+  options?: SelectOption[]
+}
+
+const columns = ref<AsyncSelectColumn[]>([
   {
     title: '城市',
     key: 'city',

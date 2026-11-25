@@ -57,7 +57,7 @@ function onRename(key: string, label: string) {
     inset
     @add="onAdd"
     @close="onClose"
-    @reorder="(keys) => onReorder(keys)"
+    @reorder="(keys: string[]) => onReorder(keys)"
     @rename="onRename"
   />
 

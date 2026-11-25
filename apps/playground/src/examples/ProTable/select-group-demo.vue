@@ -1,5 +1,6 @@
 <script setup lang="tsx">
 import { ProTable } from '@banmao/procomponent'
+import type { ProTableInstance } from '@banmao/procomponent'
 import { NButton, NSelect, NSpace } from 'naive-ui'
 import { computed, ref, watchEffect } from 'vue'
 import { useElementSize } from '@vueuse/core'
@@ -255,7 +256,7 @@ const pagination = ref({
   showQuickJumper: true,
   showSizePicker: true,
   pageSizes: [10, 20, 30, 40],
-  prefix: ({ itemCount }: { itemCount: number }) => `共 ${itemCount} 条数据`,
+  prefix: ({ itemCount }: { itemCount?: number }) => `共 ${itemCount} 条数据`,
 })
 
 const loading = ref(false)
@@ -294,7 +295,7 @@ async function handleQuery() {
   fetchTableData()
 }
 
-const tableRef = ref<InstanceType<typeof ProTable> | null>(null)
+const tableRef = ref<ProTableInstance | null>(null)
 const searchHeight = ref<number>(0)
 const searchRef = computed(() => tableRef.value?.searchRef)
 
