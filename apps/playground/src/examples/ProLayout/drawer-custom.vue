@@ -1,6 +1,7 @@
 <script setup lang="tsx">
 import { ref } from 'vue'
 import { ProLayout } from '@banmao/procomponent'
+import type { ProLayoutInstance } from '@banmao/procomponent'
 import type { MenuOption } from 'naive-ui'
 import {
   NButton,
@@ -33,7 +34,7 @@ const menus: MenuOption[] = [
   },
 ]
 
-const layoutRef = ref<InstanceType<typeof ProLayout> | null>(null)
+const layoutRef = ref<ProLayoutInstance | null>(null)
 const containerWidth = ref(360)
 const menuValue = ref<string | number>('/home')
 const expandedKeys = ref<(string | number)[]>(['/system'])

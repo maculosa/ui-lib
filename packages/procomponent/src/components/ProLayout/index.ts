@@ -8,3 +8,4 @@ export const ProLayoutPlugin: Plugin = {
 };
 
 export { ProLayout };
+export type { ProLayoutInstance } from "./src/types";

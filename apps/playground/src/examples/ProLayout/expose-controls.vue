@@ -1,6 +1,7 @@
 <script setup lang="tsx">
 import { ref } from 'vue'
 import { ProLayout } from '@banmao/procomponent'
+import type { ProLayoutInstance } from '@banmao/procomponent'
 import type { MenuOption } from 'naive-ui'
 import { NButton, NConfigProvider, NSpace, darkTheme } from 'naive-ui'
 import { Icon } from '@iconify/vue'
@@ -32,7 +33,7 @@ const menus: MenuOption[] = [
   { label: '表格', key: '/table', icon: renderIcon('hugeicons:table-01') },
 ]
 
-const layoutRef = ref<InstanceType<typeof ProLayout> | null>(null)
+const layoutRef = ref<ProLayoutInstance | null>(null)
 const menuValue = ref<string | number>('/home')
 const expandedKeys = ref<(string | number)[]>([])
 const logs = ref<string[]>([])

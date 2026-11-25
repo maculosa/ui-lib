@@ -1,6 +1,7 @@
 <script setup lang="tsx">
 import { computed, ref } from 'vue'
 import { ProLayout } from '@banmao/procomponent'
+import type { ProLayoutInstance } from '@banmao/procomponent'
 import type { MenuOption } from 'naive-ui'
 import { NButton, NConfigProvider, NInput, NSpace, darkTheme } from 'naive-ui'
 import { Icon } from '@iconify/vue'
@@ -23,7 +24,7 @@ const keyword = ref('')
 const requestCount = ref(0)
 const lastParams = ref('{}')
 const loadingLog = ref<string[]>([])
-const layoutRef = ref<InstanceType<typeof ProLayout> | null>(null)
+const layoutRef = ref<ProLayoutInstance | null>(null)
 
 const menuConfig = computed(() => ({
   params: { keyword: keyword.value },

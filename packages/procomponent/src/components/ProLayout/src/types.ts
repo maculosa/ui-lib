@@ -119,3 +119,25 @@ export const proLayoutEmits = {
 };
 
 export type ProLayoutEmits = ExtractPropTypes<typeof proLayoutEmits>;
+
+/** ProLayout 通过 expose 暴露给父组件的实例 API */
+export interface ProLayoutInstance {
+  /** 重新加载菜单数据 */
+  reloadMenus: () => Promise<void>;
+  /** 设置侧边栏折叠状态 */
+  setCollapsed: (value: boolean) => void;
+  /** 切换侧边栏折叠状态 */
+  toggleCollapsed: () => void;
+  /** 打开移动端抽屉 */
+  openDrawer: () => void;
+  /** 关闭移动端抽屉 */
+  closeDrawer: () => void;
+  /** 切换移动端抽屉 */
+  toggleDrawer: () => void;
+  /** 设置当前选中菜单 */
+  setMenuValue: (key: string | number) => void;
+  /** 设置展开的菜单项 */
+  setExpandedKeys: (keys: (string | number)[]) => void;
+  /** 滚动到指定菜单项，返回是否定位成功 */
+  scrollToMenu: (key: string | number) => Promise<boolean>;
+}

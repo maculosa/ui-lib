@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue'
+import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import type { CSSProperties } from 'vue'
 
 export default defineComponent({

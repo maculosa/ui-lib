@@ -1,7 +1,7 @@
 import type { ProTableColumn } from "naive-ui";
 import type { PropType } from "vue";
 import { NButton, NCheckbox, NPopover } from "naive-ui";
-import { defineComponent, ref, toRefs, watch } from "vue";
+import { computed, defineComponent, ref, toRefs, watch } from "vue";
 import { VueDraggableNext as VueDraggable } from "vue-draggable-next";
 import "./ColumnSetting.scss";
 import BmIconDragDrop from "~icons/bm-icon/drag-drop";

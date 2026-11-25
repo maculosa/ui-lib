@@ -2,7 +2,7 @@ import type { PropType } from 'vue'
 import type { LinkDiagramProps } from './types'
 import { NoxDraw } from '@banmao/draw'
 import { uniqueId } from 'lodash-es'
-import { computed, defineComponent, onMounted, ref, toRefs } from 'vue'
+import { computed, defineComponent, onMounted, onUnmounted, ref, toRefs } from 'vue'
 import './styles/css'
 
 const TANK_WIDTH = 140

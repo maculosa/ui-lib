@@ -1,3 +1,4 @@
+import { defineComponent } from "vue"
 import { NButton } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import { actionButtonEmits, actionButtonProps } from "./types"

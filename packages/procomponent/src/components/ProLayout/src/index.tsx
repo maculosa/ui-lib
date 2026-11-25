@@ -1,7 +1,7 @@
 import { NButton, NDrawer, NMenu, NScrollbar, NSpin } from "naive-ui";
 import type { MenuGroupOption, MenuInst, MenuOption } from "naive-ui";
 import { proLayoutEmits, proLayoutProps } from "./types";
-import { computed, nextTick, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
+import { defineComponent, computed, nextTick, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import { Icon } from '@iconify/vue'

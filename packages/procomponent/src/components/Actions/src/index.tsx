@@ -1,4 +1,4 @@
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
+import { defineComponent, computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { NButton, NModal, NPopover } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import BmIconMoreHorizontal from '~icons/bm-icon/more-horizontal'

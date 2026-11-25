@@ -1,6 +1,7 @@
 <script setup lang="tsx">
 import { ref } from 'vue'
 import { ProLayout } from '@banmao/procomponent'
+import type { ProLayoutInstance } from '@banmao/procomponent'
 import { NButton, NConfigProvider, NSpace, darkTheme } from 'naive-ui'
 import { Icon } from '@iconify/vue'
 
@@ -19,7 +20,7 @@ const menus = [
 
 const collapsed = ref(false)
 const logs = ref<string[]>([])
-const layoutRef = ref<InstanceType<typeof ProLayout> | null>(null)
+const layoutRef = ref<ProLayoutInstance | null>(null)
 
 function handleCollapseChange(value: boolean) {
   collapsed.value = value
