@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.8.1
+
+### Patch Changes
+
+- 修复已知问题
+
 ## 0.8.0
 
 ### Minor Changes
