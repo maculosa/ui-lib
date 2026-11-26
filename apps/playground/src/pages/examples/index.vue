@@ -1,5 +1,6 @@
 <script setup lang="tsx">
 import { ProTable } from '@banmao/procomponent'
+import { useList } from '@banmao/hooks'
 import dayjs from 'dayjs'
 import { NButton, NSpace, NSwitch, useMessage } from 'naive-ui'
 import { ref, watch } from 'vue'
@@ -8,8 +9,38 @@ import Layout from '@/components/layout/layout/index.vue'
 import Header from '@/layouts/header/index.vue'
 import { locale, t } from '@/locales'
 
+/** 表格行数据结构 */
+interface PlateRow {
+  /** 行唯一标识 */
+  id: number
+  /** 车牌号 */
+  plate_no: string
+  /** 状态：1 正常，0 停用 */
+  state: number
+  /** 车架号 */
+  vin_no: string
+  /** 车辆类型 */
+  car_type: string
+  /** 车系 */
+  car_series: string
+  /** 司机 */
+  driver: string
+  /** 司机手机号 */
+  driver_phone: string
+  /** 备注 */
+  remark: string
+  /** 创建时间 */
+  created_at: string
+}
+
 const message = useMessage()
 const route = useRoute()
+
+/** 模拟接口延时（毫秒），用于观察 loading 与快速翻页时的竞态处理 */
+const MOCK_DELAY = 600
+
+/** 模拟服务端存储：查询、删除都作用在这份数据上 */
+const mockRows: PlateRow[] = generatePlateDataSource()
 
 function createColumns() {
   return [
@@ -113,25 +144,84 @@ function createColumns() {
 
 const columns = ref(createColumns())
 
-const dataSource = ref(generatePlateDataSource())
+/** 搜索条件，由 useList 带入下一次请求 */
+const searchModel = ref<Record<string, any>>({})
 
-const pagination = ref({
-  page: 1,
-  pageSize: 20,
-  itemCount: dataSource.value.length,
-})
+/**
+ * 模拟分页查询接口，返回 useList 约定的响应结构
+ * @param params 分页信息与搜索条件
+ * @returns 状态码与列表、总数、页码、每页条数
+ */
+async function fetchPlateList(params: Record<string, any>) {
+  const { pageNum, pageSize, ...query } = params
+  await delay(MOCK_DELAY)
+
+  const rows = mockRows.filter(row =>
+    Object.entries(query).every(([key, value]) => {
+      // 空条件不参与过滤，但需保留 0（状态“停用”）
+      if (value === '' || value === null || value === undefined) return true
+      const cell = (row as any)[key]
+      if (typeof cell === 'number') return cell === value
+      return String(cell ?? '').toLowerCase().includes(String(value).toLowerCase())
+    }),
+  )
+
+  return {
+    status: 200,
+    data: {
+      list: rows.slice((pageNum - 1) * pageSize, pageNum * pageSize),
+      total: rows.length,
+      pageNum,
+      pageSize,
+    },
+  }
+}
+
+const {
+  dataSource,
+  loading,
+  pagination,
+  loadData,
+  handlePageChange,
+  handlePageSizeChange,
+} = useList(fetchPlateList, { filterOption: searchModel })
+
+// 与页面既有分页保持一致：每页 20 条
+pagination.value.pageSize = 20
+
+/** 模拟网络延时 */
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+/**
+ * 搜索：同步查询条件后回到第一页重新请求
+ * @param params 搜索表单值
+ */
+function handleQuery(params: Record<string, any>) {
+  searchModel.value = params
+  loadData(1)
+}
 
 // 语言切换时原地更新文案：ProTable 在 setup 时已捕获列数组，整体替换会失效；
-// 行数据原地更新则可保留状态开关与已删除的结果。
+// 行数据原地更新则可保留状态开关与已删除的结果，再重新请求刷新当前页。
 watch(locale, () => {
   createColumns().forEach((column, index) => Object.assign(columns.value[index], column))
-  dataSource.value.forEach(row => Object.assign(row, sampleText(row.id)))
+  mockRows.forEach(row => Object.assign(row, sampleText(row.id)))
+  loadData()
 })
 
-function handleDelete(row: any) {
-  dataSource.value = dataSource.value.filter(item => item.id !== row.id)
-  pagination.value.itemCount = dataSource.value.length
+/**
+ * 删除一行：先更新模拟服务端数据，再重新请求当前页
+ * @param row 待删除的行
+ */
+function handleDelete(row: PlateRow) {
+  const index = mockRows.findIndex(item => item.id === row.id)
+  if (index === -1) return
+
+  mockRows.splice(index, 1)
   message.success(t('examples.deletedMessage', { plateNo: row.plate_no }))
+  loadData()
 }
 
 /** 示例行中需要跟随语言切换的文案 */
@@ -144,9 +234,13 @@ function sampleText(index: number) {
   }
 }
 
-function generatePlateDataSource() {
-  const arr = []
-  for (let i = 0; i < 10; i++) {
+/**
+ * 生成模拟数据
+ * @returns 100 条车队数据
+ */
+function generatePlateDataSource(): PlateRow[] {
+  const arr: PlateRow[] = []
+  for (let i = 0; i < 100; i++) {
     arr.push({
       id: i,
       plate_no: `鲁Q·${i}43${i}2`,
@@ -177,7 +271,7 @@ function generatePlateDataSource() {
         <div class="table-frame-bar">
           <span class="bm-mono-label">FLEET / REMOTE TABLE</span>
           <span class="bm-mono-label table-frame-meta">
-            {{ dataSource.length }} ROWS · COLUMN SETTINGS PERSISTED
+            {{ pagination.itemCount }} ROWS · COLUMN SETTINGS PERSISTED
           </span>
         </div>
         <div class="table-frame-body">
@@ -186,9 +280,14 @@ function generatePlateDataSource() {
             auto-flex
             :columns="columns"
             :data="dataSource"
+            :loading="loading"
             :pagination="pagination"
             :row-key="(row: any) => row.id"
             :columnStorageKey="route.name"
+            :on-query="handleQuery"
+            @load-data="loadData"
+            @update:page="handlePageChange"
+            @update:page-size="handlePageSizeChange"
           />
         </div>
       </section>

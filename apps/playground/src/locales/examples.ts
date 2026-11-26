@@ -1,6 +1,6 @@
 export const zh = {
   pageTitle: '在线示例',
-  pageDesc: '一个完整的 ProTable 远程数据场景：车队管理。搜索表单、列设置持久化、状态开关、复制车架号与行内操作全部真实可用，删除会即时更新数据与分页计数。',
+  pageDesc: '一个完整的 ProTable 远程数据场景：车队管理。由 useList 管理数据、分页与 loading，搜索、翻页、状态开关、复制车架号与行内操作全部真实可用，删除后会重新请求并更新分页计数。',
   colVinNo: '车架号',
   colCarType: '车辆类型',
   colCarSeries: '车系',
@@ -20,7 +20,7 @@ export const zh = {
 
 export const en = {
   pageTitle: 'Live examples',
-  pageDesc: 'A complete ProTable remote-data scenario: fleet management. The search form, persisted column settings, state switches, VIN copying and inline actions all work for real — deleting updates the data and the pagination count immediately.',
+  pageDesc: 'A complete ProTable remote-data scenario: fleet management. useList manages data, pagination and loading; search, paging, state switches, VIN copying and inline actions all work for real — deleting re-requests the data and updates the pagination count.',
   colVinNo: 'VIN',
   colCarType: 'Vehicle type',
   colCarSeries: 'Series',

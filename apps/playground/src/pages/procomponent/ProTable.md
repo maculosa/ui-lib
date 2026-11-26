@@ -20,6 +20,7 @@ ProTable 是基于 Naive UI `NDataTable` 封装的高级表格组件。它把「
 - **内置搜索栏**：按 `valueType` 自动渲染控件，支持远程枚举、栅格布局、按容器宽度自适应列数、折叠展开、防抖查询
 - **内置工具栏**：新增（按钮 / 弹窗 / 抽屉三种模式）、删除、导出、打印、导入、排序、筛选、全屏放大、刷新、密度切换、列设置
 - **表格级 request**：传入 `request` 后由 ProTable 托管数据、分页与 loading，搜索 / 翻页 / 排序 / 筛选自动重新请求
+- **受控模式可配合 useList**：`@banmao/hooks` 的 `useList` 接管 loading、分页与查询参数，通过 `data` / `pagination` 与分页事件直接对接
 - **列设置持久化**：拖拽排序 + 勾选显隐，按 `columnStorageKey` 写入 `localStorage`
 - **高度自适应**：`autoFlex` 填充 Flex 容器，或用 `height` / `max-height` 固定高度
 - **固定列自动横向滚动**：存在固定列且未显式配置 `scroll-x` 时自动估算总宽度
@@ -245,6 +246,8 @@ const columns = [
 | --- | --- | --- |
 | 受控模式（默认） | 不传 `request` | 业务侧，通过 `data` / `pagination` / `loading` 与事件自行维护 |
 | 请求模式 | 传入 `request` | ProTable |
+
+> 受控模式下若由服务端分页，需要显式传 `remote`：ProTable 会把它原样透传给 NDataTable，避免对已经分页的 `data` 再做一次本地切片。请求模式会自动开启 `remote`，无需手动传。
 
 **受控模式**：ProTable 自身不请求数据。
 
@@ -751,7 +754,7 @@ tableRef.value?.reload()
 
 ### 配合 useList
 
-`@banmao/hooks` 的 `useList` 封装了 loading、分页、导出与翻页回调，与 ProTable 是推荐组合：
+受控模式的推荐写法是配合 `@banmao/hooks` 的 `useList`：它接管 loading、分页与查询参数，ProTable 只负责渲染。
 
 ```vue
 <script setup>
@@ -764,21 +767,28 @@ const searchModel = ref({})
 const { dataSource, loading, pagination, loadData, handlePageChange, handlePageSizeChange }
   = useList(fetchUserPage, { filterOption: searchModel })
 
-async function handleQuery(params) {
+// 搜索：写入查询条件后回到第一页
+function handleQuery(params) {
   searchModel.value = params
-  await loadData(1)
+  loadData(1)
+}
+
+// 删除等写操作完成后，重新拉取当前页
+function handleDelete(row) {
+  // 调用删除接口...
+  loadData()
 }
 </script>
 
 <template>
   <ProTable
+    remote
     :columns="columns"
     :data="dataSource"
     :loading="loading"
     :pagination="pagination"
     :row-key="row => row.id"
     :on-query="handleQuery"
-    remote
     @update:page="handlePageChange"
     @update:page-size="handlePageSizeChange"
     @load-data="loadData"
@@ -786,7 +796,15 @@ async function handleQuery(params) {
 </template>
 ```
 
-`useList` 期望接口返回 `{ status: 200, data: { list, total, pageNum, pageSize } }`；结构不同时用 `callback` 做转换。
+约定与注意事项：
+
+- 接口返回 `{ status: 200, data: { list, total, pageNum, pageSize } }`；结构不同时用 `useList` 的 `callback` 做转换
+- **必须传 `remote`**：让 NDataTable 直接使用 `pagination.itemCount` 计算页数，不再对当前页 `data` 二次切片
+- `onQuery` 拿到搜索表单值：写入 `filterOption` 对应的 `searchModel`，再 `loadData(1)` 回到第一页
+- `@update:page` / `@update:page-size` 分别对接 `handlePageChange` / `handlePageSizeChange`，由 useList 维护 `pagination` 并重新请求
+- 工具栏刷新触发 `@load-data`，对接 `loadData` 即可；`loadData()` 不传参时刷新当前页
+- 总条数取 `pagination.itemCount`；每页条数选项、快速跳页与「共 N 条」文案由 useList 的默认分页配置提供
+- 删除、语言切换等数据变更后调用 `loadData()` 重新请求，不要在本地直接改 `dataSource`
 
 ### 行选择与批量操作
 
@@ -1113,6 +1131,9 @@ tableRef.value?.setColumnsState({ order: ['name', 'age'], hidden: ['age'] })
 
 **request 模式拿不到翻页 / 排序回调？**
 可以继续监听 `@update:page` / `@update:sorter` 等事件，ProTable 会先调用传入的 `onUpdate*`，再自动请求；但不要在这些回调里再手动请求，否则会重复调用。
+
+**配合 useList 后翻页只有一页，或第二页变空？**
+受控模式下由服务端分页时必须传 `remote`，否则 NDataTable 会按 `data.length` 计算页数，并对当前页数据再次切片。请求模式会自动开启，无需手动传。
 
 **表格只有表头、内容塌陷？**
 升级到 `0.8.0`。使用 `autoFlex` 时请确认祖先容器有确定高度且为纵向 flex；否则改用 `height` 或 `max-height`。

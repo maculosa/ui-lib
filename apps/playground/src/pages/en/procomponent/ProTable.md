@@ -158,7 +158,7 @@ desc="A table mode focused on querying, suitable for scenarios that need complex
 
 <Demo
 title="Reset search mode"
-desc="Reset search: clicking the reset button clears the search form and triggers a query."
+desc="Uses useList from @banmao/hooks for data and pagination; reset restores the default values and triggers onQuery again."
 :raw="ResetSearchRaw">
 
 <ResetSearch />
@@ -305,6 +305,62 @@ type ProTableRequest = (
 When `request` is provided, data, pagination and loading are managed by ProTable, and requests are sent on mount, search submit/reset, page / page-size / sorter / filter changes, and `params` changes (which reset to page 1).
 
 Resetting restores the values captured when the component was created (`params` / `searchModel`) plus `search.defaultValue`; the current input is discarded, and the `reset` event carries these restored values.
+
+In controlled mode, when pagination is handled by the server, pass `remote` explicitly: ProTable forwards it to NDataTable, which then takes the page count from `pagination.itemCount` instead of slicing the already-paginated `data` again. Request mode enables `remote` automatically.
+
+### With useList
+
+Controlled mode is usually paired with `useList` from `@banmao/hooks`: the hook owns loading, pagination and query params, while ProTable only renders.
+
+```vue
+<script setup>
+import { ref } from 'vue'
+import { ProTable } from '@banmao/procomponent'
+import { useList } from '@banmao/hooks'
+
+const searchModel = ref({})
+
+const { dataSource, loading, pagination, loadData, handlePageChange, handlePageSizeChange }
+  = useList(fetchUserPage, { filterOption: searchModel })
+
+// Search: store the conditions and go back to page 1
+function handleQuery(params) {
+  searchModel.value = params
+  loadData(1)
+}
+
+// After a delete or any other mutation, reload the current page
+function handleDelete(row) {
+  // call the delete API...
+  loadData()
+}
+</script>
+
+<template>
+  <ProTable
+    remote
+    :columns="columns"
+    :data="dataSource"
+    :loading="loading"
+    :pagination="pagination"
+    :row-key="row => row.id"
+    :on-query="handleQuery"
+    @update:page="handlePageChange"
+    @update:page-size="handlePageSizeChange"
+    @load-data="loadData"
+  />
+</template>
+```
+
+Conventions and notes:
+
+- The list API should return `{ status: 200, data: { list, total, pageNum, pageSize } }`; use the `callback` option to adapt other shapes
+- **Pass `remote`**: NDataTable then uses `pagination.itemCount` for the page count and does not slice the current page of `data` again
+- `onQuery` receives the search form values: write them into `searchModel` (the `filterOption` ref), then call `loadData(1)`
+- Wire `@update:page` / `@update:page-size` to `handlePageChange` / `handlePageSizeChange`; the hook updates `pagination` and re-requests
+- The toolbar reload emits `@load-data`, which maps to `loadData`; `loadData()` without arguments reloads the current page
+- Read the total from `pagination.itemCount`; page-size options, the quick jumper and the "共 N 条" prefix come from the hook's default pagination config
+- After deletes or locale changes, call `loadData()` instead of mutating `dataSource` locally
 
 ### Toolbar sort, filter and fullscreen
 
