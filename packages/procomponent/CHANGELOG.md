@@ -1,5 +1,11 @@
 # @banmao/procomponent
 
+## 0.8.2
+
+### Patch Changes
+
+- fix(ProTable): 修复 remote 属性逻辑判断问题
+
 ## 0.8.1
 
 ### Patch Changes
