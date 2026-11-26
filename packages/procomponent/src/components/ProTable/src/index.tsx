@@ -826,7 +826,7 @@ export default defineComponent({
           renderCell={renderEmptyCell}
           flexHeight={isFlexLayout.value || props.height != null}
           style={mergedTableStyle.value}
-          remote={Boolean(props.request)}
+          remote={props.request ? true : props.remote}
           scrollX={autoScrollX.value ?? props.scrollX}
           onUpdateCheckedRowKeys={handleCheckedRowKeys}
           onUpdatePage={handlePage}
