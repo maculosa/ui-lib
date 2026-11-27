@@ -197,10 +197,11 @@ function delay(ms: number) {
 /**
  * 搜索：同步查询条件后回到第一页重新请求
  * @param params 搜索表单值
+ * @returns 请求完成后的 Promise，供 ProTable 控制搜索 loading
  */
-function handleQuery(params: Record<string, any>) {
+async function handleQuery(params: Record<string, any>) {
   searchModel.value = params
-  loadData(1)
+  await loadData(1)
 }
 
 // 语言切换时原地更新文案：ProTable 在 setup 时已捕获列数组，整体替换会失效；
