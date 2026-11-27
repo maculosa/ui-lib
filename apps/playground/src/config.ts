@@ -32,6 +32,7 @@ const navRaw: RawItem[] = [
   { key: 'nav.docs', url: '/docs/zh', mirrored: true },
   { key: 'nav.components', url: '/procomponent' },
   { key: 'nav.charts', url: '/datav' },
+  { key: 'nav.hooks', url: '/hooks', mirrored: true },
   { key: 'nav.blocks', url: '/blocks' },
   { key: 'nav.ui', url: '/ui', mirrored: true },
   { key: 'nav.examples', url: '/examples' },
@@ -99,6 +100,19 @@ const datavRaw: RawItem[] = [
   },
 ]
 
+const hooksRaw: RawItem[] = [
+  { key: 'sidebar.hooksOverview', url: '/hooks', mirrored: true },
+  {
+    key: 'sidebar.hooksGroup',
+    children: [
+      { key: 'sidebar.hooksUseList', url: '/hooks/use-list', mirrored: true },
+      { key: 'sidebar.hooksUseAsyncData', url: '/hooks/use-async-data', mirrored: true },
+      { key: 'sidebar.hooksUseTableHeight', url: '/hooks/use-table-height', mirrored: true },
+      { key: 'sidebar.hooksUseExportFile', url: '/hooks/use-export-file', mirrored: true },
+    ],
+  },
+]
+
 const blocksRaw: RawItem[] = [
   { key: 'sidebar.blocksOverview', url: '/blocks/overview', mirrored: true },
   { key: 'sidebar.blocksGallery', url: '/blocks' },
@@ -137,7 +151,7 @@ function collectMirrored(items: RawItem[], into: Set<string>) {
 /** 存在英文镜像的中文规范路径，供语言切换判断是否需要跳转。 */
 export const mirroredPaths = (() => {
   const set = new Set<string>()
-  for (const items of [navRaw, docsRaw, proRaw, datavRaw, blocksRaw, uiRaw]) {
+  for (const items of [navRaw, docsRaw, proRaw, datavRaw, hooksRaw, blocksRaw, uiRaw]) {
     collectMirrored(items, set)
   }
   return set
@@ -155,6 +169,7 @@ export const sidebar = computed<Record<string, SidebarItem[]>>(() => ({
   '/procomponent/': resolve(proRaw),
   '/ui/': resolve(uiRaw),
   '/datav/': resolve(datavRaw),
+  '/hooks/': resolve(hooksRaw),
   '/blocks/': resolve(blocksRaw),
 }))
 
@@ -163,6 +178,7 @@ export const sidebars = computed<Sidebar[]>(() => [
   { name: 'ProComponent', items: resolve(proRaw) },
   { name: 'UI', items: resolve(uiRaw) },
   { name: 'Data V', items: resolve(datavRaw) },
+  { name: 'Hooks', items: resolve(hooksRaw) },
   { name: 'Blocks', items: resolve(blocksRaw) },
 ])
 

@@ -135,6 +135,41 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/en/hooks/': RouteRecordInfo<
+      '/en/hooks/',
+      '/en/hooks',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/en/hooks/use-async-data': RouteRecordInfo<
+      '/en/hooks/use-async-data',
+      '/en/hooks/use-async-data',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/en/hooks/use-export-file': RouteRecordInfo<
+      '/en/hooks/use-export-file',
+      '/en/hooks/use-export-file',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/en/hooks/use-list': RouteRecordInfo<
+      '/en/hooks/use-list',
+      '/en/hooks/use-list',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/en/hooks/use-table-height': RouteRecordInfo<
+      '/en/hooks/use-table-height',
+      '/en/hooks/use-table-height',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/en/procomponent/Actions': RouteRecordInfo<
       '/en/procomponent/Actions',
       '/en/procomponent/Actions',
@@ -257,6 +292,41 @@ declare module 'vue-router/auto-routes' {
     '/error': RouteRecordInfo<
       '/error',
       '/error',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/hooks/': RouteRecordInfo<
+      '/hooks/',
+      '/hooks',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/hooks/use-async-data': RouteRecordInfo<
+      '/hooks/use-async-data',
+      '/hooks/use-async-data',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/hooks/use-export-file': RouteRecordInfo<
+      '/hooks/use-export-file',
+      '/hooks/use-export-file',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/hooks/use-list': RouteRecordInfo<
+      '/hooks/use-list',
+      '/hooks/use-list',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/hooks/use-table-height': RouteRecordInfo<
+      '/hooks/use-table-height',
+      '/hooks/use-table-height',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -496,6 +566,36 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/en/hooks/index.md': {
+      routes:
+        | '/en/hooks/'
+      views:
+        | never
+    }
+    'src/pages/en/hooks/use-async-data.md': {
+      routes:
+        | '/en/hooks/use-async-data'
+      views:
+        | never
+    }
+    'src/pages/en/hooks/use-export-file.md': {
+      routes:
+        | '/en/hooks/use-export-file'
+      views:
+        | never
+    }
+    'src/pages/en/hooks/use-list.md': {
+      routes:
+        | '/en/hooks/use-list'
+      views:
+        | never
+    }
+    'src/pages/en/hooks/use-table-height.md': {
+      routes:
+        | '/en/hooks/use-table-height'
+      views:
+        | never
+    }
     'src/pages/en/procomponent/Actions.md': {
       routes:
         | '/en/procomponent/Actions'
@@ -601,6 +701,36 @@ declare module 'vue-router/auto-routes' {
     'src/pages/error.vue': {
       routes:
         | '/error'
+      views:
+        | never
+    }
+    'src/pages/hooks/index.md': {
+      routes:
+        | '/hooks/'
+      views:
+        | never
+    }
+    'src/pages/hooks/use-async-data.md': {
+      routes:
+        | '/hooks/use-async-data'
+      views:
+        | never
+    }
+    'src/pages/hooks/use-export-file.md': {
+      routes:
+        | '/hooks/use-export-file'
+      views:
+        | never
+    }
+    'src/pages/hooks/use-list.md': {
+      routes:
+        | '/hooks/use-list'
+      views:
+        | never
+    }
+    'src/pages/hooks/use-table-height.md': {
+      routes:
+        | '/hooks/use-table-height'
       views:
         | never
     }
