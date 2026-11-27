@@ -12,7 +12,7 @@ desc: ProTable 是基于 Naive UI DataTable 的高级表格组件，用一份 co
 
 ProTable 是基于 Naive UI `NDataTable` 封装的高级表格组件。它把「搜索栏 + 工具栏 + 表格 + 分页」组合成一个开箱即用的业务表格，并用**同一份 `columns` 配置**同时驱动表格列、搜索表单项和新增表单项，避免同一套字段在三处重复定义。
 
-当前文档对应 `@banmao/procomponent@0.8.0`。
+当前文档对应 `@banmao/procomponent@0.8.3`。
 
 ## 特性
 
@@ -21,9 +21,9 @@ ProTable 是基于 Naive UI `NDataTable` 封装的高级表格组件。它把「
 - **内置工具栏**：新增（按钮 / 弹窗 / 抽屉三种模式）、删除、导出、打印、导入、排序、筛选、全屏放大、刷新、密度切换、列设置
 - **表格级 request**：传入 `request` 后由 ProTable 托管数据、分页与 loading，搜索 / 翻页 / 排序 / 筛选自动重新请求
 - **受控模式可配合 useList**：`@banmao/hooks` 的 `useList` 接管 loading、分页与查询参数，通过 `data` / `pagination` 与分页事件直接对接
-- **列设置持久化**：拖拽排序 + 勾选显隐，按 `columnStorageKey` 写入 `localStorage`
+- **列设置持久化**：拖拽排序、勾选显隐、左右固定，按 `columnStorageKey` 写入 `localStorage`
 - **高度自适应**：`autoFlex` 填充 Flex 容器，或用 `height` / `max-height` 固定高度
-- **固定列自动横向滚动**：存在固定列且未显式配置 `scroll-x` 时自动估算总宽度
+- **固定列自动分组**：面板固定的列输出到表格两端，存在固定列且未显式配置 `scroll-x` 时自动估算总宽度
 - **实例方法**：`reload` / `setColumns` / `setSearch` / `setTableData` 等，支持外部控制表格
 - **完整透传 NDataTable**：`data`、`pagination`、`row-key`、`remote`、`striped` 等原生属性与分页事件可直接使用
 
@@ -681,20 +681,49 @@ const columns = [
 
 ### 列设置与持久化
 
-列设置面板支持拖拽排序、勾选显隐、全选与重置。配置 `columnStorageKey` 后，偏好会写入 `localStorage`：
+列设置面板支持拖拽排序、勾选显隐、左右固定、全选与重置。每一列一行：拖拽手柄、勾选框，以及「固定在左侧 / 固定在右侧」两个图标按钮；点击当前已激活的方向即取消固定。
+
+列固定规则：
+
+- 列配置上的 `fixed` 作为默认值，面板中的操作优先生效；保存记录会为每列写入固定位置，`null` 表示显式取消了该列在配置中的固定
+- 输出列按「左固定 → 未固定 → 右固定」重新分组，因为 naive-ui 要求固定列位于列数组两端；同一分组内保持面板中的拖拽顺序，拖动不会跨组
+- 固定列与横向滚动的配合见[高度与滚动](#高度与滚动)
+
+配置 `columnStorageKey` 后，偏好会写入 `localStorage`：
 
 ```text
 pro-table:column-setting:<columnStorageKey>
 ```
 
-存储内容为 `{ order: string[], hidden: string[] }`。要点：
+存储内容：
+
+```json
+{
+  "order": ["name", "age", "email"],
+  "hidden": ["email"],
+  "declaredOrder": ["name", "age", "email", "remark"],
+  "fixed": { "name": "left", "actions": "right", "email": null }
+}
+```
+
+- `order`：面板中的当前列顺序；`hidden`：被隐藏的列
+- `declaredOrder`：保存时 `columns` 的声明顺序快照，用来区分「默认顺序」与「用户手动拖拽」
+- `fixed`：列 key → 固定位置；缺少 key 时沿用列配置的 `fixed`，`null` 表示显式取消
+
+加载时的顺序规则：
+
+- `order` 与 `declaredOrder` 一致 → 用户没有手动排过序，使用**最新的列声明顺序**，代码中调整 `columns` 顺序会立即生效
+- 两者不一致 → 使用保存的 `order`；后续新增的列（存储中没有记录）按 `hideInTable` 决定显隐，并插入到声明位置，而不是一律排到末尾
+- 旧版本缓存没有 `declaredOrder`（0.8.3 之前）→ 按「未手动排序」迁移一次，让代码中的列顺序调整生效；通过 `setColumnsState` 显式传入的状态不做这项迁移，以传入的 `order` 为准
+- 首次渲染时列尚未到齐（异步列）不会把空状态写入存储，避免覆盖已有偏好
+
+其它要点：
 
 - **key 必须全局唯一**，推荐直接用路由 name，例如 `column-storage-key="user-list"`
 - 未配置时优先使用当前路由名（`$route.name`）作为 key，**刷新后偏好保留**；非 vue-router 环境或匿名路由退回随机 key（刷新后丢失）
 - 同一路由下有多个表格时请显式传入唯一的 `columnStorageKey`，否则会共用同一份偏好、互相覆盖，开发环境会打印告警
-- 面板中的「重置」会删除该 key 的存储，并回到 `columns` 的原始顺序与 `hideInTable` 配置
-- 列的标识依次取 `key`、`type`、字符串 `title`，最后才回退到位置索引；**建议每列都写 `key`**。无 `key` 时优先用标题，中途插入新列不会让旧偏好错位
-- 后续新增的列（存储中没有记录）按 `hideInTable` 决定显隐，并插入到其在 `columns` 中的声明位置，而不是一律排到末尾
+- 面板中的「重置」会删除该 key 的存储，并回到 `columns` 的原始顺序、`hideInTable` 与列上的 `fixed` 配置
+- 列的标识依次取 `key`、`type`、字符串 `title`，最后才回退到位置索引；**建议每列都写 `key`**，否则修改标题或调整列位置会让已保存的顺序、显隐与固定错位
 
 ### 外部控制搜索表单
 
@@ -1099,7 +1128,7 @@ ProTable 的 props 合并了 naive-ui 的 `dataTableProps`，除上表自有属�
 | setSelectedRowKeys | `(keys: (string \| number)[]) => void` | 同步内部选中 key（用于删除按钮禁用判断），不会反向驱动未受控的表格选中列；受控请传 `checked-row-keys` |
 | setSelectedRows | `(rows: any[]) => void` | 记录选中行数据供业务读取 |
 | setRowSelection | `(rowSelection: Record<string, any>) => void` | 仅记录 rowSelection 状态；naive-ui 无表格级 `rowSelection`，多选请用 `{ type: 'selection' }` 列 |
-| setColumnsState | `(state: { order: string[], hidden: string[] } \| null) => void` | 应用列顺序与显隐，同步列设置面板；仅内存生效，不写 `localStorage`，传 `null` 恢复原始列 |
+| setColumnsState | `(state: { order: string[], hidden: string[], declaredOrder?: string[], fixed?: Record<string, 'left' \| 'right' \| null> } \| null) => void` | 应用列顺序、显隐与固定，同步列设置面板；仅内存生效，不写 `localStorage`，传 `null` 恢复原始列 |
 
 `searchFormRef` 上可用的方法：
 
@@ -1116,7 +1145,11 @@ tableRef.value?.searchFormRef?.setFieldValue('name', '张三')
 tableRef.value?.searchFormRef?.submit()
 
 tableRef.value?.setColumns(nextColumns)
-tableRef.value?.setColumnsState({ order: ['name', 'age'], hidden: ['age'] })
+tableRef.value?.setColumnsState({
+  order: ['name', 'age'],
+  hidden: ['age'],
+  fixed: { name: 'left' },
+})
 ```
 
 </div>
@@ -1144,6 +1177,12 @@ tableRef.value?.setColumnsState({ order: ['name', 'age'], hidden: ['age'] })
 **列设置刷新后丢失？**
 配置唯一且稳定的 `columnStorageKey`。未配置时优先使用当前路由名；非路由环境退回随机 key，仅在当前实例生命周期内有效。
 
+**升级到 0.8.3 后列顺序回到了代码里声明的顺序？**
+0.8.3 起会随偏好保存声明顺序快照。旧缓存没有 `declaredOrder`，首次加载按「未手动排序」处理，让代码中的顺序调整生效一次；再次拖拽排序后会写入新的快照并保持。
+
+**列固定后没有生效或刷新后丢失？**
+固定位置跟随列设置一起持久化，前提是列有稳定的标识，请给每列配置 `key`。固定列会被重新分组到表格两端，若同时手动配置了 `scroll-x` 且宽度不足，固定效果会被压缩，可适当调大 `scroll-x`。
+
 **传入的 size 不起作用？**
 表格密度由工具栏密度按钮接管，初始为 `large`。如需固定密度，传 `:toolbar="{ density: false }"` 隐藏按钮，并通过 ref 修改 `size`。
 
@@ -1167,7 +1206,7 @@ tableRef.value?.setColumnsState({ order: ['name', 'age'], hidden: ['age'] })
 
 ## 已知限制
 
-当前版本（0.8.0）仍存在以下限制：
+当前版本（0.8.3）仍存在以下限制：
 
 | 成员 | 说明 |
 | --- | --- |
@@ -1177,3 +1216,5 @@ tableRef.value?.setColumnsState({ order: ['name', 'age'], hidden: ['age'] })
 | 工具栏排序与列头排序 | 受控模式下两者都会生效：列头 `sorter` 由 NDataTable 本地排序，工具栏排序作用于传入的 `data`，同一列同时启用时分页/排序结果以列头为准，建议只保留一种 |
 | `toolbarConfig` | 已废弃，请改用 `toolbar` |
 | 列级 `request` 签名 | 类型声明为 `(params, prop)`，运行时实际无参调用，`defaultValue` 才用于级联补全 |
+| 列固定持久化 | 固定位置按列 key 保存；无 `key` 时回退到标题或位置索引，修改标题、插入前置列都可能让偏好错位 |
+| 旧缓存顺序迁移 | 缺少 `declaredOrder` 的旧偏好仅在首次加载时按「未手动排序」迁移一次，之后无法再与用户手动排序区分 |
