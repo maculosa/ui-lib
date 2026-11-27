@@ -1,5 +1,11 @@
 # @banmao/hooks
 
+## 0.0.8
+
+### Patch Changes
+
+- 261a471: refactor(useList): replace || with ?? for pagination config defaults …
+
 ## 0.0.7
 
 ### Patch Changes
