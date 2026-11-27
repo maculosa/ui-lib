@@ -47,7 +47,7 @@ desc="Pass filterOption as a ref: every request reads its latest value. Reset re
 
 <Demo
 title="Pagination config"
-desc="options.pagination controls the initial page size and the candidate sizes; displayOrder has no effect today, so showSizePicker / showQuickJumper stay true — the state strip proves it and the only way to hide them is to overwrite pagination."
+desc="options.pagination sets the initial page size and the candidate sizes; displayOrder drives showSizePicker / showQuickJumper, so an undeclared control is not rendered (this demo omits quick-jumper, and the state strip reads false). Correct only from 0.0.8 onwards."
 :raw="PaginationRaw">
 
 <Pagination />
@@ -130,7 +130,7 @@ After a successful request, `pagination.page` / `pageSize` / `itemCount` are ove
 | `code` | `number` | `200` | Business success code compared against the response `status` |
 | `immediate` | `boolean` | `true` | Whether the first request fires in `onMounted` |
 | `exportRequestFn` | `(...args) => Promise<{ data, fileName? }>` | `-` | Export request; `handleExcelData` calls it with `filterOption.value` |
-| `pagination.displayOrder` | `('pages' \| 'size-picker' \| 'quick-jumper')[]` | `['pages', 'size-picker', 'quick-jumper']` | Intended to drive `showSizePicker` / `showQuickJumper`, but currently has no effect — see Notes |
+| `pagination.displayOrder` | `('pages' \| 'size-picker' \| 'quick-jumper')[]` | `['pages', 'size-picker', 'quick-jumper']` | Drives `showSizePicker` / `showQuickJumper` — an undeclared control is not rendered; `pages` has no switch (fixed in 0.0.8, see Notes) |
 | `pagination.pageSizes` | `number[]` | `[10, 20, 50, 100]` | Page size candidates |
 | `pagination.pageSize` | `number` | `10` | Initial page size |
 
@@ -151,7 +151,7 @@ After a successful request, `pagination.page` / `pageSize` / `itemCount` are ove
 
 - Add `remote` to the table when the server paginates, otherwise Naive UI slices the already-paginated rows again.
 - If the server paginates, prefer handing the request fn and pagination to ProTable's managed request mode; `useList` fits the cases where you drive the requests yourself.
-- `pagination` is a writable reactive object. `displayOrder` currently does not drive `showSizePicker` / `showQuickJumper` (the implementation reads `includes(...) || true`, so both stay `true`); to hide one, overwrite it after the fact, e.g. `pagination.value.showQuickJumper = false`.
+- `pagination` is a writable reactive object. From 0.0.8 `displayOrder` maps correctly onto `showSizePicker` / `showQuickJumper`; in 0.0.7 and earlier the implementation read `includes(...) || true`, so both controls always showed and the only way to hide one was to overwrite it after the fact. `pages` inside `displayOrder` has no matching switch — the page list always renders.
 - Passing a custom `pagination` replaces the default config object instead of merging per field: omit `pageSize` and the initial page size is `undefined`, omit `pageSizes` and the candidates are `[]`.
 - The first request is fired inside `onMounted`, so `useList` must be called during `setup`.
 - `handleExcelData` relies on Naive UI's `useMessage` for its toast, which needs an `NMessageProvider`; calling it without `exportRequestFn` throws `当前没有提供exportRequest函数`.

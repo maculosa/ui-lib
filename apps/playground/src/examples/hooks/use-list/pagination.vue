@@ -36,7 +36,7 @@ function listRequest(params: { pageNum: number; pageSize: number }) {
 
 const { dataSource, loading, pagination, handlePageChange, handlePageSizeChange } = useList(listRequest, {
   pagination: {
-    // 期望只渲染页码与每页条数；当前 displayOrder 不参与计算，见下方说明
+    // 未声明 quick-jumper，快速跳页输入框不会渲染
     displayOrder: ['pages', 'size-picker'],
     pageSizes: [5, 10, 20],
     pageSize: 5,
@@ -59,12 +59,11 @@ const columns: DataTableColumns<Row> = [
       <NDescriptionsItem label="快速跳页">{{ pagination.showQuickJumper }}</NDescriptionsItem>
     </NDescriptions>
 
-    <NAlert type="warning" title="displayOrder 当前不生效" :bordered="false">
-      <code>pageSize</code> 与 <code>pageSizes</code> 会按配置生效，但钩子内部把
-      <code>showSizePicker</code> / <code>showQuickJumper</code> 写成了
-      <code>displayOrder.includes(...) || true</code>，短路后恒为 <code>true</code>。因此上面声明了
-      <code>displayOrder: ['pages', 'size-picker']</code>，快速跳页输入框仍然渲染。需要隐藏时只能在拿到的
-      <code>pagination</code> 上再覆写：<code>pagination.value.showQuickJumper = false</code>。
+    <NAlert type="info" title="displayOrder 决定显示项" :bordered="false">
+      <code>displayOrder</code> 未包含 <code>size-picker</code> / <code>quick-jumper</code> 时，对应控件不会渲染——本例只声明了
+      <code>pages</code> 与 <code>size-picker</code>，所以上方「快速跳页」为 <code>false</code>，分页器里也没有跳页输入框。
+      <code>pages</code> 没有对应的开关，页码列表始终渲染；完全不传 <code>displayOrder</code> 时，两个控件都会显示。
+      该行为自 <code>@banmao/hooks@0.0.8</code> 起生效，0.0.7 及更早版本实现为 <code>includes(...) || true</code>，两项控件恒显示。
     </NAlert>
 
     <NDataTable

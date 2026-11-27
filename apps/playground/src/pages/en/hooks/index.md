@@ -83,7 +83,7 @@ const { dataSource, loading, pagination, handlePageChange, handlePageSizeChange 
 
 - `options.requestError` / `requestSuccess` exist in the type but the implementation never reads them; failures are logged with `console.error` and re-thrown.
 - `useList`'s `handleSortChange` sorts the current page locally and does not re-request.
-- `useList`'s `options.pagination.displayOrder` has no effect today: `showSizePicker` / `showQuickJumper` are computed as `displayOrder.includes(...) || true`, so both stay `true`. A custom `pagination` also replaces the whole default object, so omitted fields fall back to `undefined` / `[]` instead of the defaults.
+- `useList`'s `options.pagination.displayOrder` only maps onto `showSizePicker` / `showQuickJumper` from `0.0.8` on; 0.0.7 and earlier computed `includes(...) || true`, so both controls always rendered. `pages` in `displayOrder` still has no matching switch. A custom `pagination` also replaces the whole default object, so omitted fields fall back to `undefined` / `[]` instead of the defaults.
 - `useTableHeight` reads `tableRef.value.searchRef`, so the ref must point at a `ProTable` instance; `options` are read once at init and later changes do not recompute.
 - `useExportFile` builds its fallback name from a misspelled dayjs format (`yyyy` / `dd`), producing names like `yyyy-11-Fr 09:11:19.xlsx`; assemble the timestamp yourself and pass it as `fileName`.
 - `useDeviceInfo` exists in the source tree but is not exported from the entry, so it cannot be imported from `@banmao/hooks` yet.

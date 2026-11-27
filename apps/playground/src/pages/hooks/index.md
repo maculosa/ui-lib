@@ -83,7 +83,7 @@ const { dataSource, loading, pagination, handlePageChange, handlePageSizeChange 
 
 - `useList` 的 `options.requestError` / `requestSuccess` 在类型中声明但当前未被实现读取，失败会直接抛出并由 `console.error` 记录。
 - `useList` 的 `handleSortChange` 只对当前页数据做本地排序，不会重新请求接口。
-- `useList` 的 `options.pagination.displayOrder` 当前不生效：`showSizePicker` / `showQuickJumper` 的计算写成 `displayOrder.includes(...) || true`，恒为 `true`。另外传入 `pagination` 会整体替换默认配置，省略的字段按 `undefined` / `[]` 处理而非回落默认值。
+- `useList` 的 `options.pagination.displayOrder` 自 `0.0.8` 起才正确映射到 `showSizePicker` / `showQuickJumper`，0.0.7 及更早版本写成 `includes(...) || true`、两项控件恒显示；`displayOrder` 中的 `pages` 没有对应开关。另外传入 `pagination` 会整体替换默认配置，省略的字段按 `undefined` / `[]` 处理而非回落默认值。
 - `useTableHeight` 读取 `tableRef.value.searchRef`，因此入参需要是暴露了 `searchRef` 的 `ProTable` 实例；`options` 只在初始化时读取一次，后续修改不会触发重算。
 - `useExportFile` 不传 `fileName` 时的缺省命名用了错误的 dayjs token（`yyyy` / `dd`），会得到 `yyyy-11-Fr 09:11:19.xlsx` 这类文件名；需要时间戳请自行拼接并传入。
 - 源码目录中的 `useDeviceInfo` 尚未从入口导出，无法通过 `@banmao/hooks` 引入。

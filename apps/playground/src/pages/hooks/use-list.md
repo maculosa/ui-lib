@@ -47,7 +47,7 @@ desc="filterOption 传入一个 ref，每次请求都会读取其最新值并并
 
 <Demo
 title="pageSize、pageSizes 与 displayOrder"
-desc="options.pagination 的 pageSize 与 pageSizes 会直接生效；displayOrder 目前不参与计算，showSizePicker / showQuickJumper 恒为 true，示例的分页状态条可印证，需要隐藏时只能在返回的 pagination 上覆写。"
+desc="options.pagination 的 pageSize 与 pageSizes 直接生效；displayOrder 决定 showSizePicker / showQuickJumper，未声明的控件不渲染（本例省略 quick-jumper，状态条显示为 false）。该行为自 0.0.8 起生效。"
 :raw="PaginationRaw">
 
 <Pagination />
@@ -130,7 +130,7 @@ function useList<T extends (...args: any) => Promise<any>>(
 | `code` | `number` | `200` | 业务成功码，与响应的 `status` 比对 |
 | `immediate` | `boolean` | `true` | 是否在 `onMounted` 时自动发起首次请求 |
 | `exportRequestFn` | `(...args) => Promise<{ data, fileName? }>` | `-` | 导出请求，`handleExcelData` 会以 `filterOption.value` 调用它 |
-| `pagination.displayOrder` | `('pages' \| 'size-picker' \| 'quick-jumper')[]` | `['pages', 'size-picker', 'quick-jumper']` | 原意是驱动 `showSizePicker` / `showQuickJumper`，当前不生效，见注意事项 |
+| `pagination.displayOrder` | `('pages' \| 'size-picker' \| 'quick-jumper')[]` | `['pages', 'size-picker', 'quick-jumper']` | 控制 `showSizePicker` / `showQuickJumper`；未声明的项不渲染，`pages` 无对应开关（0.0.8 起生效） |
 | `pagination.pageSizes` | `number[]` | `[10, 20, 50, 100]` | 每页条数候选项 |
 | `pagination.pageSize` | `number` | `10` | 初始每页条数 |
 
@@ -151,7 +151,7 @@ function useList<T extends (...args: any) => Promise<any>>(
 
 - 需要远端分页时，给表格加 `remote`，否则 Naive UI 会对已分页的数据再次切片。
 - 如果服务端自己处理分页，把请求函数和 `pagination` 一起交给 `ProTable` 的托管请求更省事；`useList` 更适合自行管理请求的场景。
-- `pagination` 是可写的响应式对象。当前 `displayOrder` 不影响 `showSizePicker` / `showQuickJumper`（实现里是 `includes(...) || true`，恒为 `true`），需要隐藏某项时请在拿到的 `pagination` 上覆写，例如 `pagination.value.showQuickJumper = false`。
+- `pagination` 是可写的响应式对象，也可以拿到后再改 `pagination.value.showQuickJumper` / `showSizePicker`。自 0.0.8 起 `displayOrder` 会正确映射到这两个开关（0.0.7 及更早版本写成 `includes(...) || true`，两项恒显示）；`displayOrder` 中的 `pages` 没有对应开关，页码列表始终渲染。
 - 传入自定义 `pagination` 会整体替换默认配置，而不是逐字段合并：省略 `pageSize` 时初始每页条数为 `undefined`，省略 `pageSizes` 时候选项为 `[]`。
 - `useList` 在 `onMounted` 中发起首次请求，因此必须在组件 `setup` 内调用。
 - `handleExcelData` 内部通过 Naive UI 的 `useMessage` 提示结果，组件树中需要有 `NMessageProvider`；未配置 `exportRequestFn` 调用时会抛出 `当前没有提供exportRequest函数`。
