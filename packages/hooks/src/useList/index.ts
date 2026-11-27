@@ -27,9 +27,9 @@ export function useList<
     page: 1,
     pageSize: paginationCfg.pageSize,
     itemCount: 0,
-    showSizePicker: paginationCfg.displayOrder?.includes('size-picker') || true,
+    showSizePicker: paginationCfg.displayOrder?.includes('size-picker') ?? true,
     pageSizes: paginationCfg.pageSizes || [],
-    showQuickJumper: paginationCfg.displayOrder?.includes('quick-jumper') || true,
+    showQuickJumper: paginationCfg.displayOrder?.includes('quick-jumper') ?? true,
     prefix: (info: any) => `共 ${info.itemCount} 条`,
   })
   // 数据
