@@ -133,6 +133,173 @@ describe('ColumnSetting new column order', () => {
   })
 })
 
+describe('ColumnSetting declaration order', () => {
+  const columns = [
+    { title: '车牌', key: 'plate_no' },
+    { title: '车架号', key: 'vin_no' },
+    { title: '状态', key: 'state' },
+  ]
+
+  it('follows the latest declaration order when the user never reordered', async () => {
+    // 保存的 order 与保存时的声明快照一致 → 用户没拖过,应跟随代码最新顺序
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        order: ['plate_no', 'state', 'vin_no'],
+        declaredOrder: ['plate_no', 'state', 'vin_no'],
+        hidden: [],
+      }),
+    )
+
+    // 代码里把 state 移到了 vin_no 之后
+    const { wrapper } = mountSetting(columns)
+    await flushPromises()
+
+    expect(visibleKeys(wrapper)).toEqual(['plate_no', 'vin_no', 'state'])
+  })
+
+  it('keeps hidden columns hidden when following the latest declaration order', async () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        order: ['plate_no', 'vin_no', 'state'],
+        declaredOrder: ['plate_no', 'vin_no', 'state'],
+        hidden: ['state'],
+      }),
+    )
+
+    const { wrapper } = mountSetting(columns)
+    await flushPromises()
+
+    expect(visibleKeys(wrapper)).toEqual(['plate_no', 'vin_no'])
+  })
+
+  it('migrates legacy state without a declaration snapshot to the latest declaration order', async () => {
+    // 旧版本缓存没有 declaredOrder:无法区分默认顺序与用户拖拽,统一按未自定义迁移
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        order: ['plate_no', 'state', 'vin_no'],
+        hidden: ['state'],
+      }),
+    )
+
+    const { wrapper } = mountSetting(columns)
+    await flushPromises()
+
+    // 排序回到代码声明顺序,隐藏状态保留
+    expect(visibleKeys(wrapper)).toEqual(['plate_no', 'vin_no'])
+
+    // 迁移后立即回写声明快照,后续按新 schema 判断
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) as string)
+    expect(saved.order).toEqual(['plate_no', 'vin_no', 'state'])
+    expect(saved.declaredOrder).toEqual(['plate_no', 'vin_no', 'state'])
+    expect(saved.hidden).toEqual(['state'])
+  })
+
+  it('keeps the user order when it differs from the saved declaration', async () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        order: ['vin_no', 'plate_no', 'state'],
+        declaredOrder: ['plate_no', 'state', 'vin_no'],
+        hidden: [],
+      }),
+    )
+
+    const { wrapper } = mountSetting(columns)
+    await flushPromises()
+
+    expect(visibleKeys(wrapper)).toEqual(['vin_no', 'plate_no', 'state'])
+  })
+})
+
+describe('ColumnSetting fixed columns', () => {
+  const columns = [
+    { title: '车牌', key: 'plate_no' },
+    { title: '车架号', key: 'vin_no' },
+    { title: '状态', key: 'state' },
+  ]
+
+  function lastColumns(wrapper: ReturnType<typeof mountSetting>['wrapper']) {
+    const emitted = wrapper.findComponent(ColumnSetting as any).emitted('update:columns')
+    return (emitted?.at(-1)?.[0] ?? []) as any[]
+  }
+
+  it('groups left/right fixed columns to both ends of the output', async () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        order: ['plate_no', 'vin_no', 'state'],
+        declaredOrder: ['plate_no', 'vin_no', 'state'],
+        hidden: [],
+        fixed: { plate_no: null, vin_no: 'left', state: 'right' },
+      }),
+    )
+
+    const { wrapper } = mountSetting(columns)
+    await flushPromises()
+
+    const emitted = lastColumns(wrapper)
+    expect(emitted.map(column => column.key)).toEqual(['vin_no', 'plate_no', 'state'])
+    expect(emitted.map(column => column.fixed ?? null)).toEqual(['left', null, 'right'])
+  })
+
+  it('keeps the fixed side declared in the column config by default', async () => {
+    const { wrapper } = mountSetting([
+      { title: '车牌', key: 'plate_no', fixed: 'left' },
+      { title: '车架号', key: 'vin_no' },
+    ])
+    await flushPromises()
+
+    const emitted = lastColumns(wrapper)
+    expect(emitted.map(column => column.key)).toEqual(['plate_no', 'vin_no'])
+    expect(emitted[0].fixed).toBe('left')
+  })
+
+  it('lets the saved state override a declared fixed side', async () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        order: ['plate_no', 'vin_no'],
+        declaredOrder: ['plate_no', 'vin_no'],
+        hidden: [],
+        fixed: { plate_no: null, vin_no: 'right' },
+      }),
+    )
+
+    const { wrapper } = mountSetting([
+      { title: '车牌', key: 'plate_no', fixed: 'left' },
+      { title: '车架号', key: 'vin_no' },
+    ])
+    await flushPromises()
+
+    const emitted = lastColumns(wrapper)
+    // 右固定列排到末尾,取消固定后不再保留声明里的 fixed
+    expect(emitted.map(column => column.key)).toEqual(['plate_no', 'vin_no'])
+    expect(emitted[0].fixed).toBeUndefined()
+    expect(emitted[1].fixed).toBe('right')
+  })
+
+  it('toggles and persists the fixed side through the panel buttons', async () => {
+    const { wrapper } = mountSetting(columns)
+    await flushPromises()
+
+    // 打开列设置面板
+    await wrapper.find('button').trigger('click')
+    await flushPromises()
+
+    const buttons = document.querySelectorAll('.column-fixed-btn')
+    expect(buttons.length).toBe(columns.length * 2)
+    ;(buttons[0] as HTMLElement).click()
+    await flushPromises()
+
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) as string)
+    expect(saved.fixed).toEqual({ plate_no: 'left', vin_no: null, state: null })
+    expect(lastColumns(wrapper)[0].fixed).toBe('left')
+  })
+})
+
 describe('ProTable column persistence integration', () => {
   function mountProTable(columns: any[]) {
     const state = reactive({ columns })

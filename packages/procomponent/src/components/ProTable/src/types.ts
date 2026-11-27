@@ -273,6 +273,13 @@ export interface ProTableInstance {
   setSelectedRows: (rows: any[]) => void
   /** 合并行选择配置 */
   setRowSelection: (rowSelection: Record<string, any>) => void
-  /** 应用列状态（顺序 / 隐藏），传 null 重置 */
-  setColumnsState: (state: { order: string[]; hidden: string[] } | null) => void
+  /** 应用列状态（顺序 / 隐藏 / 固定），传 null 重置 */
+  setColumnsState: (state: {
+    order: string[]
+    hidden: string[]
+    /** 保存时的列声明顺序快照 */
+    declaredOrder?: string[]
+    /** 列 key → 固定位置；null 表示显式取消固定 */
+    fixed?: Record<string, 'left' | 'right' | null>
+  } | null) => void
 }

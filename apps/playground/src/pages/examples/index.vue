@@ -53,6 +53,11 @@ function createColumns() {
       fixed: 'left',
     },
     {
+      title: 'Color',
+      key: 'color',
+      valueType: 'text',
+    },
+    {
       title: 'Plate No',
       key: 'plate_no',
       width: 140,
@@ -60,6 +65,29 @@ function createColumns() {
       fixed: 'left',
     },
     {
+      title: t('examples.colDriverPhone'),
+      key: 'driver_phone',
+      hideInTable: true,
+      valueType: 'text',
+    },
+    {
+      title: t('examples.colVinNo'),
+      key: 'vin_no',
+      valueType: 'text',
+      copyable: true,
+      width: 360,
+    },
+    {
+      title: t('examples.colCarType'),
+      key: 'car_type',
+      valueType: 'text',
+    },
+    {
+      title: t('examples.colCarSeries'),
+      key: 'car_series',
+      valueType: 'text',
+    },
+      {
       title: 'State',
       key: 'state',
       width: 80,
@@ -80,33 +108,13 @@ function createColumns() {
       },
     },
     {
-      title: t('examples.colVinNo'),
-      key: 'vin_no',
-      valueType: 'text',
-      copyable: true,
-      width: 360,
-    },
-    {
-      title: t('examples.colCarType'),
-      key: 'car_type',
-      valueType: 'text',
-    },
-    {
-      title: t('examples.colCarSeries'),
-      key: 'car_series',
-      valueType: 'text',
-    },
-    {
       title: t('examples.colDriver'),
       key: 'driver',
       valueType: 'text',
     },
-    {
-      title: t('examples.colDriverPhone'),
-      key: 'driver_phone',
-      hideInTable: true,
-      valueType: 'text',
-    },
+      
+    
+
     {
       title: 'Remark',
       key: 'remark',

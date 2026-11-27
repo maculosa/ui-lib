@@ -8,10 +8,36 @@
   &:hover {
     background-color: #f0f0f0;
   }
+
+  &__fixed {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+}
+
+// 固定按钮默认隐藏,悬停行时出现;已生效的一侧始终可见
+.column-fixed-btn {
+  opacity: 0;
+  transition: opacity 0.15s;
+
+  &.is-active {
+    opacity: 1;
+  }
+}
+
+.drag-list-item:hover .column-fixed-btn {
+  opacity: 0.6;
+
+  &.is-active {
+    opacity: 1;
+  }
 }
 
 .column-setting-panel {
-  min-width: 180px;
+  min-width: 220px;
 
   &__header {
     display: flex;
