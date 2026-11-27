@@ -14,17 +14,22 @@ export function useList<
     callback,
     immediate = true,
     code = 200,
+    pagination: paginationCfg = {
+      displayOrder: ['pages', 'size-picker', 'quick-jumper'],
+      pageSizes: [10, 20, 50, 100],
+      pageSize: 10,
+    }
   } = options
 
   // 加载态
   const loading = ref(false)
   const pagination = ref({
     page: 1,
-    pageSize: 10,
+    pageSize: paginationCfg.pageSize,
     itemCount: 0,
-    showSizePicker: true,
-    pageSizes: [10, 20, 30, 40],
-    showQuickJumper: true,
+    showSizePicker: paginationCfg.displayOrder?.includes('size-picker') || true,
+    pageSizes: paginationCfg.pageSizes || [],
+    showQuickJumper: paginationCfg.displayOrder?.includes('quick-jumper') || true,
     prefix: (info: any) => `共 ${info.itemCount} 条`,
   })
   // 数据

@@ -10,7 +10,15 @@ export interface OptionsType<T = any> {
   immediate?: boolean
   /** 请求响应码 */
   code?: number
+  /** pagination 分页显示配置， 如果不配置，默认显示所有分页选项 */
+  pagination?: {
+    displayOrder?: PaginationDisplayOrder[]
+    pageSizes?: number[]
+    pageSize?: number
+  }
 }
+
+export type PaginationDisplayOrder = 'pages' | 'size-picker' | 'quick-jumper'
 
 export interface CallbackResult {
   list: any[]
