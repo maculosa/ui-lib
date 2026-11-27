@@ -49,9 +49,9 @@ export default defineComponent({
         return () => (
             <div
                 class={[
-                    'login-form',
+                    'bm-login-form',
                     {
-                        ['login-form-shadow']: shadow,
+                        ['bm-login-form-shadow']: shadow,
                     },
                 ]}
                 style={[
@@ -60,10 +60,10 @@ export default defineComponent({
                     }
                 ]}
             >
-                <div class='title'>
+                <div class='bm-login-title'>
                     { title }
                 </div>
-                <div class='sub-title'>
+                <div class='bm-login-sub-title'>
                     { subTitle }
                 </div>
 
@@ -78,7 +78,7 @@ export default defineComponent({
                         <NInput v-model:value={formData.password} placeholder={`请输入密码`} type="password" />
                     </NFormItem>
 
-                    <div class="password-forgot">
+                    <div class="bm-login-password-forgot">
                         <NCheckbox v-model:checked={remember.value} label='记住密码' />
                         {forgotUrl && <a href={forgotUrl}>忘记密码？</a>}
                     </div>
@@ -90,7 +90,7 @@ export default defineComponent({
                         <NButton color="#02E16E" ghost block onClick={() => handleLoginWithWeChat()}>微信登录</NButton>
                     </NFormItem>}
                 </NForm>)}
-                {signUpUrl && <div class="signUp">
+                {signUpUrl && <div class="bm-login-sign-up">
                     还没有账号？
                     <a href={signUpUrl as string}>立即注册</a>
                 </div>}

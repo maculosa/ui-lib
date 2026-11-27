@@ -16,13 +16,13 @@ export default defineComponent({
                 if (layout === 'column') {
                     return (
                         <div class={[
-                            'container',
-                            'column',
+                            'bm-login-container',
+                            'bm-login-column',
                         ]}>
-                            <div class='column-item' style={{
+                            <div class='bm-login-column-item' style={{
                                 order: isRightImage.value ? 1 : 2,
                             }}>
-                                {isRightImage.value && <div class='logo'>
+                                {isRightImage.value && <div class='bm-login-logo'>
                                     {slots.logo?.()}
                                 </div>}
                                 <LoginForm {...loginFormProps} shadow={false}
@@ -32,17 +32,17 @@ export default defineComponent({
                                     {slots.default()}
                                 </LoginForm>
                             </div>
-                            <div class='column-muted' style={{
+                            <div class='bm-login-column-muted' style={{
                                 order: isRightImage.value ? 2 : 1,
                             }}>
-                                {!isRightImage.value && <div class='logo'>
+                                {!isRightImage.value && <div class='bm-login-logo'>
                                     {slots.logo?.()}
                                 </div>}
                                 {props.bgImageUrl && (
                                     <img
                                         src={props.bgImageUrl}
                                         alt="Image"
-                                        class='column-muted-image'
+                                        class='bm-login-column-muted-image'
                                     />
                                 )}
                             </div>
@@ -51,21 +51,21 @@ export default defineComponent({
                 }
                 if (layout === 'card') {
                     return (
-                        <div class={['container', 'flex-center', 'card-login-wrapper']}
+                        <div class={['bm-login-container', 'bm-login-flex-center', 'bm-login-card-wrapper']}
                             style={{
                                 backgroundImage: bgImageUrl ? `url(${bgImageUrl})` : 'transparent',
                             }}
                         >
-                            <div class='logo'>
+                            <div class='bm-login-logo'>
                                 {slots.logo?.()}
                             </div>
-                            <div class="card-img-cover"></div>
-                            <div class="card"
+                            <div class="bm-login-card-img-cover"></div>
+                            <div class="bm-login-card"
                                 style={{
                                     flexDirection: isRightImage.value ? 'row' : 'row-reverse',
                                 }}
                             >
-                                <div class={['card-column-item', 'flex-1']}
+                                <div class={['bm-login-card-column-item']}
                                 >
                                     <LoginForm {...loginFormProps} shadow={false}
                                         radius={false}
@@ -74,7 +74,7 @@ export default defineComponent({
                                         {slots.default()}
                                     </LoginForm>
                                 </div>
-                                <div class={['card-column-muted', 'flex-1']}
+                                <div class={['bm-login-card-column-muted']}
                                     style={{
                                         width: '350px',
                                     }}
@@ -83,7 +83,7 @@ export default defineComponent({
                                         <img
                                             src={bgImageUrl}
                                             alt="Image"
-                                            class='column-muted-image'
+                                            class='bm-login-column-muted-image'
                                         />
                                     )}
                                 </div>
@@ -92,13 +92,13 @@ export default defineComponent({
                     )
                 }
                 return (
-                    <div class={['container', 'flex-center']}
+                    <div class={['bm-login-container', 'bm-login-flex-center']}
                         style={{
                             backgroundImage: `url(${bgImageUrl})`,
                             backgroundSize: 'cover',
                         }}
                     >
-                        <div class={['flex-col', 'space-y-4']}>
+                        <div class={['bm-login-content-stack']}>
                             {slots.logo?.()}
                             <LoginForm {...loginFormProps} onFinish={(values) => emit('finish', values)}>
                                 {slots.default()}
@@ -110,12 +110,12 @@ export default defineComponent({
                 if (layout === 'column') {
                     return (
                         <div class={[
-                            'container',
-                            'column',
-                            { 'column-reverse': props.imagePosition === 'left' }
+                            'bm-login-container',
+                            'bm-login-column',
+                            { 'bm-login-column-reverse': props.imagePosition === 'left' }
                         ]}>
-                            <div class='column-item'>
-                                {isRightImage.value && <div class='logo'>
+                            <div class='bm-login-column-item'>
+                                {isRightImage.value && <div class='bm-login-logo'>
                                     {slots.logo?.()}
                                 </div>}
                                 <LoginForm {...loginFormProps} shadow={false}
@@ -123,15 +123,15 @@ export default defineComponent({
                                     onFinish={(values) => emit('finish', values)}
                                 />
                             </div>
-                            <div class='column-muted'>
-                                {!isRightImage.value && <div class='logo'>
+                            <div class='bm-login-column-muted'>
+                                {!isRightImage.value && <div class='bm-login-logo'>
                                     {slots.logo?.()}
                                 </div>}
                                 {props.bgImageUrl && (
                                     <img
                                         src={props.bgImageUrl}
                                         alt="Image"
-                                        class='column-muted-image'
+                                        class='bm-login-column-muted-image'
                                     />
                                 )}
                             </div>
@@ -140,28 +140,28 @@ export default defineComponent({
                 }
                 if (layout === 'card') {
                     return (
-                        <div class={['container', 'flex-center', 'card-login-wrapper']}
+                        <div class={['bm-login-container', 'bm-login-flex-center', 'bm-login-card-wrapper']}
                         style={{
                             backgroundImage: bgImageUrl ? `url(${bgImageUrl})` : 'transparent',
                             backgroundSize: 'cover',
                         }}
                         >
-                            <div class='logo'>
+                            <div class='bm-login-logo'>
                                 {slots.logo?.()}
                             </div>
-                            <div class="card-img-cover"></div>
-                            <div class="card"
+                            <div class="bm-login-card-img-cover"></div>
+                            <div class="bm-login-card"
                              style={{
                                 flexDirection: isRightImage.value ? 'row' : 'row-reverse',
                             }}
                             >
-                                <div class={['card-column-item', 'flex-1']}>
+                                <div class={['bm-login-card-column-item']}>
                                     <LoginForm {...loginFormProps} shadow={false}
                                         radius={false}
                                         onFinish={(values) => emit('finish', values)}
                                     />
                                 </div>
-                                <div class={['card-column-muted', 'flex-1']}
+                                <div class={['bm-login-card-column-muted']}
                                     style={{
                                         width: '350px'
                                     }}
@@ -170,7 +170,7 @@ export default defineComponent({
                                         <img
                                             src={bgImageUrl}
                                             alt="Image"
-                                            class='column-muted-image'
+                                            class='bm-login-column-muted-image'
                                         />
                                     )}
                                 </div>
@@ -179,13 +179,13 @@ export default defineComponent({
                     )
                 }
                 return (
-                    <div class={['container', 'flex-center']}
+                    <div class={['bm-login-container', 'bm-login-flex-center']}
                         style={{
                             backgroundImage: `url(${bgImageUrl})`,
                             backgroundSize: 'cover',
                         }}
                     >
-                        <div class={['flex-col', 'space-y-4']}>
+                        <div class={['bm-login-content-stack']}>
                             {slots.logo?.()}
                             <LoginForm {...loginFormProps} />
                         </div>
